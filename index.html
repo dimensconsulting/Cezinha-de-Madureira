@@ -164,6 +164,9 @@
   .mat-grid{display:flex;gap:16px;overflow-x:auto;scroll-behavior:smooth;scroll-snap-type:x mandatory;scrollbar-width:none;-ms-overflow-style:none;padding:4px 2px}
   .mat-grid::-webkit-scrollbar{display:none}
   .mat-grid > .mat{flex:0 0 calc((100% - 32px)/3);scroll-snap-align:start}
+  .mat-grid > .card{flex:0 0 calc((100% - 32px)/3);scroll-snap-align:start}
+  @media(max-width:860px){.mat-grid > .card{flex-basis:calc((100% - 16px)/2)}}
+  @media(max-width:560px){.mat-grid > .card{flex-basis:100%}}
   @media(max-width:860px){.mat-grid > .mat{flex-basis:calc((100% - 16px)/2)}}
   @media(max-width:560px){.mat-grid > .mat{flex-basis:100%}}
   .car-btn{position:absolute;top:50%;transform:translateY(-50%);z-index:6;width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:rgba(8,38,74,.94);color:var(--lime);font-size:24px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .18s;backdrop-filter:blur(4px);box-shadow:0 6px 18px rgba(0,0,0,.4)}
@@ -309,7 +312,7 @@
     <h1 class="display">Andamento do<br><span class="sub">Projeto Cezinha</span></h1>
     <p class="lead">Acompanhamento da execução do plano de marketing político — Deputado Federal por São Paulo · PL · Eleições 2026. Status consolidado da Fase 1 (Diagnóstico e base) e preparação para a Fase 2.</p>
     <div class="meta-row">
-      <span class="pill lime">Fase atual: <b>F1 — Diagnóstico e base</b></span>
+      <span class="pill lime">Fase atual: <b>F2 — Conteúdo e distribuição</b></span>
       <span class="pill">Atualizado em <b>15 jun 2026</b></span>
       <span class="pill purple">Dia D: <b>04 out 2026</b></span>
       <span class="pill">Campanha oficial: <b>16 ago 2026</b></span>
@@ -325,7 +328,7 @@
   <section id="status">
     <span class="sec-label">Status geral</span>
     <h2 class="sec-title display">Onde estamos</h2>
-    <p class="sec-desc">A base estratégica da Fase 1 está praticamente concluída — diagnóstico, posicionamento, análise de concorrência, editorias e tom de voz, narrativa e a identidade visual de pré-campanha já entregues. A produção criativa já está em ritmo: revistas, logos, faixas, roteiros e o estudo de candidatos foram produzidos. Seguem em produção o calendário editorial, a identidade visual da campanha oficial e as revistas Cristiany e Professor Pio Mielo.</p>
+    <p class="sec-desc">A Fase 1 (Diagnóstico e base) está concluída — diagnóstico, posicionamento, análise de concorrência, editorias e tom de voz, narrativa, identidade visual e calendário editorial entregues. A produção criativa segue forte: revistas, logos, faixas, roteiros, social media e o estudo de candidatos. Em produção, a identidade visual da campanha oficial e a revista do Professor Pio Mielo. Próximo passo: iniciar a Fase 2 (Conteúdo e distribuição).</p>
 
     <div class="stat-grid">
       <div class="stat">
@@ -352,13 +355,13 @@
 
     <div class="progress-card">
       <div class="progress-head">
-        <div class="t">Progresso da Fase 1 — Diagnóstico e base</div>
-        <div class="p" id="pctText">90%</div>
+        <div class="t">Fase 2 — Conteúdo e distribuição · em andamento</div>
+        <div class="p" id="pctText">30%</div>
       </div>
-      <div class="bar"><span id="bar1" data-w="90%"></span></div>
+      <div class="bar"><span id="bar1" data-w="30%"></span></div>
       <div class="phase-mini">
-        <div class="pm done">F1 · Em curso</div>
-        <div class="pm">F2 · Conteúdo</div>
+        <div class="pm done">F1 · Concluída</div>
+        <div class="pm now">F2 · Conteúdo</div>
         <div class="pm">F3 · Abertura</div>
         <div class="pm">F4 · Aceleração</div>
         <div class="pm">F5 · Sprint final</div>
@@ -373,31 +376,31 @@
     <p class="sec-desc">Linha do tempo conforme o plano da proposta. Pré-campanha até 15/08; campanha oficial liberada de 16/08 a 04/10/2026.</p>
 
     <div class="timeline">
-      <div class="ph now">
+      <div class="ph done">
         <div class="top"></div>
         <span class="tag">F1</span>
         <h3>Diagnóstico e base</h3>
         <div class="when">Junho 2026 · 4 sem.</div>
-        <div class="status">● Em andamento</div>
+        <div class="status">✓ Concluído</div>
         <ul>
           <li class="ok">Auditoria de acessos às redes</li>
           <li class="ok">Diagnóstico digital consolidado</li>
           <li class="ok">Plano de comunicação e posicionamento</li>
           <li class="ok">Editorias e tom de voz</li>
           <li class="ok">Narrativa e identidade visual</li>
-          <li class="wip">Calendário editorial</li>
+          <li class="ok">Calendário editorial</li>
         </ul>
       </div>
-      <div class="ph next">
+      <div class="ph now">
         <div class="top"></div>
         <span class="tag">F2</span>
         <h3>Conteúdo e distribuição</h3>
         <div class="when">Jul – 15 ago · 6 sem.</div>
-        <div class="status">Pendente</div>
+        <div class="status">● Em andamento</div>
         <ul>
           <li>Reels curtos e compartilháveis</li>
           <li>Ativação WhatsApp Communities</li>
-          <li>Stories e feed em cadência diária</li>
+          <li class="ok">Stories e feed em cadência diária</li>
           <li>Rede de multiplicadores</li>
         </ul>
       </div>
@@ -495,7 +498,9 @@
     <h2 class="sec-title display">O que já foi produzido</h2>
     <p class="sec-desc">Documentos estratégicos que compõem a base do projeto — diagnóstico, posicionamento, concorrência, roteiro de stories e playbook de mídia paga.</p>
 
-    <div class="deliv-grid">
+    <div class="carousel">
+      <button class="car-btn prev" aria-label="Voltar">&#8249;</button>
+      <div class="mat-grid">
       <div class="card">
         <div class="head"><span class="num">01</span><span class="hmeta"><span class="cdate">Ao vivo</span><span class="badge done">Concluído</span></span></div>
         <h3>Dashboard — Performance Cezinha (Redes Sociais)</h3>
@@ -586,6 +591,8 @@
         <p>Levantamento e organização dos acessos do candidato a todas as plataformas — Facebook, Instagram, X (Twitter) e Threads — garantindo controle, segurança e prontidão operacional para a produção e a mídia paga.</p>
         <div class="tags"><span>Facebook</span><span>Instagram</span><span>X</span><span>Threads</span></div>
       </div>
+      </div>
+      <button class="car-btn next" aria-label="Avançar">&#8250;</button>
     </div>
   </section>
 
@@ -636,7 +643,7 @@
           <h4>Revista digital — Mandato presente</h4>
           <p>"Mandato presente, resultados concretos" — revista de prestação de contas com a linha do tempo 2023–2026 do mandato.</p>
           <div class="tags"><span>Prestação de contas</span><span>Resultados</span></div>
-          <div class="actions"><a class="open" href="Identidade%20Visual/Revista/Revista%20-%20Cezinha%20de%20Madureira.pdf" target="_blank" rel="noopener">Abrir revista →</a><a class="dl" href="Identidade%20Visual/Revista/Revista%20-%20Cezinha%20de%20Madureira.pdf" download>Baixar ↓</a></div>
+          <div class="actions"><a class="open" href="Identidade%20Visual/Revista/Revista%20Cezinha%20de%20Madureira.pdf" target="_blank" rel="noopener">Abrir revista →</a><a class="dl" href="Identidade%20Visual/Revista/Revista%20Cezinha%20de%20Madureira.pdf" download>Baixar ↓</a></div>
         </div>
       </div>
       <div class="mat">
@@ -729,6 +736,43 @@
       </div>
         <button class="car-btn next" aria-label="Avançar">&#8250;</button>
       </div>
+      <h3 class="mat-sub">Social Media</h3>
+    <div class="carousel">
+        <button class="car-btn prev" aria-label="Voltar">&#8249;</button>
+        <div class="mat-grid">
+      <div class="mat">
+        <div class="doc"><span class="rl">Social Media</span><span class="rt">Planejamento Semanal</span><span class="rn">Feed &amp; Stories</span></div>
+        <div class="body">
+          <span class="mhead"><span class="badge done">Concluído</span><span class="cdate">22/06/2026</span></span>
+          <h4>Planejamento Semanal — Feed e Stories</h4>
+          <p>Planejamento semanal de conteúdo para feed e stories — temas, formatos e cadência por dia da semana.</p>
+          <div class="tags"><span>Planejamento</span><span>Feed</span><span>Stories</span></div>
+          <div class="actions"><a class="open" href="Social%20Media/Planejamento%20Semanal%20-%20Feed%20e%20Stories.pdf" target="_blank" rel="noopener">Abrir documento →</a><a class="dl" href="Social%20Media/Planejamento%20Semanal%20-%20Feed%20e%20Stories.pdf" download>Baixar ↓</a></div>
+        </div>
+      </div>
+      <div class="mat">
+        <div class="doc"><span class="rl">Social Media</span><span class="rt">60 Milhões pra Saúde</span><span class="rn">Carrossel</span></div>
+        <div class="body">
+          <span class="mhead"><span class="badge done">Concluído</span><span class="cdate">22/06/2026</span></span>
+          <h4>Carrossel — 60 Milhões pra Saúde</h4>
+          <p>Carrossel sobre os R$ 60 milhões destinados à saúde — projetos aprovados, em linguagem acessível.</p>
+          <div class="tags"><span>Carrossel</span><span>Saúde</span><span>Resultados</span></div>
+          <div class="actions"><a class="open" href="Social%20Media/Carrossel%20-%2060%20Milhoes%20para%20a%20Saude.pdf" target="_blank" rel="noopener">Abrir documento →</a><a class="dl" href="Social%20Media/Carrossel%20-%2060%20Milhoes%20para%20a%20Saude.pdf" download>Baixar ↓</a></div>
+        </div>
+      </div>
+      <div class="mat">
+        <div class="doc"><span class="rl">Social Media</span><span class="rt">Aumento do Teto MEI</span><span class="rn">Carrossel</span></div>
+        <div class="body">
+          <span class="mhead"><span class="badge done">Concluído</span><span class="cdate">22/06/2026</span></span>
+          <h4>Carrossel — Aumento do Teto MEI</h4>
+          <p>Carrossel sobre o aumento do limite do MEI (PLP 108/2021) — apoio ao pequeno empreendedor.</p>
+          <div class="tags"><span>Carrossel</span><span>MEI</span><span>Empreendedorismo</span></div>
+          <div class="actions"><a class="open" href="Social%20Media/Carrossel%20-%20Aumento%20do%20Teto%20MEI.pdf" target="_blank" rel="noopener">Abrir documento →</a><a class="dl" href="Social%20Media/Carrossel%20-%20Aumento%20do%20Teto%20MEI.pdf" download>Baixar ↓</a></div>
+        </div>
+      </div>
+        </div>
+        <button class="car-btn next" aria-label="Avançar">&#8250;</button>
+      </div>
   </section>
 
   <!-- EM ANDAMENTO -->
@@ -760,12 +804,7 @@
     </div>
 
     <div class="deliv-grid">
-      <div class="card">
-        <div class="head"><span class="num">→</span><span class="badge wip">Em andamento</span></div>
-        <h3>Calendário editorial</h3>
-        <p>Montagem do calendário dos 4 pilares (Fé, Família, Pessoas, Cidades, Liderança) + série fixa de Transparência, cobrindo pré-campanha e campanha — transformando a estratégia em execução semanal.</p>
-        <div class="tags"><span>4 pilares</span><span>Série Transparência</span><span>Cadência diária</span></div>
-      </div>
+      
       
           <div class="card">
         <div class="head"><span class="num">→</span><span class="badge wip">Em andamento</span></div>
@@ -774,7 +813,13 @@
         <div class="tags"><span>Revista</span><span>Parceria</span></div>
         <div class="actions"><a class="open" href="https://www.canva.com/design/DAHMRe-Rw7I/YWO3eYX4vgBo2Q4tF2FEeQ/edit" target="_blank" rel="noopener">Abrir no Canva ↗</a></div>
       </div>
-      
+      <div class="card">
+        <div class="head"><span class="num">→</span><span class="badge wip">Em andamento</span></div>
+        <h3>Marca Página — Dra. Valéria Messias</h3>
+        <p>Marcador de página em parceria com a Dra. Valéria Messias — frente com o gabinete do Cezinha (contatos e QR Code) e verso com a advogada. Em produção.</p>
+        <div class="tags"><span>Marca Página</span><span>Parceria</span></div>
+        <div class="actions"><a class="open" href="Marcadores/Marcador%20-%20Dra%20Valeria%20Messias.pdf" target="_blank" rel="noopener">Abrir documento →</a><a class="dl" href="Marcadores/Marcador%20-%20Dra%20Valeria%20Messias.pdf" download>Baixar ↓</a></div>
+      </div>
     </div>
   </section>
 
@@ -815,8 +860,8 @@
         <div class="n">04</div>
         <div>
           <div class="when">Imediato — Junho</div>
-          <h4>Concluir identidade visual e calendário editorial</h4>
-          <p>Finalizar sistema visual da pré-campanha, fechar templates dos 4 pilares + série de Transparência e travar o calendário editorial pré + campanha.</p>
+          <h4>Concluir identidade visual</h4>
+          <p>Finalizar sistema visual da campanha, fechar templates dos 4 pilares + série de Transparência.</p>
         </div>
       </div>
     </div>
