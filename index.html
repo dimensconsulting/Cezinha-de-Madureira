@@ -258,14 +258,14 @@
   /* ---------- modal ---------- */
   .modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.86);backdrop-filter:blur(5px);z-index:200;display:none;align-items:center;justify-content:center;padding:22px}
   .modal-ov.show{display:flex}
-  .modal-box{background:#0f0f0f;border:1px solid var(--line);border-radius:10px;width:min(980px,100%);max-height:92vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 24px 70px rgba(0,0,0,.6)}
+  .modal-box{background:#0f0f0f;border:1px solid var(--line);border-radius:10px;width:min(980px,100%);height:92vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 24px 70px rgba(0,0,0,.6)}
   .modal-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line)}
   .modal-head .mt{font-weight:800;font-size:14px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .modal-close{background:none;border:1px solid var(--line);color:var(--grey);min-width:34px;height:34px;border-radius:6px;font-size:20px;cursor:pointer;line-height:1;transition:all .15s}
   .modal-close:hover{background:var(--lime);color:#000;border-color:var(--lime)}
-  .modal-body{flex:1;overflow:auto;background:#000;display:flex;align-items:center;justify-content:center;min-height:320px}
-  .modal-body img{max-width:100%;max-height:86vh;display:block}
-  .modal-body iframe{width:100%;height:86vh;border:0;background:#fff}
+  .modal-body{flex:1;overflow:hidden;background:#000;display:flex;align-items:center;justify-content:center;min-height:320px}
+  .modal-body img{max-width:100%;max-height:100%;display:block;object-fit:contain}
+  .modal-body iframe{width:100%;height:100%;border:0;background:#fff}
   .modal-foot{padding:10px 16px;border-top:1px solid var(--line);display:flex;justify-content:flex-end}
   .modal-foot a{font-size:12.5px;color:var(--lime);text-decoration:none;font-weight:700}
   .modal-foot a:hover{text-decoration:underline}
@@ -1117,7 +1117,7 @@
     function openM(href,label){
       body.innerHTML='';
       if(href.toLowerCase().split('?')[0].endsWith('.pdf')){
-        var f=document.createElement('iframe');f.src=href;body.appendChild(f);
+        var f=document.createElement('iframe');f.src=href+(href.indexOf('#')<0?'#view=Fit':'&view=Fit');body.appendChild(f);
       }else{
         var im=document.createElement('img');im.src=href;im.alt=label||'';body.appendChild(im);
       }
