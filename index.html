@@ -310,6 +310,7 @@
       <a href="#diagnostico">Diagnóstico</a>
       <a href="#entregas">Entregas</a>
       <a href="#materiais">Materiais</a>
+      <a href="#calendario">Calendário</a>
       <a href="#andamento">Em andamento</a>
       <a href="#apps">Apps e Plataformas</a>
       <a href="#proximos">Próximos passos</a>
@@ -618,6 +619,16 @@
     <div class="carousel">
         <button class="car-btn prev" aria-label="Voltar">&#8249;</button>
         <div class="mat-grid">
+      <div class="mat">
+        <img class="thumb" src="Bandeira/Bandeira%20-%20Capa.jpg" alt="Bandeira de Campanha — Cezinha de Madureira 22XX">
+        <div class="body">
+          <span class="mhead"><span class="badge done">Concluído</span><span class="cdate">08/07/2026</span></span>
+          <h4>Bandeira de Campanha — 22XX</h4>
+          <p>Peça de campanha — bandeira e arte principal (200×140 cm) com foto do candidato, bandeira do Brasil, número 22XX (placeholder até o número oficial) e redes sociais.</p>
+          <div class="tags"><span>Bandeira</span><span>Campanha</span><span>200×140</span></div>
+          <div class="actions"><a class="open" href="Bandeira/Bandeira%20Capa.png" target="_blank" rel="noopener">Abrir material →</a><select aria-label="Baixar material" onchange="var v=this.value;if(v){var f=(v=='__ALL__')?'Bandeira - Cezinha.zip':v;var a=document.createElement('a');a.href='Bandeira/'+encodeURIComponent(f);a.download=f;document.body.appendChild(a);a.click();a.remove();}this.selectedIndex=0;" style="font-size:12.5px;font-weight:700;color:#000;background:var(--lime);border:1px solid var(--lime);padding:8px 32px 8px 13px;border-radius:6px;cursor:pointer"><option value="">Baixar ↓</option><option value="Bandeira Capa.png">Bandeira (mockup)</option><option value="bandeira 200 x 140.jpg">Arte 200×140</option><option value="__ALL__">Todos (.zip)</option></select></div>
+        </div>
+      </div>
       <div class="mat">
         <img class="thumb" src="WildBanner/WildBanner%20-%20Capa.jpg" alt="Wind Banner — Cezinha de Madureira">
         <div class="body">
@@ -1070,6 +1081,167 @@
   </section>
 
   <!-- EM ANDAMENTO -->
+  <!-- CALENDARIO EDITORIAL -->
+  <section id="calendario">
+    <span class="sec-label">Planejamento de conteúdo</span>
+    <h2 class="sec-title display">Calendário editorial</h2>
+    <p class="sec-desc">Linha do tempo das postagens nas redes do Cezinha — cadastre cada conteúdo e acompanhe o cronograma por semana, mês ou ano. As alterações são compartilhadas com todo o time em tempo real.</p>
+    <style>
+    #calendario .cal-toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:14px}
+    #calendario .cal-views{display:inline-flex;background:var(--panel);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+    #calendario .cal-vbtn{background:transparent;color:var(--grey);border:none;padding:8px 16px;font-size:13px;font-weight:700;cursor:pointer}
+    #calendario .cal-vbtn.is-active{background:var(--lime);color:#000}
+    #calendario .cal-nav{display:flex;align-items:center;gap:8px}
+    #calendario .cal-nav button{background:var(--panel);color:#e9eef6;border:1px solid var(--line);border-radius:8px;padding:7px 12px;font-size:14px;font-weight:700;cursor:pointer}
+    #calendario .cal-period{font-family:'Archivo Black',sans-serif;font-size:15px;color:#fff;margin-left:6px;text-transform:capitalize}
+    #calendario .cal-filters{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    #calendario .cal-filters select{background:var(--panel-2);color:#e9eef6;border:1px solid var(--line);border-radius:8px;padding:7px 10px;font-size:12.5px}
+    #calendario .cal-addbtn{background:var(--lime);color:#000;border:1px solid var(--lime);border-radius:8px;padding:8px 14px;font-weight:700;font-size:12.5px;cursor:pointer}
+    #calendario .cal-body{min-height:200px}
+    #calendario .cal-week{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+    #calendario .cal-daycol{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px;min-height:160px;display:flex;flex-direction:column}
+    #calendario .cal-daycol.today{border-color:var(--lime)}
+    #calendario .cal-dhead{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+    #calendario .cal-dwd{font-size:11px;color:var(--grey-2);text-transform:uppercase;letter-spacing:.5px}
+    #calendario .cal-dnum{font-family:'Archivo Black',sans-serif;font-size:15px;color:#fff}
+    #calendario .cal-dadd{cursor:pointer;color:var(--grey-2);font-size:16px;font-weight:700;border:none;background:none;line-height:1}
+    #calendario .cal-chip{text-align:left;width:100%;background:var(--panel-2);border:1px solid var(--line);border-left:3px solid var(--grey-2);border-radius:6px;padding:5px 7px;margin-bottom:5px;cursor:pointer;color:#e9eef6;font-size:12px;line-height:1.25}
+    #calendario .cal-chip .t{font-weight:700;display:block}
+    #calendario .cal-chip .m{color:var(--grey-2);font-size:10.5px;margin-top:2px;display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+    #calendario .cal-rd{display:inline-block;width:8px;height:8px;border-radius:50%}
+    #calendario .cal-empty{color:var(--grey-2);font-size:11.5px;text-align:center;margin:auto;opacity:.5}
+    #calendario .cal-month{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+    #calendario .cal-mwd{font-size:11px;color:var(--grey-2);text-transform:uppercase;text-align:center;padding:4px 0;font-weight:700}
+    #calendario .cal-mcell{background:var(--panel);border:1px solid var(--line);border-radius:8px;min-height:96px;padding:5px 6px;cursor:pointer;overflow:hidden}
+    #calendario .cal-mcell.out{opacity:.4}
+    #calendario .cal-mcell.today{border-color:var(--lime)}
+    #calendario .cal-mnum{font-size:12px;color:var(--grey);font-weight:700;margin-bottom:3px}
+    #calendario .cal-mchip{font-size:10.5px;color:#e9eef6;background:var(--panel-2);border-left:3px solid var(--grey-2);border-radius:4px;padding:2px 5px;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+    #calendario .cal-mmore{font-size:10px;color:var(--grey-2)}
+    #calendario .cal-year{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+    #calendario .cal-ym{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px}
+    #calendario .cal-ymh{font-family:'Archivo Black',sans-serif;font-size:13px;color:#fff;margin-bottom:6px;cursor:pointer;text-transform:capitalize}
+    #calendario .cal-ygrid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+    #calendario .cal-yd{aspect-ratio:1;border-radius:3px;background:var(--panel-2);font-size:9px;color:var(--grey-2);display:flex;align-items:center;justify-content:center;cursor:pointer}
+    #calendario .cal-yd.has{color:#012240;font-weight:700}
+    #calendario .cal-modal{display:none;position:fixed;inset:0;background:rgba(1,8,20,.72);z-index:120;align-items:center;justify-content:center;padding:16px}
+    #calendario .cal-modal.open{display:flex}
+    #calendario .cal-modal-box{background:var(--bg);border:1px solid var(--line);border-radius:14px;max-width:520px;width:100%;max-height:92vh;overflow:auto;padding:20px}
+    #calendario .cal-modal-box h3{font-family:'Archivo Black',sans-serif;font-size:18px;color:#fff;margin:0 0 14px}
+    #calendario .cal-fld{margin-bottom:11px}
+    #calendario .cal-fld label{display:block;font-size:12px;color:var(--grey);margin-bottom:4px;font-weight:700}
+    #calendario .cal-fld input,#calendario .cal-fld select,#calendario .cal-fld textarea{width:100%;background:var(--panel-2);border:1px solid var(--line);color:#e9eef6;border-radius:8px;padding:9px 10px;font-size:13px;box-sizing:border-box;font-family:inherit}
+    #calendario .cal-row2{display:flex;gap:10px}
+    #calendario .cal-row2>*{flex:1}
+    #calendario .cal-redes{display:flex;flex-wrap:wrap;gap:8px}
+    #calendario .cal-redes label{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;color:#e9eef6;font-weight:600;background:var(--panel-2);border:1px solid var(--line);border-radius:20px;padding:5px 11px;cursor:pointer;margin:0}
+    #calendario .cal-redes input{width:auto}
+    #calendario .cal-foot{display:flex;justify-content:space-between;gap:10px;margin-top:16px}
+    #calendario .cal-foot .r{display:flex;gap:8px}
+    #calendario .cal-btn{border:none;border-radius:8px;padding:9px 16px;font-weight:700;font-size:13px;cursor:pointer}
+    #calendario .cal-btn.save{background:var(--lime);color:#000}
+    #calendario .cal-btn.cancel{background:var(--panel);color:#e9eef6;border:1px solid var(--line)}
+    #calendario .cal-btn.del{background:transparent;color:#ff6b6b;border:1px solid #7a2b2b}
+    #calendario .cal-evchip{text-align:left;width:100%;background:rgba(124,92,255,.12);border:1px solid #5b3fa0;border-left:3px solid #b9a7ff;border-radius:6px;padding:5px 7px;margin-bottom:5px;cursor:pointer;color:#e9d9ff;font-size:12px;line-height:1.25}
+    #calendario .cal-evchip .t{font-weight:700;display:block}
+    #calendario .cal-evchip .m{color:#b9a7ff;font-size:10.5px;margin-top:2px;display:block}
+    #calendario .cal-mev{background:rgba(124,92,255,.14);border-left-color:#b9a7ff;color:#e9d9ff}
+    #calendario .cal-evbtn{background:#7c5cff;border-color:#7c5cff;color:#fff}
+    #calendario .cal-ev-fields textarea{min-height:58px}
+    @media(max-width:720px){#calendario .cal-week{grid-template-columns:repeat(1,1fr)}#calendario .cal-year{grid-template-columns:repeat(2,1fr)}#calendario .cal-mcell{min-height:64px}}
+    </style>
+
+    <div class="cal-app">
+      <div class="cal-toolbar">
+        <div class="cal-views">
+          <button type="button" class="cal-vbtn" data-view="semana">Semana</button>
+          <button type="button" class="cal-vbtn" data-view="mes">Mês</button>
+          <button type="button" class="cal-vbtn" data-view="ano">Ano</button>
+        </div>
+        <div class="cal-nav">
+          <button type="button" id="cal-prev" aria-label="Anterior">&#8249;</button>
+          <button type="button" id="cal-today">Hoje</button>
+          <button type="button" id="cal-next" aria-label="Próximo">&#8250;</button>
+          <span id="cal-title" class="cal-period"></span>
+        </div>
+        <div class="cal-filters">
+          <select id="cal-f-rede"><option value="">Todas as redes</option><option>Instagram</option><option>Facebook</option><option>TikTok</option><option>YouTube</option><option>WhatsApp</option></select>
+          <select id="cal-f-status"><option value="">Todos os status</option><option>Ideia</option><option>Produção</option><option>Agendado</option><option>Publicado</option></select>
+          <button type="button" id="cal-add" class="cal-addbtn">＋ Novo conteúdo</button>
+          <button type="button" id="cal-add-ev" class="cal-addbtn cal-evbtn">＋ Evento</button>
+          <button type="button" id="cal-share" class="cal-addbtn" style="background:#25D366;border-color:#25D366;color:#04310f">↗ WhatsApp</button>
+        </div>
+      </div>
+      <div id="cal-body" class="cal-body"></div>
+    </div>
+
+    <div id="cal-ev-modal" class="cal-modal">
+      <div class="cal-modal-box cal-ev-fields">
+        <h3 id="cal-ev-title">Novo evento</h3>
+        <div class="cal-row2">
+          <div class="cal-fld"><label>Data do evento</label><input type="date" id="cal-ev-data"></div>
+          <div class="cal-fld"><label>Horário</label><input type="time" id="cal-ev-hora"></div>
+        </div>
+        <div class="cal-fld"><label>Descrição do evento</label><input type="text" id="cal-ev-desc" placeholder="Ex.: Culto de gratidão em Guarulhos"></div>
+        <div class="cal-fld"><label>Briefing criativo</label><textarea id="cal-ev-brief" rows="2" placeholder="Direção criativa, tom, referências…"></textarea></div>
+        <div class="cal-fld"><label>O que não pode faltar</label><textarea id="cal-ev-falta" rows="2" placeholder="Checklist do que é indispensável"></textarea></div>
+        <div class="cal-fld"><label>Por que o candidato precisa estar</label><textarea id="cal-ev-motivo" rows="2" placeholder="Justificativa estratégica da presença"></textarea></div>
+        <div class="cal-foot">
+          <button type="button" id="cal-ev-del" class="cal-btn del">Excluir</button>
+          <div class="r">
+            <button type="button" id="cal-ev-gen" class="cal-btn" style="background:#7c5cff;color:#fff">Gerar conteúdo →</button>
+            <button type="button" id="cal-ev-cancel" class="cal-btn cancel">Cancelar</button>
+            <button type="button" id="cal-ev-save" class="cal-btn save">Salvar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="cal-modal" class="cal-modal">
+      <div class="cal-modal-box">
+        <h3 id="cal-modal-title">Novo conteúdo</h3>
+        <div class="cal-row2">
+          <div class="cal-fld"><label>Data</label><input type="date" id="cal-f-data"></div>
+          <div class="cal-fld"><label>Hora</label><input type="time" id="cal-f-hora"></div>
+        </div>
+        <div class="cal-fld"><label>Título do conteúdo</label><input type="text" id="cal-f-titulo" placeholder="Ex.: Reels agenda da semana"></div>
+        <div class="cal-fld"><label>Redes</label>
+          <div class="cal-redes">
+            <label><input type="checkbox" id="cal-rd-Instagram">Instagram</label>
+            <label><input type="checkbox" id="cal-rd-Facebook">Facebook</label>
+            <label><input type="checkbox" id="cal-rd-TikTok">TikTok</label>
+            <label><input type="checkbox" id="cal-rd-YouTube">YouTube</label>
+            <label><input type="checkbox" id="cal-rd-WhatsApp">WhatsApp</label>
+          </div>
+        </div>
+        <div class="cal-fld"><label>Formato (pode escolher mais de um)</label>
+          <div class="cal-redes" id="cal-formatos">
+            <label><input type="checkbox" value="Feed">Feed</label>
+            <label><input type="checkbox" value="Story">Story</label>
+            <label><input type="checkbox" value="Reels">Reels</label>
+            <label><input type="checkbox" value="Carrossel">Carrossel</label>
+            <label><input type="checkbox" value="Vídeo">Vídeo</label>
+            <label><input type="checkbox" value="Live">Live</label>
+            <label><input type="checkbox" value="Outro">Outro</label>
+          </div>
+        </div>
+        <div class="cal-fld"><label>Status</label><select id="cal-f-status-form"><option>Ideia</option><option>Produção</option><option>Agendado</option><option>Publicado</option></select></div>
+        <div class="cal-fld"><label>Editoria / Tema</label><input type="text" id="cal-f-editoria" placeholder="Ex.: Mandato, Agenda, Bastidores"></div>
+        <div class="cal-row2">
+          <div class="cal-fld"><label>Responsável</label><input type="text" id="cal-f-resp" placeholder="Quem produz"></div>
+          <div class="cal-fld"><label>Link do material</label><input type="text" id="cal-f-link" placeholder="Canva / Drive"></div>
+        </div>
+        <div class="cal-fld"><label>Observações</label><textarea id="cal-f-obs" rows="2" placeholder="Notas, roteiro, legenda…"></textarea></div>
+        <div class="cal-foot">
+          <button type="button" id="cal-del" class="cal-btn del">Excluir</button>
+          <div class="r">
+            <button type="button" id="cal-cancel" class="cal-btn cancel">Cancelar</button>
+            <button type="button" id="cal-save" class="cal-btn save">Salvar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section id="andamento">
     <span class="sec-label purple">Em andamento</span>
     <h2 class="sec-title display">O que está em produção</h2>
@@ -1314,6 +1486,7 @@
   window.addEventListener('load', function(){ setTimeout(animateBar, 300); });
 </script>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
   (function(){
     var BASE = [["Itamar Borges", "", "", "blue"], ["Léo Oliveira", "", "", "blue"], ["André Bueno", "", "https://www.instagram.com/andrebuenooficial", "blue"], ["Clóvis Volpi", "Ribeirão Pires", "", "blue"], ["Damaris", "", "https://www.instagram.com/damarissousaadvogada", "blue"], ["Bruna Furlan", "", "", "blue"], ["Cristiany", "APAE", "https://www.instagram.com/cristiany_de_castro", "green"], ["Rogério", "Cotia", "", "blue"], ["Rogéria", "Lins", "", "blue"], ["Julinho Fuzari", "", "https://www.instagram.com/julinho.fuzari", "blue"], ["Eduardo Nóbrega", "", "", "blue"], ["Del. Sandro", "", "https://www.instagram.com/delegadosandromontanari", "blue"], ["Mário", "Guarujá", "", "blue"], ["Kiko", "Valinhos", "", "blue"], ["Paulo Corrêia", "", "", "blue"], ["Dr. Lindoso", "", "", "blue"], ["Prefo Gustavo", "Rio Claro", "", "blue"], ["Carla Morando", "", "", "blue"], ["Eli Corrêa", "Guarulhos", "", "blue"], ["Manuel", "Ilhabela", "", "blue"], ["Sandra Tadeu", "", "", "blue"], ["Franco Sardelli", "", "", "blue"], ["Valdomiro", "", "", "blue"], ["Sgtº Simões", "", "https://www.instagram.com/sargentosimoes", "blue"], ["Esposa Pref.", "Arujá", "", "blue"], ["Átila", "Mauá", "https://www.instagram.com/atilajacomussi", "blue"], ["Tiago Aurichio", "", "https://www.instagram.com/thiagoauricchio_", "blue"], ["Danilo", "Cajamar", "", "blue"], ["Tiavinho", "Itapevi", "", "blue"], ["Manga/Cícero", "Sorocaba", "", "blue"], ["Kaká", "", "", "blue"], ["Rita Passos", "Sorocaba", "", "blue"], ["Rodrigo Moraes", "", "", "blue"], ["Alison Cantor", "", "", "green"], ["Dra. Valéria", "Guarulhos", "", "green"], ["Bispa", "Bauru", "", "blue"], ["Dr. Adriano", "Capital", "", "blue"], ["Ver. Junior", "Barueri", "", "blue"], ["Madalena", "Dep. Est", "", "blue"], ["Dilador Borges", "", "", "blue"], ["Regina Nunes", "", "", "blue"], ["Rodolpho", "Paranapanema", "", "blue"], ["Giovani Sanches", "", "https://www.instagram.com/giovanisanchesp", "blue"], ["Bruna Perissinotto", "", "https://www.instagram.com/brunaperissinotto_", "blue"], ["Malu Fernandes", "", "https://www.instagram.com/soumalufernandes", "blue"]];
@@ -1321,7 +1494,12 @@
     try{ st=JSON.parse(localStorage.getItem(LS))||{}; }catch(e){ st={}; }
     st.icons=st.icons||{}; st.links=st.links||{}; st.custom=st.custom||[];
     try{ var old=JSON.parse(localStorage.getItem('dobradas_icones')||'null'); if(old){ Object.keys(old).forEach(function(k){ if(!(k in st.icons)) st.icons[k]=old[k]; }); } }catch(e){}
-    function save(){ try{ localStorage.setItem(LS,JSON.stringify(st)); }catch(e){} }
+    var SB_URL='https://xofegurmrfkaavhtndqk.supabase.co', SB_KEY='sb_publishable_jAedlYOqMrbgp7wG5yhD6A_AyWaXwT9';
+    var sb=(window.supabase&&window.supabase.createClient)?window.supabase.createClient(SB_URL,SB_KEY):null;
+    var pushing=false;
+    function save(){ try{ localStorage.setItem(LS,JSON.stringify(st)); }catch(e){} if(sb){ pushing=true; sb.from('dobradas_state').update({state:st,updated_at:new Date().toISOString()}).eq('id',1).then(function(){ setTimeout(function(){pushing=false;},500); },function(){ pushing=false; }); } }
+    function isEmptyState(s){ return !s||((!s.icons||!Object.keys(s.icons).length)&&(!s.links||!Object.keys(s.links).length)&&(!s.custom||!s.custom.length)); }
+    function applyRemote(state){ if(!state) return; st.icons=state.icons||{}; st.links=state.links||{}; st.custom=state.custom||[]; try{ localStorage.setItem(LS,JSON.stringify(st)); }catch(e){} render(); }
     var order=['blue','green','rocket'];
     function norm(s){ return (s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase(); }
     function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
@@ -1346,9 +1524,191 @@
       ul.appendChild(li);
     }); }
     function addItem(){ var n=(document.getElementById('dob-add-nome').value||'').trim(); if(!n){ alert('Informe o nome.'); return; } var r=(document.getElementById('dob-add-regiao').value||'').trim(); var ig=igUrl(document.getElementById('dob-add-ig').value); st.custom.push({n:n,r:r,ig:ig}); save(); document.getElementById('dob-add-nome').value=''; document.getElementById('dob-add-regiao').value=''; document.getElementById('dob-add-ig').value=''; render(); }
-    function init(){ var b=document.getElementById('dob-add-btn'); if(b) b.onclick=addItem; render(); }
+    function init(){ var b=document.getElementById('dob-add-btn'); if(b) b.onclick=addItem; render();
+      if(sb){
+        sb.from('dobradas_state').select('state').eq('id',1).single().then(function(res){
+          var remote=(res&&res.data)?res.data.state:null;
+          if(isEmptyState(remote)){ if(!isEmptyState(st)) save(); } else { applyRemote(remote); }
+        },function(){});
+        sb.channel('dobradas_rt').on('postgres_changes',{event:'UPDATE',schema:'public',table:'dobradas_state',filter:'id=eq.1'},function(p){ if(pushing) return; if(p&&p.new&&p.new.state) applyRemote(p.new.state); }).subscribe();
+      }
+    }
     if(document.readyState!=='loading') init(); else document.addEventListener('DOMContentLoaded',init);
   })();
   </script>
+  <script>
+  (function(){
+    if(!(window.supabase&&window.supabase.createClient)) return;
+    var sb=window.supabase.createClient('https://xofegurmrfkaavhtndqk.supabase.co','sb_publishable_jAedlYOqMrbgp7wG5yhD6A_AyWaXwT9');
+    var REDES=['Instagram','Facebook','TikTok','YouTube','WhatsApp'];
+    var ST_COLOR={'Ideia':'#6f88a8','Produção':'#F4D700','Agendado':'#1f6fc8','Publicado':'#00BD5B'};
+    var RD_COLOR={'Instagram':'#E1306C','Facebook':'#1877F2','TikTok':'#25F4EE','YouTube':'#FF0000','WhatsApp':'#25D366'};
+    var MESES=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+    var MO=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+    var WD=['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'];
+    var items=[], eventos=[], view='semana', cursor=new Date(), fRede='', fStatus='', editId=null, editEv=null, linkEvento=null;
+    cursor.setHours(0,0,0,0);
+    var today=new Date(); today.setHours(0,0,0,0);
+    function $(id){return document.getElementById(id);}
+    function pad(n){return(n<10?'0':'')+n;}
+    function ymd(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
+    function parseYMD(s){var p=(s||'').split('-');return new Date(+p[0],+p[1]-1,+p[2]);}
+    function addDays(d,n){var x=new Date(d);x.setDate(x.getDate()+n);return x;}
+    function startOfWeek(d){var x=new Date(d);var g=(x.getDay()+6)%7;x.setDate(x.getDate()-g);x.setHours(0,0,0,0);return x;}
+    function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+    function sameDay(a,b){return a.getFullYear()==b.getFullYear()&&a.getMonth()==b.getMonth()&&a.getDate()==b.getDate();}
+    function match(it){return(!fRede||(it.redes&&it.redes.indexOf(fRede)>=0))&&(!fStatus||it.status==fStatus);}
+    function itemsOn(ds){return items.filter(function(it){return it.data==ds&&match(it);}).sort(function(a,b){return((a.hora||'99')<(b.hora||'99'))?-1:1;});}
+    function heat(c){return c>=4?'#F4D700':c==3?'#8fd0ff':c==2?'#4aa3e8':'#2b6fb0';}
+
+    function chip(it){
+      var col=ST_COLOR[it.status]||'#6f88a8';
+      var rd=(it.redes||[]).map(function(r){return '<span class="cal-rd" style="background:'+(RD_COLOR[r]||'#888')+'" title="'+r+'"></span>';}).join('');
+      var meta=[]; if(it.hora)meta.push(esc(it.hora.slice(0,5))); if(it.formato&&it.formato.length)meta.push(esc([].concat(it.formato).join(', ')));
+      return '<button type="button" class="cal-chip" data-id="'+it.id+'" style="border-left-color:'+col+'"><span class="t">'+esc(it.titulo)+'</span><span class="m">'+rd+(meta.length?'<span>'+meta.join(' · ')+'</span>':'')+'</span></button>';
+    }
+    function renderWeek(){
+      var s=startOfWeek(cursor), e=addDays(s,6), html='<div class="cal-week">';
+      for(var i=0;i<7;i++){ var d=addDays(s,i), ds=ymd(d), list=itemsOn(ds);
+        html+='<div class="cal-daycol'+(sameDay(d,today)?' today':'')+'"><div class="cal-dhead"><span><span class="cal-dwd">'+WD[i]+'</span> <span class="cal-dnum">'+d.getDate()+'</span></span><button type="button" class="cal-dadd" data-add="'+ds+'" title="Novo conteúdo">＋</button></div>';
+        var evs=eventsOn(ds);
+        if(evs.length||list.length){ evs.forEach(function(e){html+=evChip(e);}); list.forEach(function(it){html+=chip(it);}); } else { html+='<div class="cal-empty">—</div>'; }
+        html+='</div>';
+      }
+      html+='</div>';
+      var lbl=(s.getMonth()==e.getMonth())?(s.getDate()+' – '+e.getDate()+' '+MO[e.getMonth()]+' '+e.getFullYear()):(s.getDate()+' '+MO[s.getMonth()]+' – '+e.getDate()+' '+MO[e.getMonth()]+' '+e.getFullYear());
+      $('cal-title').textContent=lbl; $('cal-body').innerHTML=html;
+    }
+    function renderMonth(){
+      var y=cursor.getFullYear(), m=cursor.getMonth(), start=startOfWeek(new Date(y,m,1)), html='<div class="cal-month">';
+      WD.forEach(function(w){html+='<div class="cal-mwd">'+w+'</div>';});
+      for(var i=0;i<42;i++){ var d=addDays(start,i), ds=ymd(d), out=(d.getMonth()!=m), list=itemsOn(ds);
+        html+='<div class="cal-mcell'+(out?' out':'')+(sameDay(d,today)?' today':'')+'" data-add="'+ds+'"><div class="cal-mnum">'+d.getDate()+'</div>';
+        var evs=eventsOn(ds); evs.slice(0,2).forEach(function(e){html+='<div class="cal-mchip cal-mev" data-eid="'+e.id+'">\uD83D\uDCCC '+esc(e.descricao)+'</div>';});
+        list.slice(0,3).forEach(function(it){var col=ST_COLOR[it.status]||'#6f88a8';html+='<div class="cal-mchip" data-id="'+it.id+'" style="border-left-color:'+col+'">'+esc(it.titulo)+'</div>';});
+        if(list.length>3)html+='<div class="cal-mmore">+'+(list.length-3)+' mais</div>';
+        html+='</div>';
+      }
+      html+='</div>'; $('cal-title').textContent=MESES[m]+' '+y; $('cal-body').innerHTML=html;
+    }
+    function renderYear(){
+      var y=cursor.getFullYear(), counts={};
+      items.forEach(function(it){ if(match(it)&&it.data&&it.data.slice(0,4)==String(y))counts[it.data]=(counts[it.data]||0)+1; });
+      var html='<div class="cal-year">';
+      for(var m=0;m<12;m++){
+        html+='<div class="cal-ym"><div class="cal-ymh" data-month="'+m+'">'+MESES[m]+'</div><div class="cal-ygrid">';
+        var start=startOfWeek(new Date(y,m,1));
+        for(var i=0;i<42;i++){ var d=addDays(start,i), ds=ymd(d);
+          if(d.getMonth()!=m){ html+='<div class="cal-yd" style="visibility:hidden"></div>'; continue; }
+          var c=counts[ds]||0, bg=c?('background:'+heat(c)+';'):'';
+          html+='<div class="cal-yd'+(c?' has':'')+'" data-date="'+ds+'" style="'+bg+'" title="'+(c?c+' conteúdo(s)':'')+'">'+d.getDate()+'</div>';
+        }
+        html+='</div></div>';
+      }
+      html+='</div>'; $('cal-title').textContent=String(y); $('cal-body').innerHTML=html;
+    }
+    function render(){
+      var b=document.querySelectorAll('#calendario .cal-vbtn'); for(var i=0;i<b.length;i++){ b[i].classList.toggle('is-active',b[i].getAttribute('data-view')==view); }
+      if(view=='semana')renderWeek(); else if(view=='mes')renderMonth(); else renderYear();
+    }
+    function nav(dir){ if(view=='semana')cursor=addDays(cursor,7*dir); else if(view=='mes')cursor=new Date(cursor.getFullYear(),cursor.getMonth()+dir,1); else cursor=new Date(cursor.getFullYear()+dir,0,1); render(); }
+
+    function openForm(id,ds){
+      editId=id||null; var it=null; if(id){ for(var i=0;i<items.length;i++){ if(items[i].id==id){it=items[i];break;} } } linkEvento=(it&&it.evento_id)?it.evento_id:null;
+      $('cal-f-data').value=it?it.data:(ds||ymd(cursor));
+      $('cal-f-hora').value=(it&&it.hora)?it.hora.slice(0,5):'';
+      $('cal-f-titulo').value=it?it.titulo:'';
+      REDES.forEach(function(r){ $('cal-rd-'+r).checked=it?((it.redes||[]).indexOf(r)>=0):false; });
+      var _fmts=(it&&it.formato)?[].concat(it.formato):[]; var _fcb=document.querySelectorAll('#cal-formatos input'); for(var _i=0;_i<_fcb.length;_i++){ _fcb[_i].checked=_fmts.indexOf(_fcb[_i].value)>=0; }
+      $('cal-f-status-form').value=it?it.status:'Ideia';
+      $('cal-f-editoria').value=(it&&it.editoria)?it.editoria:'';
+      $('cal-f-resp').value=(it&&it.responsavel)?it.responsavel:'';
+      $('cal-f-link').value=(it&&it.link)?it.link:'';
+      $('cal-f-obs').value=(it&&it.observacoes)?it.observacoes:'';
+      $('cal-modal-title').textContent=id?'Editar conteúdo':'Novo conteúdo';
+      $('cal-del').style.display=id?'inline-block':'none';
+      $('cal-modal').classList.add('open');
+    }
+    function closeForm(){ $('cal-modal').classList.remove('open'); editId=null; }
+    function saveForm(){
+      var titulo=($('cal-f-titulo').value||'').trim(); if(!titulo){alert('Informe o título.');return;}
+      var data=$('cal-f-data').value; if(!data){alert('Informe a data.');return;}
+      var redes=REDES.filter(function(r){return $('cal-rd-'+r).checked;});
+      var formatos=[]; var _fc=document.querySelectorAll('#cal-formatos input:checked'); for(var _j=0;_j<_fc.length;_j++)formatos.push(_fc[_j].value);
+      var obj={data:data,hora:$('cal-f-hora').value||null,titulo:titulo,redes:redes,formato:formatos,editoria:($('cal-f-editoria').value||'').trim()||null,status:$('cal-f-status-form').value,responsavel:($('cal-f-resp').value||'').trim()||null,link:($('cal-f-link').value||'').trim()||null,observacoes:($('cal-f-obs').value||'').trim()||null,evento_id:linkEvento,updated_at:new Date().toISOString()};
+      var q=editId?sb.from('calendario_editorial').update(obj).eq('id',editId):sb.from('calendario_editorial').insert(obj);
+      q.then(function(res){ if(res&&res.error){alert('Erro ao salvar: '+res.error.message);return;} closeForm(); loadAll(); },function(){alert('Erro ao salvar.');});
+    }
+    function delForm(){ if(!editId)return; if(!confirm('Excluir este conteúdo?'))return; sb.from('calendario_editorial').delete().eq('id',editId).then(function(){closeForm();loadAll();}); }
+    function loadAll(){ sb.from('calendario_editorial').select('*').order('data',{ascending:true}).order('hora',{ascending:true}).then(function(res){ items=(res&&res.data)?res.data:[]; sb.from('eventos').select('*').order('data',{ascending:true}).order('hora',{ascending:true}).then(function(r2){ eventos=(r2&&r2.data)?r2.data:[]; render(); }); }); }
+    function eventsOn(ds){ return eventos.filter(function(e){return e.data==ds;}).sort(function(a,b){return((a.hora||'99')<(b.hora||'99'))?-1:1;}); }
+    function evChip(e){ return '<button type="button" class="cal-evchip" data-eid="'+e.id+'"><span class="t">\uD83D\uDCCC '+esc(e.descricao)+'</span>'+(e.hora?'<span class="m">'+esc(e.hora.slice(0,5))+'</span>':'')+'</button>'; }
+
+    function rangeBounds(){ if(view=='semana'){var s=startOfWeek(cursor);return [s,addDays(s,6)];} if(view=='mes'){var y=cursor.getFullYear(),m=cursor.getMonth();return [new Date(y,m,1),new Date(y,m+1,0)];} var yy=cursor.getFullYear(); return [new Date(yy,0,1),new Date(yy,11,31)]; }
+    var WDF=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+    function buildExport(){
+      var b=rangeBounds(), s=b[0], e=b[1];
+      var list=items.filter(function(it){ if(!match(it))return false; var d=parseYMD(it.data); return d>=s&&d<=e; }).sort(function(a,b){ if(a.data!=b.data)return a.data<b.data?-1:1; return ((a.hora||'99')<(b.hora||'99'))?-1:1; });
+      var head='🗓️ Calendário editorial — '+$('cal-title').textContent; if(fRede)head+=' · '+fRede; if(fStatus)head+=' · '+fStatus;
+      if(!list.length) return head+'\n\nNenhum conteúdo cadastrado nesse período.';
+      var out=head+'\n', cur=null;
+      list.forEach(function(it){ if(it.data!=cur){ cur=it.data; var d=parseYMD(it.data); out+='\n📅 '+WDF[d.getDay()]+', '+pad(d.getDate())+'/'+pad(d.getMonth()+1)+'\n'; }
+        var parts=[]; if(it.hora)parts.push(it.hora.slice(0,5)); parts.push(it.titulo);
+        var tail=[]; if(it.redes&&it.redes.length)tail.push(it.redes.join(', ')); if(it.formato&&it.formato.length)tail.push([].concat(it.formato).join(', ')); if(it.status)tail.push(it.status);
+        out+='• '+parts.join(' — ')+(tail.length?' ('+tail.join(' · ')+')':'')+'\n';
+      });
+      return out;
+    }
+    function shareWhats(){ var t=buildExport(); window.open('https://wa.me/?text='+encodeURIComponent(t),'_blank'); }
+    function openEvent(id,ds){
+      editEv=id||null; var e=null; if(id){ for(var i=0;i<eventos.length;i++){ if(eventos[i].id==id){e=eventos[i];break;} } }
+      $('cal-ev-data').value=e?e.data:(ds||ymd(cursor));
+      $('cal-ev-hora').value=(e&&e.hora)?e.hora.slice(0,5):'';
+      $('cal-ev-desc').value=e?e.descricao:'';
+      $('cal-ev-brief').value=(e&&e.briefing)?e.briefing:'';
+      $('cal-ev-falta').value=(e&&e.nao_pode_faltar)?e.nao_pode_faltar:'';
+      $('cal-ev-motivo').value=(e&&e.motivo_candidato)?e.motivo_candidato:'';
+      $('cal-ev-title').textContent=id?'Editar evento':'Novo evento';
+      $('cal-ev-del').style.display=id?'inline-block':'none';
+      $('cal-ev-gen').style.display=id?'inline-block':'none';
+      $('cal-ev-modal').classList.add('open');
+    }
+    function closeEvent(){ $('cal-ev-modal').classList.remove('open'); editEv=null; }
+    function saveEvent(){
+      var desc=($('cal-ev-desc').value||'').trim(); if(!desc){alert('Informe a descrição do evento.');return;}
+      var data=$('cal-ev-data').value; if(!data){alert('Informe a data.');return;}
+      var obj={data:data,hora:$('cal-ev-hora').value||null,descricao:desc,briefing:($('cal-ev-brief').value||'').trim()||null,nao_pode_faltar:($('cal-ev-falta').value||'').trim()||null,motivo_candidato:($('cal-ev-motivo').value||'').trim()||null,updated_at:new Date().toISOString()};
+      var q=editEv?sb.from('eventos').update(obj).eq('id',editEv):sb.from('eventos').insert(obj);
+      q.then(function(res){ if(res&&res.error){alert('Erro ao salvar evento: '+res.error.message);return;} closeEvent(); loadAll(); },function(){alert('Erro ao salvar evento.');});
+    }
+    function delEvent(){ if(!editEv)return; if(!confirm('Excluir este evento? Os conteúdos gerados serão mantidos (sem o vínculo).'))return; sb.from('eventos').delete().eq('id',editEv).then(function(){closeEvent();loadAll();}); }
+    function genFromEvent(){ if(!editEv)return; var e=null; for(var i=0;i<eventos.length;i++){ if(eventos[i].id==editEv){e=eventos[i];break;} } if(!e)return; var eid=e.id; closeEvent(); openForm(null,e.data); $('cal-f-hora').value=e.hora?e.hora.slice(0,5):''; $('cal-f-titulo').value=e.descricao||''; var pre=[]; if(e.briefing)pre.push('Briefing: '+e.briefing); if(e.nao_pode_faltar)pre.push('Não pode faltar: '+e.nao_pode_faltar); $('cal-f-obs').value=pre.join('\n'); linkEvento=eid; }
+    function init(){
+      var vb=document.querySelectorAll('#calendario .cal-vbtn'); for(var i=0;i<vb.length;i++){ (function(btn){ btn.onclick=function(){ view=btn.getAttribute('data-view'); render(); }; })(vb[i]); }
+      $('cal-prev').onclick=function(){nav(-1);}; $('cal-next').onclick=function(){nav(1);}; $('cal-today').onclick=function(){cursor=new Date();cursor.setHours(0,0,0,0);render();};
+      $('cal-f-rede').onchange=function(){fRede=this.value;render();};
+      $('cal-f-status').onchange=function(){fStatus=this.value;render();};
+      $('cal-add').onclick=function(){openForm(null,ymd(cursor));};
+      $('cal-share').onclick=shareWhats;
+      $('cal-add-ev').onclick=function(){openEvent(null,ymd(cursor));};
+      $('cal-ev-save').onclick=saveEvent; $('cal-ev-cancel').onclick=closeEvent; $('cal-ev-del').onclick=delEvent; $('cal-ev-gen').onclick=genFromEvent;
+      $('cal-ev-modal').addEventListener('click',function(e){ if(e.target===this)closeEvent(); });
+      sb.channel('ev_rt').on('postgres_changes',{event:'*',schema:'public',table:'eventos'},function(){ loadAll(); }).subscribe();
+      $('cal-save').onclick=saveForm; $('cal-cancel').onclick=closeForm; $('cal-del').onclick=delForm;
+      $('cal-modal').addEventListener('click',function(e){ if(e.target===this)closeForm(); });
+      $('cal-body').addEventListener('click',function(e){
+        var ev=e.target.closest('[data-eid]'); if(ev){ openEvent(ev.getAttribute('data-eid')); return; }
+        var c=e.target.closest('[data-id]'); if(c){ openForm(c.getAttribute('data-id')); return; }
+        var mh=e.target.closest('[data-month]'); if(mh){ cursor=new Date(cursor.getFullYear(),+mh.getAttribute('data-month'),1); view='mes'; render(); return; }
+        var yd=e.target.closest('[data-date]'); if(yd){ cursor=parseYMD(yd.getAttribute('data-date')); view='mes'; render(); return; }
+        var ad=e.target.closest('[data-add]'); if(ad){ openForm(null,ad.getAttribute('data-add')); return; }
+      });
+      render(); loadAll();
+      sb.channel('cal_rt').on('postgres_changes',{event:'*',schema:'public',table:'calendario_editorial'},function(){ loadAll(); }).subscribe();
+    }
+    if(document.readyState!=='loading') init(); else document.addEventListener('DOMContentLoaded',init);
+  })();
+  </script>
+
 </body>
 </html>
