@@ -1166,7 +1166,7 @@
         </div>
         <div class="cal-filters">
           <select id="cal-f-rede"><option value="">Todas as redes</option><option>Instagram</option><option>Facebook</option><option>TikTok</option><option>YouTube</option><option>WhatsApp</option></select>
-          <select id="cal-f-status"><option value="">Todos os status</option><option>Ideia</option><option>Produção</option><option>Agendado</option><option>Publicado</option></select>
+          <select id="cal-f-status"><option value="">Todos os status</option><option>Ideia</option><option>Produção</option><option>Em Aprovação</option><option>Agendado</option><option>Publicado</option></select>
           <button type="button" id="cal-add" class="cal-addbtn">＋ Novo conteúdo</button>
           <button type="button" id="cal-add-ev" class="cal-addbtn cal-evbtn">＋ Evento</button>
           <button type="button" id="cal-share" class="cal-addbtn" style="background:#25D366;border-color:#25D366;color:#04310f">↗ WhatsApp</button>
@@ -1224,7 +1224,7 @@
             <label><input type="checkbox" value="Outro">Outro</label>
           </div>
         </div>
-        <div class="cal-fld"><label>Status</label><select id="cal-f-status-form"><option>Ideia</option><option>Produção</option><option>Agendado</option><option>Publicado</option></select></div>
+        <div class="cal-fld"><label>Status</label><select id="cal-f-status-form"><option>Ideia</option><option>Produção</option><option>Em Aprovação</option><option>Agendado</option><option>Publicado</option></select></div>
         <div class="cal-fld"><label>Editoria / Tema</label><input type="text" id="cal-f-editoria" placeholder="Ex.: Mandato, Agenda, Bastidores"></div>
         <div class="cal-row2">
           <div class="cal-fld"><label>Responsável</label><input type="text" id="cal-f-resp" placeholder="Quem produz"></div>
@@ -1541,7 +1541,7 @@
     if(!(window.supabase&&window.supabase.createClient)) return;
     var sb=window.supabase.createClient('https://xofegurmrfkaavhtndqk.supabase.co','sb_publishable_jAedlYOqMrbgp7wG5yhD6A_AyWaXwT9');
     var REDES=['Instagram','Facebook','TikTok','YouTube','WhatsApp'];
-    var ST_COLOR={'Ideia':'#6f88a8','Produção':'#F4D700','Agendado':'#1f6fc8','Publicado':'#00BD5B'};
+    var ST_COLOR={'Ideia':'#6f88a8','Produção':'#F4D700','Em Aprovação':'#ff9f1c','Agendado':'#1f6fc8','Publicado':'#00BD5B'};
     var RD_COLOR={'Instagram':'#E1306C','Facebook':'#1877F2','TikTok':'#25F4EE','YouTube':'#FF0000','WhatsApp':'#25D366'};
     var MESES=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
     var MO=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
