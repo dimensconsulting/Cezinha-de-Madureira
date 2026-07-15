@@ -136,7 +136,7 @@
   @media(max-width:680px){ .im-box{flex-direction:column;overflow:auto;} #infomodal #analysis,#infomodal #rank{width:100%;max-height:none;} }
   .pc-cline{font-size:11.5px;color:#222;margin-top:2px;}
   .pc-wa svg{vertical-align:-3px;}
-  #topbar #dir-btn{flex:none;margin-left:auto;width:38px;height:38px;border-radius:9px;background:#0a2c54;border:1px solid #1c4a82;color:#eaf1fb;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+  #topbar #dir-btn{flex:none;margin-left:8px;width:38px;height:38px;border-radius:9px;background:#0a2c54;border:1px solid #1c4a82;color:#eaf1fb;cursor:pointer;display:flex;align-items:center;justify-content:center;}
   #topbar #dir-btn:hover{border-color:#F4D700;}
   .im-box2{position:relative;background:#fff;border-radius:14px;max-width:640px;width:100%;max-height:88vh;overflow:auto;padding:18px 20px;box-shadow:0 12px 40px rgba(0,0,0,.35);}
   .im-box2 h3{margin:0 0 12px;font-size:17px;color:#012240;}
@@ -148,13 +148,47 @@
   .dir-city-h small{color:#8a94a3;font-weight:600;font-size:11px;}
   .dir-adds{white-space:nowrap;}
   .dir-adds a{font-size:11px;color:#bd0026;cursor:pointer;margin-left:8px;text-decoration:underline;}
+
+#dash-btn{flex:none;margin-left:auto;width:38px;height:38px;border-radius:9px;background:#0a2c54;border:1px solid #1c4a82;color:#eaf1fb;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+#dash-btn:hover{border-color:#F4D700;}
+#dash-modal .im-box2{max-width:97vw;width:97vw;height:93vh;max-height:93vh;}
+.dash-sec-h{margin:16px 0 8px;font-size:13px;color:#012240;font-weight:700;}
+.dash-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:4px 0 14px;}
+.dash-kpi{background:#f4f7fb;border:1px solid #e3e8ef;border-radius:10px;padding:10px 12px;}
+.dash-kpi .v{font-size:20px;font-weight:800;color:#012240;}
+.dash-kpi .l{font-size:10.5px;color:#6b7280;margin-top:2px;text-transform:uppercase;letter-spacing:.3px;}
+.dash-cols{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;}
+.dash-card{background:#fff;border:1px solid #e3e8ef;border-radius:10px;padding:10px 12px;}
+.dash-card h4{margin:0 0 8px;font-size:13px;color:#012240;}
+.dash-row{display:flex;justify-content:space-between;gap:8px;font-size:12.5px;padding:3px 0;border-bottom:1px dashed #eef1f5;}
+.dash-row b{color:#bd0026;white-space:nowrap;}
+table.dash-tb{width:100%;border-collapse:collapse;font-size:12.5px;}
+table.dash-tb th{position:sticky;top:0;background:#012240;color:#fff;padding:7px 8px;text-align:left;cursor:pointer;white-space:nowrap;}
+table.dash-tb th.num,table.dash-tb td.num{text-align:right;}
+table.dash-tb td{padding:6px 8px;border-bottom:1px solid #eef1f5;}
+table.dash-tb tr:hover td{background:#f4f7fb;}
+.dash-tbwrap{max-height:340px;overflow:auto;border:1px solid #e3e8ef;border-radius:10px;}
+.dash-exp{background:#0a7d33;color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:12.5px;font-weight:600;cursor:pointer;}
+.dash-exp:hover{background:#0b8f3a;}
+#dash-modal .im-box2{background:#012240;color:#eaf1fb;}
+#dash-modal h3{color:#eaf1fb;}
+#dash-modal .dash-kpi{background:#0a2c54;border-color:#1c4a82;}
+#dash-modal .dash-kpi .v{color:#fff;}
+#dash-modal .dash-kpi .l{color:#9fb6d6;}
+#dash-modal .dash-card{background:#0a2c54;border-color:#1c4a82;}
+#dash-modal .dash-card h4{color:#eaf1fb;}
+#dash-modal .dash-sec-h{color:#eaf1fb;}
+#dash-modal table.dash-tb th{background:#08306b;}
+#dash-modal table.dash-tb td{color:#dbe6f5;border-bottom-color:#143a63;}
+#dash-modal table.dash-tb tr:hover td{background:#0a2c54;}
+#dash-modal .dash-tbwrap{border-color:#1c4a82;}
 </style>
 </head>
 <body>
 <div id="topbar">
   <div class="brand">Votação — Cezinha <small>SP · 2022</small></div>
   <div class="search"><span class="ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span><input id="q" type="search" placeholder="Buscar cidade, coordenador, zona ou bairro…" autocomplete="off"><div id="q-sug" class="sug" hidden></div></div>
-  <button type="button" id="dir-btn" title="Lista de coordenadores e lideranças"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg></button>
+  <button type="button" id="dash-btn" title="Gestão e Estratégia de Votos"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></button><button type="button" id="dir-btn" title="Lista de coordenadores e lideranças"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg></button>
 </div>
 <div id="map"></div>
 <div id="title" class="ovl">
@@ -207,6 +241,14 @@
     <button type="button" class="im-close" onclick="closeCoordModal()">✕</button>
     <h3 id="coord-modal-title">Coordenadores e Líderes</h3>
     <div id="coord-modal-body"></div>
+  </div>
+</div>
+
+<div id="dash-modal" class="im-ov">
+  <div class="im-box2">
+    <button type="button" class="im-close" onclick="closeDash()">✕</button>
+    <h3>Gestão e Estratégia de Votos</h3>
+    <div id="dash-body"></div>
   </div>
 </div>
 
@@ -416,14 +458,16 @@ function passOK(p){return !!p && _xorb64('AyI=',p)==='OK';}
 function socialLink(net,val){val=(''+(val||'')).trim();if(!val)return '';var url;if(/^https?:/i.test(val))url=val;else{var h=val.replace(/^@/,'');url=({facebook:'https://facebook.com/',instagram:'https://instagram.com/',tiktok:'https://www.tiktok.com/@'})[net]+h;}var col={facebook:'#1877F2',instagram:'#E1306C',tiktok:'#111'}[net];var lbl={facebook:'f',instagram:'ig',tiktok:'tt'}[net];return '<a href="'+esc(url)+'" target="_blank" rel="noopener" class="pc-soc" style="background:'+col+'">'+lbl+'</a>';}
 function waLink(tel){ var d=(''+(tel||'')).split('/')[0].replace(/\D/g,''); if(d.length<10) return ''; if(d.slice(0,2)!=='55') d='55'+d; return 'https://wa.me/'+d; }
 function findPerson(tipo,id){if(tipo==='coord'){for(var k in COORD){var ca=COORD[k];for(var ci=0;ci<ca.length;ci++)if(ca[ci].id===id)return ca[ci];}}else{for(var k2 in LIDER){var a=LIDER[k2];for(var i=0;i<a.length;i++)if(a[i].id===id)return a[i];}}return null;}
-function coordVotes(c){ var lids=LIDER[c.municipio_cod]||[]; var s=0,any=false; for(var i=0;i<lids.length;i++){ if(lids[i].coordenador_id===c.id){ any=true; s+=(lids[i].expectativa_votos||0); } } return any?s:(c.estimativa_votos||0); }
+function coordVotes(c){ var s=0,any=false; for(var k in LIDER){ var a=LIDER[k]; for(var i=0;i<a.length;i++){ if(a[i].coordenador_id===c.id){ any=true; s+=(a[i].expectativa_votos||0); } } } return any?s:(c.estimativa_votos||0); }
+function allLidersOf(cid){ var out=[]; for(var k in LIDER){ var a=LIDER[k]; for(var i=0;i<a.length;i++){ if(a[i].coordenador_id===cid) out.push(a[i]); } } return out; }
 function personCard(p,tipo){
   var redes=socialLink('facebook',p.facebook)+socialLink('instagram',p.instagram)+socialLink('tiktok',p.tiktok);
   var est=''; if(tipo==='coord'){ est='<div class="pc-est">Estimativa: <b>'+fmt(coordVotes(p))+'</b> votos</div>'; } else if(tipo==='lider'&&p.expectativa_votos!=null) est='<div class="pc-est">Expectativa: <b>'+fmt(p.expectativa_votos)+'</b> votos</div>';
   var contato=''; if(p.telefone){ var _wa=waLink(p.telefone); contato+='<div class="pc-cline">\u260E '+esc(p.telefone)+(_wa?' <a href="'+_wa+'" target="_blank" rel="noopener" class="pc-wa" title="Abrir no WhatsApp"><svg width="14" height="14" viewBox="0 0 24 24" fill="#25D366"><path d="M12 2a10 10 0 0 0-8.6 15l-1.4 5 5.1-1.3A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8 8 0 1 1 12 20zm4.5-6c-.2-.1-1.4-.7-1.6-.8s-.4-.1-.5.1-.6.8-.7.9-.3.2-.5 0a6.5 6.5 0 0 1-1.9-1.2 7.3 7.3 0 0 1-1.3-1.7c-.1-.2 0-.4.1-.5l.4-.4.2-.4v-.4l-.7-1.7c-.2-.5-.4-.4-.5-.4h-.5a.9.9 0 0 0-.7.3A2.8 2.8 0 0 0 6 9.3a4.9 4.9 0 0 0 1 2.6 11.2 11.2 0 0 0 4.3 3.8c.6.3 1.1.4 1.5.5a3.6 3.6 0 0 0 1.6.1c.5-.1 1.4-.6 1.6-1.1a2 2 0 0 0 .1-1.1c0-.1-.2-.2-.4-.3z"/></svg></a>':'')+'</div>'; } if(p.email) contato+='<div class="pc-cline">\u2709 '+esc(p.email)+'</div>';
   var zona=(tipo==='lider'&&p.zona!=null&&p.zona!=='')?'<div class="pc-zona" style="font-size:11px;color:#0a5c1f;font-weight:700;margin:2px 0">Zona '+esc(p.zona)+'</div>':''; var bairros=(tipo==='lider'&&p.bairros&&p.bairros.length)?'<div class="pc-bairros">'+p.bairros.map(function(b){return '<span>'+esc(b)+'</span>';}).join('')+'</div>':'';
+  var cityline=(tipo==='lider'&&p.municipio_nome)?'<div class="pc-city" style="font-size:10.5px;color:#8a93a0;margin-top:1px">'+esc(p.municipio_nome)+'</div>':'';
   var foto=p.foto_url?'<img class="pc-foto" src="'+esc(p.foto_url)+'">':'<div class="pc-foto pc-noimg">'+esc((p.nome||'?').slice(0,1))+'</div>';
-  return '<div class="pc">'+foto+'<div class="pc-body"><div class="pc-nome">'+esc(p.nome)+'</div><div class="pc-redes">'+redes+'</div>'+zona+bairros+est+contato+'<div class="pc-acts"><a data-edit="'+tipo+':'+p.id+'">editar</a><a data-del="'+tipo+':'+p.id+'">excluir</a>'+(tipo==='lider'?'<a data-promote="'+p.id+'">tornar coordenador</a>':'')+'</div></div></div>';
+  return '<div class="pc">'+foto+'<div class="pc-body"><div class="pc-nome">'+esc(p.nome)+'</div><div class="pc-redes">'+redes+'</div>'+cityline+zona+bairros+est+contato+'<div class="pc-acts"><a data-edit="'+tipo+':'+p.id+'">editar</a><a data-del="'+tipo+':'+p.id+'">excluir</a>'+(tipo==='lider'?'<a data-promote="'+p.id+'">tornar coordenador</a>':'')+(tipo==='coord'?'<a data-demote="'+p.id+'">tornar liderança</a>':'')+'</div></div></div>';
 }
 function coordSection(code,mun){
   if(!code)return '';
@@ -431,23 +475,25 @@ function coordSection(code,mun){
   var h='<div class="coord-sec">';
   h+='<button type="button" class="cs-add" data-addcoord="'+code+'">＋ Cadastrar coordenador</button>';
   coords.forEach(function(c){
-    var myL=lids.filter(function(l){return l.coordenador_id===c.id;});
+    var team=allLidersOf(c.id);
     h+='<div class="cs-h" style="margin-top:14px">Coordenador</div>'+personCard(c,'coord');
-    h+='<div class="cs-h" style="margin-top:8px">Lideranças ('+myL.length+')</div>';
-    myL.forEach(function(l){h+=personCard(l,'lider');});
+    h+='<div class="cs-h" style="margin-top:8px">Lideranças ('+team.length+')</div>';
+    team.forEach(function(l){h+=personCard(l,'lider');});
     h+='<button type="button" class="cs-add" data-addlider="'+code+'" data-coordid="'+c.id+'">＋ Adicionar liderança a '+esc(c.nome)+'</button>';
   });
   var orphan=lids.filter(function(l){return !l.coordenador_id;});
   h+='<div class="cs-h" style="margin-top:16px">Lideranças sem coordenador ('+orphan.length+')</div>';
   orphan.forEach(function(l){h+=personCard(l,'lider');});
   h+='<button type="button" class="cs-add" data-addlider="'+code+'">＋ Adicionar liderança (sem coordenador)</button>';
+  var elsewhere=lids.filter(function(l){return l.coordenador_id && !coords.some(function(c){return c.id===l.coordenador_id;});});
+  if(elsewhere.length){ h+='<div class="cs-h" style="margin-top:16px">Lideranças desta cidade sob coordenador de outra cidade</div>'; elsewhere.forEach(function(l){h+=personCard(l,'lider');}); }
   h+='</div>';
   return h;
 }
 function peopleSummary(code){ var coords=COORD[code]||[],lids=LIDER[code]||[]; if(!coords.length&&!lids.length) return ''; var h='<br><b>Coordenação</b><br>'; coords.forEach(function(c){ h+='Coord.: '+esc(c.nome)+' ('+fmt(coordVotes(c))+' votos)<br>'; }); h+=lids.length?(lids.length+' liderança'+(lids.length>1?'s':'')):'sem liderança'; return h; }
 function updateCoordMarkers(){if(!coordMarkers)return;coordMarkers.clearLayers();var keys={};for(var k in COORD)keys[k]=1;for(var k2 in LIDER)keys[k2]=1;for(var code in keys){var layer=layerByCode[code];if(!layer)continue;var coords=COORD[code]||[],lids=LIDER[code]||[],isC=coords.length>0;var tip=tooltipHtml(layer._rec?layer._rec.cidade:layer._nm, layer._rec)+peopleSummary(code);try{var _zs=ZONA_BY_MUN[code]; var ctr=(_zs&&_zs.length)?zonaPos(layer,0,_zs.length):null; if(!ctr) ctr=(layer.getCenter?layer.getCenter():layer.getBounds().getCenter()); var mk=L.circleMarker(ctr,{radius:isC?6:4,color:'#012240',weight:2,fillColor:isC?'#F4D700':'#00BD5B',fillOpacity:1,pane:'ppl'});mk._city=layer;mk.bindTooltip(tip);mk.on('click',function(){clickCity(this._city);});mk.addTo(coordMarkers);}catch(e){}}}
 function updateProjecao(){var el=document.getElementById('proj');if(!el)return;var tot=0,n=0;for(var k in COORD){var ca=COORD[k];if(!ca.length)continue;var has=false;ca.forEach(function(c){var v=coordVotes(c);if(v){tot+=v;has=true;}});if(has)n++;}el.innerHTML=n?('Estimativa dos coordenadores: <b>'+fmt(tot)+'</b> votos <span style="color:#6b7280">('+n+' cidade'+(n>1?'s':'')+')</span>'):'';}
-function afterPeople(){updateCoordMarkers();updateProjecao();if(selected)showDetail(selected);var _dm=document.getElementById('dir-modal');if(_dm&&_dm.classList.contains('show'))renderDirectory();var _cm2=document.getElementById('coord-modal');if(_cm2&&_cm2.classList.contains('show')&&selected){document.getElementById('coord-modal-body').innerHTML=coordSection(selected._code6, selected._rec?selected._rec.cidade:(selected._nm||''));}}
+function afterPeople(){updateCoordMarkers();updateProjecao();if(selected)showDetail(selected);var _dm=document.getElementById('dir-modal');if(_dm&&_dm.classList.contains('show'))renderDirectory();var _cm2=document.getElementById('coord-modal');if(_cm2&&_cm2.classList.contains('show')&&selected){document.getElementById('coord-modal-body').innerHTML=coordSection(selected._code6, selected._rec?selected._rec.cidade:(selected._nm||''));}var _dsh=document.getElementById('dash-modal');if(_dsh&&_dsh.classList.contains('show'))buildDashboard();}
 function loadPeople(){if(!SB)return;SB.from('coordenadores').select('*').then(function(r){COORD={};(r.data||[]).forEach(function(c){(COORD[c.municipio_cod]=COORD[c.municipio_cod]||[]).push(c);});afterPeople();});SB.from('liderancas').select('*').order('created_at',{ascending:true}).then(function(r){LIDER={};(r.data||[]).forEach(function(l){(LIDER[l.municipio_cod]=LIDER[l.municipio_cod]||[]).push(l);});afterPeople();});}
 var _importFoto=null;
 function igUser(v){ v=(''+(v||'')).trim(); if(!v) return ''; var lo=v.toLowerCase(); var i=lo.indexOf('instagram.com/'); if(i>=0) v=v.slice(i+14); if(v.charAt(0)==='@') v=v.slice(1); var cut=v.length; ['/','?','#'].forEach(function(ch){ var p=v.indexOf(ch); if(p>=0&&p<cut) cut=p; }); return v.slice(0,cut); }
@@ -490,6 +536,7 @@ function savePerson(){
 function ampliar(zoomPos){ if(!selected) return; ampliadoLayer=selected; try{ if(zoomPos) map.setView(zoomPos, Math.max(13,map.getZoom()), {animate:true}); else map.fitBounds(selected.getBounds(),{maxZoom:14,padding:[20,20]}); }catch(e){} selected.setStyle({weight:3,color:'#012240',fillOpacity:.08,fillColor:'#012240'}); }
 function clickCity(layer, zoomPos){ if(!layer) return; if(selected&&selected!==layer){ try{layerRef.resetStyle(selected);}catch(e){} selected.setStyle(styleFor(selected._rec)); } selected=layer; ampliadoLayer=null; showDetail(layer); ampliar(zoomPos); }
 function promoteLider(id){ var p=findPerson('lider',id); if(!p||!SB) return; if(!confirm('Tornar "'+p.nome+'" coordenador de '+p.municipio_nome+'?')) return; var row={municipio_cod:p.municipio_cod,municipio_nome:p.municipio_nome,nome:p.nome,telefone:p.telefone,email:p.email,facebook:p.facebook,instagram:p.instagram,tiktok:p.tiktok,foto_url:p.foto_url,estimativa_votos:p.expectativa_votos,updated_at:new Date().toISOString()}; SB.from('coordenadores').insert(row).then(function(r){ if(r&&r.error){ alert('Erro: '+r.error.message); return; } SB.from('liderancas').delete().eq('id',id).then(function(){ loadPeople(); }); }); }
+function demoteCoord(id){ var p=findPerson('coord',id); if(!p||!SB) return; var team=allLidersOf(id); var msg='Tornar "'+p.nome+'" liderança de '+p.municipio_nome+'?'; if(team.length) msg+='\nAs '+team.length+' liderança(s) vinculadas a ele ficarão sem coordenador.'; if(!confirm(msg)) return; var row={municipio_cod:p.municipio_cod,municipio_nome:p.municipio_nome,nome:p.nome,telefone:p.telefone,email:p.email,facebook:p.facebook,instagram:p.instagram,tiktok:p.tiktok,foto_url:p.foto_url,expectativa_votos:(team.length?null:(p.estimativa_votos||null)),coordenador_id:null,updated_at:new Date().toISOString()}; SB.from('liderancas').insert(row).then(function(r){ if(r&&r.error){ alert('Erro: '+r.error.message); return; } SB.from('coordenadores').delete().eq('id',id).then(function(){ loadPeople(); }); }); }
 function detailClick(e){
   var am=e.target.closest('[data-ampliar]'); if(am){ ampliar(); return; }
   var t=e.target;
@@ -500,6 +547,7 @@ function detailClick(e){
   var ed=t.closest('[data-edit]');if(ed){var pe=ed.getAttribute('data-edit').split(':');var per=findPerson(pe[0],pe[1]);if(per)openPersonForm(pe[0],per.municipio_cod,per.municipio_nome,per);return;}
   var dl=t.closest('[data-del]');if(dl){var pd=dl.getAttribute('data-del').split(':');var per2=findPerson(pd[0],pd[1]);if(per2&&confirm('Excluir '+per2.nome+'?')){var table=pd[0]==='coord'?'coordenadores':'liderancas';SB.from(table).delete().eq('id',per2.id).then(function(){loadPeople();});}return;}
   var pm=t.closest('[data-promote]');if(pm){ promoteLider(pm.getAttribute('data-promote')); return; }
+  var dmo=t.closest('[data-demote]');if(dmo){ demoteCoord(dmo.getAttribute('data-demote')); return; }
   var rv=t.closest('[data-reveal]');if(rv){var box=rv.closest('.pc-contato');var pr=rv.getAttribute('data-reveal').split(':');var per3=findPerson(pr[0],pr[1]);if(!per3)return;var passv=(box.querySelector('.pc-pass').value||'').trim();if(!passOK(passv)){box.querySelector('.pc-pass').classList.add('err');return;}var em=per3.email||'';var te=per3.telefone||'';var rev=box.querySelector('.pc-rev');rev.innerHTML=(em?'✉ '+esc(em)+'<br>':'')+(te?'☎ '+esc(te):'');rev.hidden=false;box.querySelector('.pc-pass').style.display='none';rv.style.display='none';return;}
 }
 function toggleInfo(){ var m=document.getElementById('infomodal'); if(m.classList.contains('show')){ m.classList.remove('show'); return; } var box=document.getElementById('infobox'); var an=document.getElementById('analysis'), rk=document.getElementById('rank'); if(an) box.appendChild(an); if(rk) box.appendChild(rk); m.classList.add('show'); }
@@ -513,7 +561,7 @@ function renderDirectory(){
   var h='';
   arr.forEach(function(code){ var name=munNameOf(code); var coords=COORD[code]||[]; var lids=LIDER[code]||[];
     h+='<div class="dir-city"><div class="dir-city-h"><span>'+esc(name)+' <small>('+lids.length+' liderança'+(lids.length!==1?'s':'')+(coords.length?(' · '+coords.length+' coord.'):'')+')</small></span><span class="dir-adds"><a data-diradd="coord|'+code+'|'+esc(name)+'">＋ coord</a><a data-diradd="lider|'+code+'|'+esc(name)+'">＋ liderança</a></span></div>';
-    coords.forEach(function(c){ var myL=lids.filter(function(l){return l.coordenador_id===c.id;}); h+='<div class="cs-h">Coordenador</div>'+personCard(c,'coord'); if(myL.length){ h+='<div class="cs-h">Lideranças</div>'; myL.forEach(function(l){ h+=personCard(l,'lider'); }); } });
+    coords.forEach(function(c){ var team=allLidersOf(c.id); h+='<div class="cs-h">Coordenador</div>'+personCard(c,'coord'); if(team.length){ h+='<div class="cs-h">Lideranças</div>'; team.forEach(function(l){ h+=personCard(l,'lider'); }); } });
     var orph=lids.filter(function(l){return !l.coordenador_id;}); if(orph.length){ h+='<div class="cs-h">Lideranças sem coordenador</div>'; orph.forEach(function(l){ h+=personCard(l,'lider'); }); }
     h+='</div>';
   });
@@ -521,6 +569,127 @@ function renderDirectory(){
 }
 function openCoordModal(){ if(!selected) return; var code=selected._code6, cidade=selected._rec?selected._rec.cidade:(selected._nm||''); document.getElementById('coord-modal-title').textContent='Coordenadores e Líderes — '+cidade; document.getElementById('coord-modal-body').innerHTML=coordSection(code,cidade); document.getElementById('coord-modal').classList.add('show'); }
 function closeCoordModal(){ document.getElementById('coord-modal').classList.remove('show'); }
+var dashSort={key:'votos',dir:-1};
+function dashCities(){
+  var codes={}; for(var c in COORD){ if((COORD[c]||[]).length) codes[c]=1; } for(var l in LIDER){ if((LIDER[l]||[]).length) codes[l]=1; }
+  return Object.keys(codes).map(function(code){
+    var lids=LIDER[code]||[], coords=COORD[code]||[]; var lay=layerByCode[code];
+    var votos=(lay&&lay._rec&&lay._rec.votos)?lay._rec.votos:0;
+    var exp=lids.reduce(function(s,l){return s+(l.expectativa_votos||0);},0);
+    coords.forEach(function(co){ if(allLidersOf(co.id).length===0) exp+=(co.estimativa_votos||0); });
+    return {code:code,nome:munNameOf(code),votos:votos,exp:exp,nc:coords.length,nl:lids.length};
+  });
+}
+function openDash(){ buildDashboard(); document.getElementById('dash-modal').classList.add('show'); }
+function closeDash(){ document.getElementById('dash-modal').classList.remove('show'); }
+function _dTrim(t,n){ return t.length>n? t.slice(0,n-1)+'…' : t; }
+function chartVotosExp(list){
+  var n=list.length; if(!n) return '<div style="color:#8a93a0;font-size:12px;padding:10px">Sem cidades cadastradas.</div>';
+  var maxV=1; list.forEach(function(x){ maxV=Math.max(maxV,x.votos,x.exp); });
+  var rowH=34, padL=185, padR=75, top=6, w=1000, cw=w-padL-padR, H=top+n*rowH+6;
+  var s='<svg viewBox="0 0 '+w+' '+H+'" width="100%" style="display:block">';
+  list.forEach(function(x,i){ var y=top+i*rowH; var v1=x.votos/maxV*cw, v2=x.exp/maxV*cw;
+    s+='<text x="'+(padL-8)+'" y="'+(y+rowH/2+1)+'" text-anchor="end" font-size="12.5" fill="#cdd9ea">'+esc(_dTrim(x.nome,27))+'</text>';
+    s+='<rect x="'+padL+'" y="'+(y+4)+'" width="'+v1.toFixed(1)+'" height="11" rx="2" fill="#5aa9e6"/><text x="'+(padL+v1+5)+'" y="'+(y+13)+'" font-size="10.5" fill="#9cc9ef">'+fmt(x.votos)+'</text>';
+    s+='<rect x="'+padL+'" y="'+(y+18)+'" width="'+v2.toFixed(1)+'" height="11" rx="2" fill="#37c871"/><text x="'+(padL+v2+5)+'" y="'+(y+27)+'" font-size="10.5" fill="#86e3ab">'+fmt(x.exp)+'</text>';
+  });
+  return s+'</svg>';
+}
+function chartBars(list,color){
+  var n=list.length; if(!n) return '<div style="color:#8a93a0;font-size:12px;padding:8px">Sem dados.</div>';
+  var maxV=1; list.forEach(function(x){ maxV=Math.max(maxV,x.v); });
+  var rowH=27, padL=165, padR=70, top=4, w=780, cw=w-padL-padR, H=top+n*rowH+4;
+  var s='<svg viewBox="0 0 '+w+' '+H+'" width="100%" style="display:block">';
+  list.forEach(function(x,i){ var y=top+i*rowH; var bw=x.v/maxV*cw;
+    s+='<text x="'+(padL-8)+'" y="'+(y+rowH/2+1)+'" text-anchor="end" font-size="12" fill="#cdd9ea">'+esc(_dTrim(x.nome,22))+'</text>';
+    s+='<rect x="'+padL+'" y="'+(y+5)+'" width="'+bw.toFixed(1)+'" height="14" rx="2" fill="'+color+'"/><text x="'+(padL+bw+5)+'" y="'+(y+16)+'" font-size="11" fill="#9fb6d6">'+fmt(x.v)+'</text>';
+  });
+  return s+'</svg>';
+}
+function donutCov(cad,total){
+  var pct=total>0?cad/total*100:0, r=62, c=2*Math.PI*r, off=c*(1-pct/100);
+  return '<svg viewBox="0 0 160 160" width="150" height="150"><circle cx="80" cy="80" r="'+r+'" fill="none" stroke="#143a63" stroke-width="16"/><circle cx="80" cy="80" r="'+r+'" fill="none" stroke="#37c871" stroke-width="16" stroke-linecap="round" stroke-dasharray="'+c.toFixed(1)+'" stroke-dashoffset="'+off.toFixed(1)+'" transform="rotate(-90 80 80)"/><text x="80" y="76" text-anchor="middle" font-size="27" font-weight="800" fill="#ffffff">'+fmt1(pct)+'%</text><text x="80" y="97" text-anchor="middle" font-size="12" fill="#9fb6d6">'+fmt(cad)+' de '+fmt(total)+'</text></svg>';
+}
+function chartScatter(cities){
+  var pts=cities.filter(function(x){return x.votos>0;});
+  if(!pts.length) return '<div style="color:#8a93a0;font-size:12px;padding:8px">Sem dados.</div>';
+  var w=1000,H=430,padL=54,padR=20,padT=26,padB=42;
+  var lv=pts.map(function(p){return Math.log10(Math.max(1,p.votos));});
+  var xmin=Math.min.apply(null,lv), xmax=Math.max.apply(null,lv); if(xmax===xmin)xmax=xmin+1;
+  var sv=pts.map(function(p){return p.votos;}).sort(function(a,b){return a-b;}); var med=sv[Math.floor(sv.length/2)];
+  var ymin=-100, ymax=200;
+  function X(v){ return padL+(Math.log10(Math.max(1,v))-xmin)/(xmax-xmin)*(w-padL-padR); }
+  function Y(pct){ var p=Math.max(ymin,Math.min(ymax,pct==null?ymax:pct)); return padT+(ymax-p)/(ymax-ymin)*(H-padT-padB); }
+  var xm=X(med), y0=Y(0);
+  var s='<svg viewBox="0 0 '+w+' '+H+'" width="100%" style="display:block">';
+  s+='<rect x="'+padL+'" y="'+padT+'" width="'+(w-padL-padR)+'" height="'+(H-padT-padB)+'" fill="#08213f"/>';
+  s+='<line x1="'+xm.toFixed(1)+'" y1="'+padT+'" x2="'+xm.toFixed(1)+'" y2="'+(H-padB)+'" stroke="#1c4a82" stroke-dasharray="4 4"/>';
+  s+='<line x1="'+padL+'" y1="'+y0.toFixed(1)+'" x2="'+(w-padR)+'" y2="'+y0.toFixed(1)+'" stroke="#1c4a82" stroke-dasharray="4 4"/>';
+  s+='<text x="'+(w-padR-6)+'" y="'+(padT+14)+'" text-anchor="end" font-size="11" fill="#37c871" font-weight="700">CONSOLIDAR</text>';
+  s+='<text x="'+(padL+6)+'" y="'+(padT+14)+'" font-size="11" fill="#5aa9e6" font-weight="700">APOSTAR</text>';
+  s+='<text x="'+(w-padR-6)+'" y="'+(H-padB-6)+'" text-anchor="end" font-size="11" fill="#F4D700" font-weight="700">DEFENDER (risco)</text>';
+  s+='<text x="'+(padL+6)+'" y="'+(H-padB-6)+'" font-size="11" fill="#9fb6d6" font-weight="700">REVISAR</text>';
+  s+='<text x="'+((padL+w-padR)/2)+'" y="'+(H-6)+'" text-anchor="middle" font-size="11" fill="#9fb6d6">Força em 2022 (votos, escala log)</text>';
+  s+='<text x="14" y="'+((padT+H-padB)/2)+'" text-anchor="middle" font-size="11" fill="#9fb6d6" transform="rotate(-90 14 '+((padT+H-padB)/2).toFixed(0)+')">Crescimento projetado (%)</text>';
+  pts.forEach(function(p){ var x=X(p.votos), y=Y(p.pct); var strong=p.votos>=med; var grow=(p.pct==null?true:p.pct>0); var col=strong?(grow?'#37c871':'#F4D700'):(grow?'#5aa9e6':'#6b7f99'); var r=Math.max(3.5,Math.min(15,Math.sqrt(p.exp||1)/3)); s+='<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="'+r.toFixed(1)+'" fill="'+col+'" fill-opacity="0.82" stroke="#012240" stroke-width="0.6"/>'; });
+  pts.slice().sort(function(a,b){return b.exp-a.exp;}).slice(0,7).forEach(function(p){ var x=X(p.votos), y=Y(p.pct); s+='<text x="'+(x+7).toFixed(1)+'" y="'+(y+3).toFixed(1)+'" font-size="10" fill="#dbe6f5">'+esc(_dTrim(p.nome,16))+'</text>'; });
+  return s+'</svg>';
+}
+function buildDashboard(){
+  var cities=dashCities();
+  cities.forEach(function(x){ x.delta=x.exp-x.votos; x.pct=x.votos>0?(x.exp-x.votos)/x.votos*100:(x.exp>0?null:0); });
+  var totalMun=645;
+  var totCoord=0; for(var c in COORD) totCoord+=(COORD[c]||[]).length;
+  var totLider=0; for(var l in LIDER) totLider+=(LIDER[l]||[]).length;
+  var votosCad=cities.reduce(function(s,x){return s+x.votos;},0);
+  var expTotal=cities.reduce(function(s,x){return s+x.exp;},0);
+  var delta=expTotal-votosCad; var pctG=votosCad>0?delta/votosCad*100:0;
+  var zon={}; for(var l2 in LIDER){ (LIDER[l2]||[]).forEach(function(p){ if(p.zona!=null&&p.zona!=='') zon[p.zona]=1; }); }
+  var sumLiderExp=0; for(var lc in LIDER){ (LIDER[lc]||[]).forEach(function(p){ sumLiderExp+=(p.expectativa_votos||0); }); } var mediaL=totLider>0?sumLiderExp/totLider:0;
+  var h='<div style="display:flex;justify-content:flex-end;margin-bottom:8px"><button type="button" class="dash-exp" onclick="exportCoordLider()">⤓ Exportar (Cidades × Coordenadores × Lideranças)</button></div>';
+  h+='<div class="dash-cols" style="margin-bottom:8px">';
+  h+='<div class="dash-card" style="display:flex;flex-direction:column;justify-content:center"><div style="font-size:11px;color:#9fb6d6;text-transform:uppercase;letter-spacing:.4px">Crescimento projetado vs 2022</div><div style="font-size:36px;font-weight:800;color:'+(delta>=0?'#37c871':'#F4D700')+';line-height:1.1">'+(delta>=0?'+':'')+fmt1(pctG)+'%</div><div style="font-size:14px;color:#eaf1fb;margin-top:4px">'+(delta>=0?'+':'')+fmt(delta)+' votos<br><span style="color:#9fb6d6">'+fmt(votosCad)+' (2022) → '+fmt(expTotal)+' (meta 2026)</span></div></div>';
+  h+='<div class="dash-card" style="display:flex;align-items:center;justify-content:center;gap:6px"><div style="text-align:center"><div style="font-size:11px;color:#9fb6d6;text-transform:uppercase;letter-spacing:.4px;margin-bottom:2px">Cobertura da base (votos de 2022)</div>'+donutCov(votosCad,TOTAL)+'</div></div>';
+  h+='</div>';
+  var kpis=[['Cidades cobertas',fmt(cities.length)+' / '+fmt(totalMun)],['Coordenadores',fmt(totCoord)],['Lideranças',fmt(totLider)],['Zonas cobertas',fmt(Object.keys(zon).length)],['Média votos / liderança',fmt1(mediaL)]];
+  h+='<div class="dash-kpis" style="grid-template-columns:repeat(5,1fr)">'+kpis.map(function(k){return '<div class="dash-kpi"><div class="v">'+k[1]+'</div><div class="l">'+k[0]+'</div></div>';}).join('')+'</div>';
+  var movers=cities.slice().filter(function(x){return x.votos>0||x.exp>0;}).sort(function(a,b){return b.delta-a.delta;}).slice(0,15);
+  h+='<div class="dash-sec-h">Evolução por cidade — Votos 2022 × Expectativa 2026 <span style="font-weight:400;color:#8a93a0;font-size:11px">(15 cidades que mais crescem)</span></div>';
+  h+='<div class="dash-card"><div style="display:flex;gap:18px;font-size:11.5px;margin-bottom:8px"><span><span style="display:inline-block;width:11px;height:11px;background:#5aa9e6;border-radius:2px;vertical-align:-1px"></span> Votos 2022</span><span><span style="display:inline-block;width:11px;height:11px;background:#37c871;border-radius:2px;vertical-align:-1px"></span> Expectativa 2026</span></div>'+chartVotosExp(movers)+'</div>';
+  var risco=cities.filter(function(x){return x.votos>0 && x.delta<=0;}).sort(function(a,b){return b.votos-a.votos;}).slice(0,8).map(function(x){return {nome:x.nome,votos:x.votos,exp:x.exp};});
+  var cadSet={}; cities.forEach(function(x){cadSet[x.code]=1;});
+  var opp=[]; for(var code in layerByCode){ if(cadSet[code])continue; var lay=layerByCode[code]; var v=(lay&&lay._rec&&lay._rec.votos)||0; if(v>0) opp.push({nome:munNameOf(code),v:v}); }
+  opp.sort(function(a,b){return b.v-a.v;});
+  h+='<div class="dash-cols" style="margin-top:8px"><div class="dash-card"><h4>⚠ Atenção — base forte de 2022 sem crescimento</h4><div style="font-size:11px;color:#8a93a0;margin-bottom:4px">Expectativa ≤ votos de 2022 (azul = 2022, verde = expectativa)</div>'+chartVotosExp(risco)+'</div><div class="dash-card"><h4>Oportunidades — votos 2022 sem estrutura</h4>'+chartBars(opp.slice(0,8),'#5aa9e6')+'</div></div>';
+  h+='<div class="dash-sec-h">Matriz estratégica — Força em 2022 × Crescimento projetado</div>';
+  h+='<div class="dash-card">'+chartScatter(cities)+'</div>';
+  var fragil=cities.filter(function(x){return x.votos>=200 && x.nl<=1;}).sort(function(a,b){return b.votos-a.votos;}).slice(0,8).map(function(x){return {nome:x.nome+' ('+x.nl+(x.nl===1?' líder)':' líderes)'),v:x.votos};});
+  var coordPerf=[]; for(var cc in COORD){ (COORD[cc]||[]).forEach(function(co){ var team=allLidersOf(co.id); var cs={}; team.forEach(function(t){cs[t.municipio_cod]=1;}); cs[co.municipio_cod]=1; var v22=0; Object.keys(cs).forEach(function(cd){ var la=layerByCode[cd]; v22+=(la&&la._rec&&la._rec.votos)||0; }); coordPerf.push({nome:co.nome,votos:v22,exp:coordVotes(co)}); }); }
+  coordPerf.sort(function(a,b){return b.exp-a.exp;});
+  h+='<div class="dash-cols" style="margin-top:8px"><div class="dash-card"><h4>Cobertura frágil — base forte com poucas lideranças</h4>'+chartBars(fragil,'#F4D700')+'</div><div class="dash-card"><h4>Desempenho dos coordenadores — 2022 × expectativa</h4><div style="display:flex;gap:16px;font-size:11px;margin-bottom:6px"><span><span style="display:inline-block;width:10px;height:10px;background:#5aa9e6;border-radius:2px;vertical-align:-1px"></span> Votos 2022 da área</span><span><span style="display:inline-block;width:10px;height:10px;background:#37c871;border-radius:2px;vertical-align:-1px"></span> Expectativa</span></div>'+chartVotosExp(coordPerf.slice(0,8))+'</div></div>';
+  h+='<div style="margin:14px 0 6px"><button type="button" id="dash-tbl-btn" class="dash-exp" style="background:#334155">▸ Ver tabela detalhada</button></div>';
+  var key=dashSort.key, dir=dashSort.dir;
+  cities.sort(function(a,b){ var av,bv; if(key==='nome'){ av=a.nome.toLowerCase(); bv=b.nome.toLowerCase(); return av<bv?-dir:(av>bv?dir:0);} if(key==='pct'){ av=a.votos>0?(a.exp-a.votos)/a.votos:(a.exp>0?9e9:-1); bv=b.votos>0?(b.exp-b.votos)/b.votos:(b.exp>0?9e9:-1);} else { av=a[key]; bv=b[key]; } return (av-bv)*dir; });
+  function ar(k){ return dashSort.key===k?(dashSort.dir<0?' ▾':' ▴'):''; }
+  var th='<tr><th data-sk="nome">Cidade'+ar('nome')+'</th><th class="num" data-sk="votos">Votos 2022'+ar('votos')+'</th><th class="num" data-sk="exp">Expectativa'+ar('exp')+'</th><th class="num" data-sk="pct">Δ%'+ar('pct')+'</th><th class="num" data-sk="nc">Coord.'+ar('nc')+'</th><th class="num" data-sk="nl">Líderes'+ar('nl')+'</th></tr>';
+  var tb=cities.map(function(x){ var pct=x.votos>0?((x.exp-x.votos>=0?'+':'')+fmt1((x.exp-x.votos)/x.votos*100)+'%'):(x.exp>0?'novo':'—'); var pc=(x.votos>0&&x.exp>=x.votos)?'#37c871':(x.votos>0?'#ff7a7a':'#eaf1fb'); return '<tr><td>'+esc(x.nome)+'</td><td class="num">'+fmt(x.votos)+'</td><td class="num">'+fmt(x.exp)+'</td><td class="num" style="color:'+pc+'">'+pct+'</td><td class="num">'+x.nc+'</td><td class="num">'+x.nl+'</td></tr>'; }).join('');
+  h+='<div id="dash-tbl" style="display:none"><div class="dash-tbwrap"><table class="dash-tb"><thead>'+th+'</thead><tbody>'+tb+'</tbody></table></div></div>';
+  var el=document.getElementById('dash-body'); el.innerHTML=h;
+  Array.prototype.forEach.call(el.querySelectorAll('th[data-sk]'), function(t){ t.onclick=function(){ var k=this.getAttribute('data-sk'); if(dashSort.key===k) dashSort.dir*=-1; else { dashSort.key=k; dashSort.dir=(k==='nome')?1:-1; } buildDashboard(); document.getElementById('dash-tbl').style.display='block'; }; });
+  var tbtn=document.getElementById('dash-tbl-btn'); if(tbtn) tbtn.onclick=function(){ var t=document.getElementById('dash-tbl'); var vis=t.style.display!=='none'; t.style.display=vis?'none':'block'; this.textContent=(vis?'▸ Ver tabela detalhada':'▾ Ocultar tabela detalhada'); };
+}
+function exportCoordLider(){
+  var coordById={}; for(var c in COORD){ (COORD[c]||[]).forEach(function(x){ coordById[x.id]=x; }); }
+  var rows=[['Cidade','Votos 2022','Coordenador','Liderança','Expectativa votos','Telefone','Zona','Bairros']];
+  var codes={}; for(var c2 in COORD){ if((COORD[c2]||[]).length) codes[c2]=1; } for(var l in LIDER){ if((LIDER[l]||[]).length) codes[l]=1; }
+  Object.keys(codes).sort(function(a,b){return munNameOf(a).localeCompare(munNameOf(b),'pt-BR');}).forEach(function(code){
+    var lay=layerByCode[code]; var votos=(lay&&lay._rec&&lay._rec.votos)||0; var lids=LIDER[code]||[], coords=COORD[code]||[];
+    lids.forEach(function(l){ var cn=(l.coordenador_id&&coordById[l.coordenador_id])?coordById[l.coordenador_id].nome:'(sem coordenador)'; rows.push([munNameOf(code),votos,cn,l.nome,(l.expectativa_votos!=null?l.expectativa_votos:''),(l.telefone||''),(l.zona!=null?l.zona:''),(l.bairros||[]).join(' / ')]); });
+    coords.forEach(function(cc){ var hasOwn=lids.some(function(l){return l.coordenador_id===cc.id;}); if(!hasOwn) rows.push([munNameOf(code),votos,cc.nome,'(coordenador — sem liderança nesta cidade)','',(cc.telefone||''),'','']); });
+  });
+  var csv=rows.map(function(r){ return r.map(function(v){ v=(''+v).replace(/"/g,'""'); return /[";\n]/.test(v)?'"'+v+'"':v; }).join(';'); }).join('\r\n');
+  var blob=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8;'}); var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='cidades_coordenadores_liderancas.csv'; document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },1500);
+}
 function openDir(){ renderDirectory(); document.getElementById('dir-modal').classList.add('show'); }
 function closeDir(){ document.getElementById('dir-modal').classList.remove('show'); }
 function dirAdd(tipo){ var v=(document.getElementById('dir-add-city').value||'').trim(); if(!v) return; var r=IDX[norm(v)]; if(!r){ alert('Município não encontrado: '+v); return; } openPersonForm(tipo, norm(r.cidade), r.cidade, null); }
@@ -537,6 +706,8 @@ function initPeople(){
   document.getElementById('mp-modal').addEventListener('click',function(e){if(e.target===this)closePersonForm();});
   var db=document.getElementById('dir-btn'); if(db) db.onclick=openDir;
   var dc=document.getElementById('dir-close'); if(dc) dc.onclick=closeDir;
+  var dab=document.getElementById('dash-btn'); if(dab) dab.onclick=openDash;
+  var dmov=document.getElementById('dash-modal'); if(dmov){ dmov.addEventListener('click',function(e){ if(e.target===this) closeDash(); }); }
   var dm=document.getElementById('dir-modal'); if(dm){ dm.addEventListener('click',function(e){ if(e.target===this) closeDir(); }); }
   var dac=document.getElementById('dir-add-coord'); if(dac) dac.onclick=function(){dirAdd('coord');};
   var dal=document.getElementById('dir-add-lider'); if(dal) dal.onclick=function(){dirAdd('lider');};
