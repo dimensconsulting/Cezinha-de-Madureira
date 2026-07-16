@@ -1618,6 +1618,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <style>
   #cd-grid .cd-edit,#pc-grid .cd-edit{position:absolute;top:8px;right:8px;width:26px;height:26px;border-radius:6px;background:rgba(1,24,48,.82);border:1px solid var(--line);color:#e9eef6;display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer;z-index:3}
+.cd-copy,#pc-grid .cd-copy{position:absolute;top:8px;right:40px;width:26px;height:26px;border-radius:6px;background:rgba(1,24,48,.82);border:1px solid var(--line);color:#e9eef6;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:3}
+.cd-copy:hover,.cd-edit:hover{border-color:var(--lime)}
   #cd-grid .cd-dl,#pc-grid .cd-dl{font-size:12.5px;font-weight:700;color:#000;background:var(--lime);border:1px solid var(--lime);padding:8px 30px 8px 13px;border-radius:6px;cursor:pointer}
   .cd-ov{display:none;position:fixed;inset:0;background:rgba(1,8,20,.72);z-index:130;align-items:center;justify-content:center;padding:16px}
   .cd-ov.open{display:flex}
@@ -1674,7 +1676,7 @@
         +'<div class="body"><span class="mhead"><span class="badge done">Concluído</span><span class="cdate">'+esc(fmt(it.data_conclusao))+'</span></span>'
         +'<h4>'+esc(it.titulo)+'</h4><p>'+esc(it.descricao||'')+'</p>'
         +'<div class="tags">'+tags+'</div><div class="actions">'+acts+'</div></div>'
-        +'<span class="cd-edit" data-edit="'+esc(it.id)+'" title="Editar">✎</span></div>';
+        +'<span class="cd-copy" data-copy="'+esc(it.id)+'" title="Duplicar card"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></span><span class="cd-edit" data-edit="'+esc(it.id)+'" title="Editar">✎</span></div>';
     }
     function renderGrid(gid, list){ var g=$(gid); if(!g) return; g.innerHTML = list.length? list.map(cardHTML).join('') : '<div style="color:var(--grey-2);font-size:13px;padding:14px">Nenhum criativo ainda. Clique em “＋ Adicionar criativo”.</div>'; }
     function render(){ renderGrid('cd-grid', items.filter(function(x){return (x.categoria||'dobrada')==='dobrada';})); renderGrid('pc-grid', items.filter(function(x){return x.categoria==='producao';})); try{ window.dispatchEvent(new Event('resize')); }catch(e){} }
@@ -1682,6 +1684,7 @@
     function openAdd(cat){ curCat=cat||'dobrada'; editId=null; $('cd-title').textContent='Adicionar criativo'; $('cd-file').value=''; $('cd-f-titulo').value=''; $('cd-f-desc').value=''; $('cd-f-data').value=''; $('cd-f-tags').value=''; $('cd-del').style.display='none'; $('cd-filewrap').querySelector('label').textContent='Arquivo (PDF ou imagem)'; setStatus(''); $('cd-save').disabled=false; $('cd-modal').classList.add('open'); }
     function openEdit(id){ var it=null; for(var i=0;i<items.length;i++){ if(String(items[i].id)===String(id)){ it=items[i]; break; } } if(!it) return; editId=id; curCat=it.categoria||'dobrada'; $('cd-title').textContent='Editar criativo'; $('cd-file').value=''; $('cd-f-titulo').value=it.titulo||''; $('cd-f-desc').value=it.descricao||''; $('cd-f-data').value=it.data_conclusao||''; $('cd-f-tags').value=(it.tags||[]).join(', '); $('cd-del').style.display='inline-block'; $('cd-filewrap').querySelector('label').textContent='Trocar arquivo (opcional)'; setStatus(''); $('cd-save').disabled=false; $('cd-modal').classList.add('open'); }
     function close(){ $('cd-modal').classList.remove('open'); editId=null; }
+    function copyItem(id){ var it=null; for(var i=0;i<items.length;i++){ if(String(items[i].id)===String(id)){ it=items[i]; break; } } if(!it) return; if(!confirm('Duplicar "'+it.titulo+'"?')) return; var row={titulo:(it.titulo||'')+' (cópia)',descricao:it.descricao||null,data_conclusao:it.data_conclusao||null,tags:it.tags||[],cover_url:it.cover_url||null,abrir_url:it.abrir_url||null,arquivos:it.arquivos||[],canva_url:it.canva_url||null,categoria:it.categoria||'dobrada',origem:'app',updated_at:new Date().toISOString()}; sb.from('criativos_dobradas').insert(row).then(function(r){ if(r&&r.error){ alert('Erro ao duplicar: '+r.error.message); return; } load(); }); }
     function done(r){ $('cd-save').disabled=false; if(r&&r.error){ setStatus('Erro ao salvar: '+r.error.message); return; } close(); load(); }
     function makeCover(file, base, fileUrl){ return new Promise(function(resolve){
       if(file.type&&file.type.indexOf('image/')===0){ resolve(fileUrl); return; }
@@ -1734,6 +1737,7 @@
       $('cd-save').onclick=save; $('cd-cancel').onclick=close; $('cd-del').onclick=del;
       $('cd-modal').addEventListener('click',function(e){ if(e.target===this) close(); });
       function gridClick(e){
+        var cp=e.target.closest('[data-copy]'); if(cp){ copyItem(cp.getAttribute('data-copy')); return; }
         var ed=e.target.closest('[data-edit]'); if(ed){ openEdit(ed.getAttribute('data-edit')); return; }
         var op=e.target.closest('a.cd-open'); if(op){ var href=op.getAttribute('data-href'); if(href&&!/^https?:/i.test(href)){ e.preventDefault(); var m=op.closest('.mat'); var h=m?m.querySelector('h4'):null; if(window.__openM) window.__openM(href, h?h.textContent:'Material'); } }
       }
