@@ -781,7 +781,7 @@
     <div style="background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin:16px 2px 0">
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
         <div style="font-family:'Archivo Black',sans-serif;font-size:18px;color:#fff">Lista de Dobradas</div>
-        <div style="display:flex;align-items:center;gap:8px"><label for="dob-sort" style="font-size:12px;color:var(--grey);font-weight:700">Ordenar por:</label><select id="dob-sort" style="background:var(--panel-2);border:1px solid var(--line);color:#e9eef6;font-size:12.5px;padding:6px 10px;border-radius:6px;cursor:pointer"><option value="alpha">Alfabética</option><option value="status">Por status</option></select></div>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><button type="button" id="dob-share" title="Compartilhar no WhatsApp" style="display:flex;align-items:center;gap:6px;background:#25D366;color:#062e14;border:none;font-weight:700;font-size:12px;padding:7px 12px;border-radius:6px;cursor:pointer"><svg width="15" height="15" viewBox="0 0 24 24" fill="#062e14"><path d="M12 2a10 10 0 0 0-8.6 15l-1.4 5 5.1-1.3A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8 8 0 1 1 12 20zm4.5-6c-.2-.1-1.4-.7-1.6-.8s-.4-.1-.5.1-.6.8-.7.9-.3.2-.5 0a6.5 6.5 0 0 1-1.9-1.2 7.3 7.3 0 0 1-1.3-1.7c-.1-.2 0-.4.1-.5l.4-.4.2-.4v-.4l-.7-1.7c-.2-.5-.4-.4-.5-.4h-.5a.9.9 0 0 0-.7.3A2.8 2.8 0 0 0 6 9.3a4.9 4.9 0 0 0 1 2.6 11.2 11.2 0 0 0 4.3 3.8c.6.3 1.1.4 1.5.5a3.6 3.6 0 0 0 1.6.1c.5-.1 1.4-.6 1.6-1.1a2 2 0 0 0 .1-1.1c0-.1-.2-.2-.4-.3z"/></svg>Compartilhar</button><label for="dob-sort" style="font-size:12px;color:var(--grey);font-weight:700">Ordenar por:</label><select id="dob-sort" style="background:var(--panel-2);border:1px solid var(--line);color:#e9eef6;font-size:12.5px;padding:6px 10px;border-radius:6px;cursor:pointer"><option value="alpha">Alfabética</option><option value="status">Por status</option></select></div>
       </div>
       <div style="font-size:12.5px;color:var(--grey);margin:4px 0 14px">Clique no <b>status</b> para alternar (azul/verde/foguete/proibido), no ícone do <b>Instagram</b> para abrir o perfil e no <b>lápis</b> para editar o link; o <b>✕</b> remove. Use o formulário abaixo para adicionar. As alterações são compartilhadas com o time.</div>
       <ul id="dob-list" style="column-width:250px;column-count:3;column-gap:22px;list-style:none;padding:0;margin:0"></ul>
@@ -1174,17 +1174,10 @@
     <div class="deliv-grid">
       <div class="card">
         <div class="head"><span class="num">&#8594;</span><span class="badge wip">Em andamento</span></div>
-        <h3>Criativos e Figurinhas Mooca</h3>
-        <p>Produção de criativos e figurinhas para o Escritório de Campanha Mooca.</p>
-        <div class="tags"><span>Criativos</span><span>Figurinhas</span><span>Mooca</span></div>
-        <div style="margin-top:12px;font-size:11.5px;color:var(--grey-2)">Solicitado em 02/07/2026</div>
-      </div>
-      <div class="card">
-        <div class="head"><span class="num">&#8594;</span><span class="badge wip">Em andamento</span></div>
-        <h3>Marcador Cezinha Público</h3>
-        <p>Novo marcador de página: um lado com informações do Cezinha e o outro com uma imagem neutra e um provérbio em destaque no centro.</p>
-        <div class="tags"><span>Marca Página</span><span>Público</span><span>Provérbio</span></div>
-        <div style="margin-top:12px;font-size:11.5px;color:var(--grey-2)">Solicitado em 06/07/2026</div>
+        <h3>Prestação de contas Rodrigo Capel</h3>
+        <p>Novo folheto: um lado com informações do Cezinha e outro da dobrada Rodrigo Capel, com trajetória e projetos de ambos, conectando seus trabalhos para a população.</p>
+        <div class="tags"><span>Folheto</span><span>Dobrada</span><span>Rodrigo Capel</span></div>
+        <div style="margin-top:12px;font-size:11.5px;color:var(--grey-2)">Solicitado em 16/07/2026</div>
       </div>
     </div>
   </section>
@@ -1414,6 +1407,8 @@
     function allItems(){ var a=BASE.map(function(b){return {n:b[0],r:b[1],ig:b[2],d:b[3],custom:false};}); st.custom.forEach(function(c){ a.push({n:c.n,r:c.r||'',ig:c.ig||'',d:'blue',custom:true}); }); if(st.removed&&st.removed.length){ a=a.filter(function(x){ return x.custom || st.removed.indexOf(x.n)<0; }); } a.sort(function(x,y){ if(sortMode==='status'){ var rx=statusRank(st.icons[x.n]||x.d), ry=statusRank(st.icons[y.n]||y.d); if(rx!==ry) return rx-ry; } var nx=norm(x.n),ny=norm(y.n); return nx<ny?-1:nx>ny?1:0; }); return a; }
     function linkOf(it){ return (it.n in st.links)? st.links[it.n] : (it.ig||''); }
     function editLink(it){ var cur=linkOf(it); var v=prompt('Instagram de '+it.n+' (@ ou link). Vazio remove:', cur); if(v===null) return; var u=igUrl(v); if(u) st.links[it.n]=u; else delete st.links[it.n]; save(); render(); }
+    function statusEmoji(s){ return s==='proibido'?'⛔':s==='rocket'?'🚀':s==='green'?'✅':'🔵'; }
+    function shareWhats(){ var lines=allItems().map(function(it){ var s=st.icons[it.n]||it.d; return statusEmoji(s)+' '+it.n+(it.r?' - '+it.r:''); }); var txt='*Lista de Dobradas*\n\n'+lines.join('\n'); window.open('https://wa.me/?text='+encodeURIComponent(txt),'_blank','noopener'); }
     function render(){ var ul=document.getElementById('dob-list'); if(!ul) return; ul.innerHTML=''; allItems().forEach(function(it){
       var li=document.createElement('li'); li.style.cssText='break-inside:avoid;padding:5px 2px;border-bottom:1px solid var(--line);font-size:13px;line-height:1.3;display:flex;align-items:flex-start;gap:6px';
       var state=st.icons[it.n]||it.d;
@@ -1429,7 +1424,7 @@
       ul.appendChild(li);
     }); }
     function addItem(){ var n=(document.getElementById('dob-add-nome').value||'').trim(); if(!n){ alert('Informe o nome.'); return; } var r=(document.getElementById('dob-add-regiao').value||'').trim(); var ig=igUrl(document.getElementById('dob-add-ig').value); st.custom.push({n:n,r:r,ig:ig}); save(); document.getElementById('dob-add-nome').value=''; document.getElementById('dob-add-regiao').value=''; document.getElementById('dob-add-ig').value=''; render(); }
-    function init(){ var b=document.getElementById('dob-add-btn'); if(b) b.onclick=addItem; var so=document.getElementById('dob-sort'); if(so){ so.value=sortMode; so.onchange=function(){ sortMode=this.value; try{localStorage.setItem('dobradas_sort',sortMode);}catch(e){} render(); }; } render();
+    function init(){ var b=document.getElementById('dob-add-btn'); if(b) b.onclick=addItem; var sh=document.getElementById('dob-share'); if(sh) sh.onclick=shareWhats; var so=document.getElementById('dob-sort'); if(so){ so.value=sortMode; so.onchange=function(){ sortMode=this.value; try{localStorage.setItem('dobradas_sort',sortMode);}catch(e){} render(); }; } render();
       if(sb){
         sb.from('dobradas_state').select('state').eq('id',1).single().then(function(res){
           var remote=(res&&res.data)?res.data.state:null;
