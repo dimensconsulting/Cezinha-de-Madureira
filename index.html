@@ -1385,53 +1385,41 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
   (function(){
-    var BASE = [["Itamar Borges", "", "", "blue"], ["Léo Oliveira", "", "", "blue"], ["André Bueno", "", "https://www.instagram.com/andrebuenooficial", "blue"], ["Clóvis Volpi", "Ribeirão Pires", "", "blue"], ["Damaris", "", "https://www.instagram.com/damarissousaadvogada", "blue"], ["Bruna Furlan", "", "", "blue"], ["Cristiany", "APAE", "https://www.instagram.com/cristiany_de_castro", "green"], ["Rogério", "Cotia", "", "blue"], ["Rogéria", "Lins", "", "blue"], ["Julinho Fuzari", "", "https://www.instagram.com/julinho.fuzari", "blue"], ["Eduardo Nóbrega", "", "", "blue"], ["Del. Sandro", "", "https://www.instagram.com/delegadosandromontanari", "blue"], ["Mário", "Guarujá", "", "blue"], ["Kiko", "Valinhos", "", "blue"], ["Paulo Corrêia", "", "", "blue"], ["Dr. Lindoso", "", "", "blue"], ["Prefo Gustavo", "Rio Claro", "", "blue"], ["Carla Morando", "", "", "blue"], ["Eli Corrêa", "Guarulhos", "", "blue"], ["Manuel", "Ilhabela", "", "blue"], ["Sandra Tadeu", "", "", "blue"], ["Franco Sardelli", "", "", "blue"], ["Valdomiro", "", "", "blue"], ["Sgtº Simões", "", "https://www.instagram.com/sargentosimoes", "blue"], ["Esposa Pref.", "Arujá", "", "blue"], ["Átila", "Mauá", "https://www.instagram.com/atilajacomussi", "blue"], ["Tiago Aurichio", "", "https://www.instagram.com/thiagoauricchio_", "blue"], ["Danilo", "Cajamar", "", "blue"], ["Tiavinho", "Itapevi", "", "blue"], ["Manga/Cícero", "Sorocaba", "", "blue"], ["Kaká", "", "", "blue"], ["Rita Passos", "Sorocaba", "", "blue"], ["Rodrigo Moraes", "", "", "blue"], ["Alison Cantor", "", "", "green"], ["Dra. Valéria", "Guarulhos", "", "green"], ["Bispa", "Bauru", "", "blue"], ["Dr. Adriano", "Capital", "", "blue"], ["Ver. Junior", "Barueri", "", "blue"], ["Madalena", "Dep. Est", "", "blue"], ["Dilador Borges", "", "", "blue"], ["Regina Nunes", "", "", "blue"], ["Rodolpho", "Paranapanema", "", "blue"], ["Giovani Sanches", "", "https://www.instagram.com/giovanisanchesp", "blue"], ["Bruna Perissinotto", "", "https://www.instagram.com/brunaperissinotto_", "blue"], ["Malu Fernandes", "", "https://www.instagram.com/soumalufernandes", "blue"]];
-    var LS='dobradas_v2', st;
-    try{ st=JSON.parse(localStorage.getItem(LS))||{}; }catch(e){ st={}; }
-    st.icons=st.icons||{}; st.links=st.links||{}; st.custom=st.custom||[]; st.removed=st.removed||[];
-    var sortMode='alpha'; try{ sortMode=localStorage.getItem('dobradas_sort')||'alpha'; }catch(e){}
-    try{ var old=JSON.parse(localStorage.getItem('dobradas_icones')||'null'); if(old){ Object.keys(old).forEach(function(k){ if(!(k in st.icons)) st.icons[k]=old[k]; }); } }catch(e){}
     var SB_URL='https://xofegurmrfkaavhtndqk.supabase.co', SB_KEY='sb_publishable_jAedlYOqMrbgp7wG5yhD6A_AyWaXwT9';
     var sb=(window.supabase&&window.supabase.createClient)?window.supabase.createClient(SB_URL,SB_KEY):null;
-    var pushing=false;
-    function save(){ try{ localStorage.setItem(LS,JSON.stringify(st)); }catch(e){} if(sb){ pushing=true; sb.from('dobradas_state').update({state:st,updated_at:new Date().toISOString()}).eq('id',1).then(function(){ setTimeout(function(){pushing=false;},500); },function(){ pushing=false; }); } }
-    function isEmptyState(s){ return !s||((!s.icons||!Object.keys(s.icons).length)&&(!s.links||!Object.keys(s.links).length)&&(!s.custom||!s.custom.length)); }
-    function applyRemote(state){ if(!state) return; st.icons=state.icons||{}; st.links=state.links||{}; st.custom=state.custom||[]; st.removed=state.removed||[]; try{ localStorage.setItem(LS,JSON.stringify(st)); }catch(e){} render(); }
+    var items=[];
+    var sortMode='alpha'; try{ sortMode=localStorage.getItem('dobradas_sort')||'alpha'; }catch(e){}
     var order=['blue','green','rocket','proibido'];
     function statusRank(s){ var r={green:0,rocket:1,blue:2,proibido:3}; return (s in r)?r[s]:9; }
-    function norm(s){ return (s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase(); }
+    function norm(s){ return (s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase(); }
     function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
     function igUrl(v){ v=(v||'').trim(); if(!v) return ''; if(/^https?:\/\//i.test(v)) return v; v=v.replace(/^@/,'').replace(/^instagram\.com\//i,''); return 'https://www.instagram.com/'+v; }
-    function statusHTML(s){ if(s==='proibido') return '<svg width="16" height="16" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="#e02424" stroke-width="2.4"/><line x1="5" y1="5" x2="19" y2="19" stroke="#e02424" stroke-width="2.4" stroke-linecap="round"/></svg>'; if(s==='rocket') return '<span style="display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:#F4D700;font-size:9px">\uD83D\uDE80</span>'; var f=(s==='green')?'#00BD5B':'#1f6fc8'; return '<svg width="16" height="16" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="'+f+'"/><path d="M7 12.5l3.3 3.3L17 8.8" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>'; }
+    function statusHTML(s){ if(s==='proibido') return '<svg width="16" height="16" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="#e02424" stroke-width="2.4"/><line x1="5" y1="5" x2="19" y2="19" stroke="#e02424" stroke-width="2.4" stroke-linecap="round"/></svg>'; if(s==='rocket') return '<span style="display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:#F4D700;font-size:9px">🚀</span>'; var f=(s==='green')?'#00BD5B':'#1f6fc8'; return '<svg width="16" height="16" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="'+f+'"/><path d="M7 12.5l3.3 3.3L17 8.8" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>'; }
     function igHTML(a){ var c=a?'#E1306C':'#5f6b7a'; return '<svg width="16" height="16" viewBox="0 0 24 24"><rect x="2.6" y="2.6" width="18.8" height="18.8" rx="5.5" fill="none" stroke="'+c+'" stroke-width="2"/><circle cx="12" cy="12" r="4.2" fill="none" stroke="'+c+'" stroke-width="2"/><circle cx="17.4" cy="6.6" r="1.3" fill="'+c+'"/></svg>'; }
-    function allItems(){ var a=BASE.map(function(b){return {n:b[0],r:b[1],ig:b[2],d:b[3],custom:false};}); st.custom.forEach(function(c){ a.push({n:c.n,r:c.r||'',ig:c.ig||'',d:'blue',custom:true}); }); if(st.removed&&st.removed.length){ a=a.filter(function(x){ return x.custom || st.removed.indexOf(x.n)<0; }); } a.sort(function(x,y){ if(sortMode==='status'){ var rx=statusRank(st.icons[x.n]||x.d), ry=statusRank(st.icons[y.n]||y.d); if(rx!==ry) return rx-ry; } var nx=norm(x.n),ny=norm(y.n); return nx<ny?-1:nx>ny?1:0; }); return a; }
-    function linkOf(it){ return (it.n in st.links)? st.links[it.n] : (it.ig||''); }
-    function editLink(it){ var cur=linkOf(it); var v=prompt('Instagram de '+it.n+' (@ ou link). Vazio remove:', cur); if(v===null) return; var u=igUrl(v); if(u) st.links[it.n]=u; else delete st.links[it.n]; save(); render(); }
     function statusEmoji(s){ return s==='proibido'?'⛔':s==='rocket'?'🚀':s==='green'?'✅':'🔵'; }
-    function shareWhats(){ var lines=allItems().map(function(it){ var s=st.icons[it.n]||it.d; return statusEmoji(s)+' '+it.n+(it.r?' - '+it.r:''); }); var txt='*Lista de Dobradas*\n\n'+lines.join('\n'); window.open('https://wa.me/?text='+encodeURIComponent(txt),'_blank','noopener'); }
-    function render(){ var ul=document.getElementById('dob-list'); if(!ul) return; ul.innerHTML=''; allItems().forEach(function(it){
+    function sortedItems(){ var a=items.slice(); a.sort(function(x,y){ if(sortMode==='status'){ var rx=statusRank(x.status||'blue'), ry=statusRank(y.status||'blue'); if(rx!==ry) return rx-ry; } var nx=norm(x.nome),ny=norm(y.nome); return nx<ny?-1:nx>ny?1:0; }); return a; }
+    function shareWhats(){ var lines=sortedItems().map(function(it){ return statusEmoji(it.status||'blue')+' '+it.nome+(it.regiao?' - '+it.regiao:''); }); var txt='*Lista de Dobradas*\n\n'+lines.join('\n'); window.open('https://wa.me/?text='+encodeURIComponent(txt),'_blank','noopener'); }
+    function upd(it,patch){ Object.keys(patch).forEach(function(k){ it[k]=patch[k]; }); if(sb) sb.from('dobradas').update(patch).eq('id',it.id).then(function(){},function(){}); }
+    function editLink(it){ var cur=it.instagram||''; var v=prompt('Instagram de '+it.nome+' (@ ou link). Vazio remove:', cur); if(v===null) return; var u=igUrl(v); upd(it,{instagram:u||null}); render(); }
+    function removeItem(it){ if(!confirm('Remover '+it.nome+'?')) return; items=items.filter(function(x){return x.id!==it.id;}); if(sb) sb.from('dobradas').delete().eq('id',it.id).then(function(){},function(){}); render(); }
+    function render(){ var ul=document.getElementById('dob-list'); if(!ul) return; ul.innerHTML=''; sortedItems().forEach(function(it){
       var li=document.createElement('li'); li.style.cssText='break-inside:avoid;padding:5px 2px;border-bottom:1px solid var(--line);font-size:13px;line-height:1.3;display:flex;align-items:flex-start;gap:6px';
-      var state=st.icons[it.n]||it.d;
+      var state=it.status||'blue';
       var sic=document.createElement('span'); sic.style.cssText='cursor:pointer;flex:none;margin-top:1px'; sic.innerHTML=statusHTML(state); sic.title='Status: clique para alternar';
-      sic.onclick=function(){ var cur=st.icons[it.n]||it.d; var nx=order[(order.indexOf(cur)+1)%order.length]; st.icons[it.n]=nx; save(); sic.innerHTML=statusHTML(nx); };
-      var link=linkOf(it);
-      var ig=document.createElement('span'); ig.style.cssText='cursor:pointer;flex:none;margin-top:1px'; ig.innerHTML=igHTML(!!link); ig.title=link?('Abrir Instagram: '+link):'Sem link — clique para adicionar';
-      ig.onclick=function(){ var l=linkOf(it); if(l){ window.open(l,'_blank','noopener'); } else { editLink(it); } };
-      var nm=document.createElement('span'); nm.style.cssText='flex:1;min-width:0'; nm.innerHTML='<span style="color:#e9eef6">'+esc(it.n)+'</span>'+(it.r?' <span style="color:var(--grey-2)">— '+esc(it.r)+'</span>':'');
-      var ed=document.createElement('span'); ed.textContent='\u270E'; ed.title='Editar link do Instagram'; ed.style.cssText='cursor:pointer;flex:none;color:var(--grey-2);font-size:13px;margin-top:1px'; ed.onclick=function(){ editLink(it); };
+      sic.onclick=function(){ var nx=order[(order.indexOf(it.status||'blue')+1)%order.length]; upd(it,{status:nx}); sic.innerHTML=statusHTML(nx); };
+      var ig=document.createElement('span'); ig.style.cssText='cursor:pointer;flex:none;margin-top:1px'; ig.innerHTML=igHTML(!!it.instagram); ig.title=it.instagram?('Abrir Instagram: '+it.instagram):'Sem link — clique para adicionar';
+      ig.onclick=function(){ if(it.instagram){ window.open(it.instagram,'_blank','noopener'); } else { editLink(it); } };
+      var nm=document.createElement('span'); nm.style.cssText='flex:1;min-width:0'; nm.innerHTML='<span style="color:#e9eef6">'+esc(it.nome)+'</span>'+(it.regiao?' <span style="color:var(--grey-2)">— '+esc(it.regiao)+'</span>':'');
+      var ed=document.createElement('span'); ed.textContent='✎'; ed.title='Editar link do Instagram'; ed.style.cssText='cursor:pointer;flex:none;color:var(--grey-2);font-size:13px;margin-top:1px'; ed.onclick=function(){ editLink(it); };
       li.appendChild(sic); li.appendChild(ig); li.appendChild(nm); li.appendChild(ed);
-      var rm=document.createElement('span'); rm.textContent='\u2715'; rm.title='Remover'; rm.style.cssText='cursor:pointer;flex:none;color:var(--grey-2);font-size:12px;margin-top:1px'; rm.onclick=function(){ if(confirm('Remover '+it.n+'?')){ if(it.custom){ st.custom=st.custom.filter(function(c){return c.n!==it.n;}); } else { if(st.removed.indexOf(it.n)<0) st.removed.push(it.n); } save(); render(); } }; li.appendChild(rm);
+      var rm=document.createElement('span'); rm.textContent='✕'; rm.title='Remover'; rm.style.cssText='cursor:pointer;flex:none;color:var(--grey-2);font-size:12px;margin-top:1px'; rm.onclick=function(){ removeItem(it); }; li.appendChild(rm);
       ul.appendChild(li);
     }); }
-    function addItem(){ var n=(document.getElementById('dob-add-nome').value||'').trim(); if(!n){ alert('Informe o nome.'); return; } var r=(document.getElementById('dob-add-regiao').value||'').trim(); var ig=igUrl(document.getElementById('dob-add-ig').value); st.custom.push({n:n,r:r,ig:ig}); save(); document.getElementById('dob-add-nome').value=''; document.getElementById('dob-add-regiao').value=''; document.getElementById('dob-add-ig').value=''; render(); }
-    function init(){ var b=document.getElementById('dob-add-btn'); if(b) b.onclick=addItem; var sh=document.getElementById('dob-share'); if(sh) sh.onclick=shareWhats; var so=document.getElementById('dob-sort'); if(so){ so.value=sortMode; so.onchange=function(){ sortMode=this.value; try{localStorage.setItem('dobradas_sort',sortMode);}catch(e){} render(); }; } render();
-      if(sb){
-        sb.from('dobradas_state').select('state').eq('id',1).single().then(function(res){
-          var remote=(res&&res.data)?res.data.state:null;
-          if(isEmptyState(remote)){ if(!isEmptyState(st)) save(); } else { applyRemote(remote); }
-        },function(){});
-        sb.channel('dobradas_rt').on('postgres_changes',{event:'UPDATE',schema:'public',table:'dobradas_state',filter:'id=eq.1'},function(p){ if(pushing) return; if(p&&p.new&&p.new.state) applyRemote(p.new.state); }).subscribe();
-      }
+    function addItem(){ var n=(document.getElementById('dob-add-nome').value||'').trim(); if(!n){ alert('Informe o nome.'); return; } var r=(document.getElementById('dob-add-regiao').value||'').trim(); var ig=igUrl(document.getElementById('dob-add-ig').value); if(sb){ sb.from('dobradas').insert({nome:n,regiao:r||null,instagram:ig||null,status:'blue'}).select().then(function(res){ if(res&&res.data&&res.data[0]){ items.push(res.data[0]); render(); } },function(){}); } document.getElementById('dob-add-nome').value=''; document.getElementById('dob-add-regiao').value=''; document.getElementById('dob-add-ig').value=''; }
+    function load(){ if(!sb) return; sb.from('dobradas').select('*').then(function(res){ items=(res&&res.data)?res.data:[]; render(); },function(){}); }
+    function init(){ var b=document.getElementById('dob-add-btn'); if(b) b.onclick=addItem; var sh=document.getElementById('dob-share'); if(sh) sh.onclick=shareWhats; var so=document.getElementById('dob-sort'); if(so){ so.value=sortMode; so.onchange=function(){ sortMode=this.value; try{localStorage.setItem('dobradas_sort',sortMode);}catch(e){} render(); }; }
+      load();
+      if(sb){ sb.channel('dobradas_rt').on('postgres_changes',{event:'*',schema:'public',table:'dobradas'},function(){ load(); }).subscribe(); }
     }
     if(document.readyState!=='loading') init(); else document.addEventListener('DOMContentLoaded',init);
   })();
