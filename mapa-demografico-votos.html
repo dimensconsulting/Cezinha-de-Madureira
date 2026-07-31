@@ -185,6 +185,32 @@ table.dash-tb tr:hover td{background:#f4f7fb;}
 #dash-modal table.dash-tb td{color:#dbe6f5;border-bottom-color:#143a63;}
 #dash-modal table.dash-tb tr:hover td{background:#0a2c54;}
 #dash-modal .dash-tbwrap{border-color:#1c4a82;}
+#coord-modal .im-box2{max-width:98vw;width:98vw;height:96vh;max-height:96vh;display:flex;flex-direction:column;overflow:hidden;padding:16px 18px;}
+#coord-modal #coord-modal-body{flex:1;overflow:hidden;min-height:0;}
+.cm-layout{display:flex;gap:14px;height:100%;}
+.cm-left{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;overflow:hidden;}
+.cm-left .kan-board{flex:1;min-height:0;overflow-x:auto;overflow-y:hidden;}
+.cm-right{flex:0 0 20%;max-width:20%;min-width:180px;overflow-y:auto;border-right:1px solid #e6e8ec;padding-right:14px;}
+.cm-hbtn{background:#fff7f0;border:1px dashed #e0a06a;color:#bd0026;font-weight:700;font-size:12.5px;padding:7px 12px;border-radius:8px;cursor:pointer;}
+.cm-hbtn:hover{background:#ffeede;}
+.kan-board{display:flex;gap:10px;overflow-x:auto;padding:4px 2px 10px;align-items:flex-start;}
+.kan-col{flex:0 0 210px;max-width:210px;background:#eef2f7;border:1px solid #e0e5ec;border-radius:10px;display:flex;flex-direction:column;max-height:100%;min-height:0;}
+.kan-col-h{font-size:12px;font-weight:700;color:#012240;padding:9px 10px;border-bottom:1px solid #dbe1ea;background:#e3eaf3;border-radius:10px 10px 0 0;flex:none;}
+.kan-col-body{padding:8px;display:flex;flex-direction:column;gap:8px;overflow-y:auto;flex:1;min-height:0;}
+.kan-col.drag-over{background:#dce8f6;border-color:#3182bd;}
+.kan-card{border-radius:8px;padding:8px 10px;cursor:grab;box-shadow:0 1px 3px rgba(0,0,0,.12);font-size:12.5px;}
+.kan-card:active{cursor:grabbing;}
+.kan-card.kc-coord{background:#1f4e86;color:#fff;}
+.kan-card.kc-lider{background:#fff;color:#1a2733;border:1px solid #dbe1ea;}
+.kan-card .kc-nome{font-weight:700;line-height:1.2;}
+.kan-card .kc-meta{font-size:10.5px;margin-top:2px;}
+.kan-card.kc-coord .kc-meta{color:#cfe0f7;}
+.kan-card.kc-lider .kc-meta{color:#6b7f95;}
+.kan-card .kc-tel{font-size:11px;margin-top:3px;}
+.kan-card .kc-acts{display:flex;gap:8px;margin-top:6px;font-size:10.5px;flex-wrap:wrap;}
+.kan-card .kc-acts a{cursor:pointer;text-decoration:underline;}
+.kan-card.kc-coord .kc-acts a{color:#cfe0f7;}
+.kan-card.kc-lider .kc-acts a{color:#bd0026;}
 </style>
 </head>
 <body>
@@ -242,7 +268,14 @@ table.dash-tb tr:hover td{background:#f4f7fb;}
 <div id="coord-modal" class="im-ov">
   <div class="im-box2">
     <button type="button" class="im-close" onclick="closeCoordModal()">✕</button>
-    <h3 id="coord-modal-title">Coordenadores e Líderes</h3>
+    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-right:44px;margin-bottom:10px">
+      <h3 id="coord-modal-title" style="margin:0">Coordenadores e Líderes</h3>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button type="button" class="cm-hbtn" onclick="cmAddDobrada()">＋ Dobrada</button>
+        <button type="button" class="cm-hbtn" onclick="cmAddCoord()">＋ Coordenador</button>
+        <button type="button" class="cm-hbtn" onclick="cmAddLider()">＋ Liderança</button>
+      </div>
+    </div>
     <div id="coord-modal-body"></div>
   </div>
 </div>
@@ -297,6 +330,7 @@ table.dash-tb tr:hover td{background:#f4f7fb;}
       <div class="mp-f"><label>E-mail</label><input id="mp-email" type="email"></div>
       <div class="mp-f"><label>Telefone</label><input id="mp-tel" type="text"></div>
     </div>
+    <div class="mp-f" id="mp-dobrada-wrap"><label>Dobrada (do município)</label><select id="mp-dobrada"></select></div>
     <div id="mp-status"></div>
     <div class="mp-foot">
       <button type="button" id="mp-del" class="mp-btn del">Excluir</button>
@@ -494,33 +528,37 @@ function personCard(p,tipo){
   var contato=''; if(p.telefone){ var _wa=waLink(p.telefone); contato+='<div class="pc-cline">\u260E '+esc(p.telefone)+(_wa?' <a href="'+_wa+'" target="_blank" rel="noopener" class="pc-wa" title="Abrir no WhatsApp"><svg width="14" height="14" viewBox="0 0 24 24" fill="#25D366"><path d="M12 2a10 10 0 0 0-8.6 15l-1.4 5 5.1-1.3A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8 8 0 1 1 12 20zm4.5-6c-.2-.1-1.4-.7-1.6-.8s-.4-.1-.5.1-.6.8-.7.9-.3.2-.5 0a6.5 6.5 0 0 1-1.9-1.2 7.3 7.3 0 0 1-1.3-1.7c-.1-.2 0-.4.1-.5l.4-.4.2-.4v-.4l-.7-1.7c-.2-.5-.4-.4-.5-.4h-.5a.9.9 0 0 0-.7.3A2.8 2.8 0 0 0 6 9.3a4.9 4.9 0 0 0 1 2.6 11.2 11.2 0 0 0 4.3 3.8c.6.3 1.1.4 1.5.5a3.6 3.6 0 0 0 1.6.1c.5-.1 1.4-.6 1.6-1.1a2 2 0 0 0 .1-1.1c0-.1-.2-.2-.4-.3z"/></svg></a>':'')+'</div>'; } if(p.email) contato+='<div class="pc-cline">\u2709 '+esc(p.email)+'</div>';
   var zona=(tipo==='lider'&&p.zona!=null&&p.zona!=='')?'<div class="pc-zona" style="font-size:11px;color:#0a5c1f;font-weight:700;margin:2px 0">Zona '+esc(p.zona)+'</div>':''; var bairros=(tipo==='lider'&&p.bairros&&p.bairros.length)?'<div class="pc-bairros">'+p.bairros.map(function(b){return '<span>'+esc(b)+'</span>';}).join('')+'</div>':'';
   var cityline=(tipo==='lider'&&p.municipio_nome)?'<div class="pc-city" style="font-size:10.5px;color:#8a93a0;margin-top:1px">'+esc(p.municipio_nome)+'</div>':'';
+  var dob=(p.dobrada)?'<div class="pc-dob" style="font-size:11px;color:#c9a227;font-weight:700;margin:2px 0">\uD83E\uDD1D '+esc(p.dobrada)+'</div>':'';
   var foto=p.foto_url?'<img class="pc-foto" src="'+esc(p.foto_url)+'">':'<div class="pc-foto pc-noimg">'+esc((p.nome||'?').slice(0,1))+'</div>';
-  return '<div class="pc">'+foto+'<div class="pc-body"><div class="pc-nome">'+esc(p.nome)+'</div><div class="pc-redes">'+redes+'</div>'+cityline+zona+bairros+est+contato+'<div class="pc-acts"><a data-edit="'+tipo+':'+p.id+'">editar</a><a data-del="'+tipo+':'+p.id+'">excluir</a>'+(tipo==='lider'?'<a data-promote="'+p.id+'">tornar coordenador</a>':'')+(tipo==='coord'?'<a data-demote="'+p.id+'">tornar liderança</a>':'')+'</div></div></div>';
+  return '<div class="pc">'+foto+'<div class="pc-body"><div class="pc-nome">'+esc(p.nome)+'</div><div class="pc-redes">'+redes+'</div>'+cityline+dob+zona+bairros+est+contato+'<div class="pc-acts"><a data-edit="'+tipo+':'+p.id+'">editar</a><a data-del="'+tipo+':'+p.id+'">excluir</a>'+(tipo==='lider'?'<a data-promote="'+p.id+'">tornar coordenador</a>':'')+(tipo==='coord'?'<a data-demote="'+p.id+'">tornar liderança</a>':'')+'</div></div></div>';
 }
+var dragData=null, suppressPeople=false;
+function kanCard(p,tipo){ var isC=tipo==='coord'; var votes=isC?coordVotes(p):(p.expectativa_votos||0); var cv=isC?(allLidersOf(p.id).length?0:(p.estimativa_votos||0)):(p.expectativa_votos||0); var tel=p.telefone?'<div class="kc-tel">\u260E '+esc(p.telefone)+'</div>':''; return '<div class="kan-card '+(isC?'kc-coord':'kc-lider')+'" draggable="true" data-pid="'+p.id+'" data-ptype="'+tipo+'" data-cv="'+cv+'"><div class="kc-nome">'+esc(p.nome)+'</div><div class="kc-meta">'+(isC?'Coordenador':'Liderança')+' \u00b7 '+fmt(votes)+' votos</div>'+tel+'<div class="kc-acts"><a data-edit="'+tipo+':'+p.id+'">editar</a><a data-del="'+tipo+':'+p.id+'">excluir</a>'+(tipo==='lider'?'<a data-promote="'+p.id+'">\u2192 coord</a>':'<a data-demote="'+p.id+'">\u2192 líder</a>')+'</div></div>'; }
+function updateKanCounts(){ var cols=document.querySelectorAll('#coord-modal-body .kan-col'); Array.prototype.forEach.call(cols,function(col){ var cards=col.querySelectorAll('.kan-card'); var v=0; Array.prototype.forEach.call(cards,function(c){ v+=parseInt(c.getAttribute('data-cv')||'0',10)||0; }); var sc=col.querySelector('.kc-count'); if(sc) sc.textContent='('+cards.length+')'; var sv=col.querySelector('.kc-votes'); if(sv) sv.textContent=fmt(v)+' votos'; }); }
+function moveDob(ptype,pid,newDob,cardEl,colEl){ if(!SB) return; var p=findPerson(ptype,pid); if(!p) return; if((p.dobrada||'')===(newDob||'')) return; var table=ptype==='coord'?'coordenadores':'liderancas'; p.dobrada=newDob; if(cardEl&&colEl){ var body=colEl.querySelector('.kan-col-body'); if(body){ body.appendChild(cardEl); updateKanCounts(); } } suppressPeople=true; SB.from(table).update({dobrada:newDob,updated_at:new Date().toISOString()}).eq('id',pid).then(function(r){ setTimeout(function(){suppressPeople=false;},1000); if(r&&r.error){ alert('Erro: '+r.error.message); loadPeople(); } },function(){ suppressPeople=false; loadPeople(); }); }
 function coordSection(code,mun){
   if(!code)return '';
   var coords=COORD[code]||[], lids=LIDER[code]||[];
-  var h='<div class="coord-sec">';
-  var _dl=MUNDOB[code]||[];
-  h+='<div class="cs-h">Dobradas da cidade ('+_dl.length+')</div>';
-  _dl.forEach(function(d){ h+='<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 10px;background:#fff;border:1px solid #e6e8ec;border-radius:8px;margin-bottom:6px;font-size:13px"><span>\uD83E\uDD1D <b>'+esc(d.dobrada)+'</b></span><a data-deldobrada="'+d.id+'" style="cursor:pointer;color:#bd0026;font-size:11.5px">excluir</a></div>'; });
-  h+='<button type="button" class="cs-add" data-adddobrada="'+code+'" style="margin-bottom:14px">＋ Adicionar dobrada</button>';
-  h+='<button type="button" class="cs-add" data-addcoord="'+code+'">＋ Cadastrar coordenador</button>';
-  coords.forEach(function(c){
-    var team=allLidersOf(c.id);
-    h+='<div class="cs-h" style="margin-top:14px">Coordenador</div>'+personCard(c,'coord');
-    h+='<div class="cs-h" style="margin-top:8px">Lideranças ('+team.length+')</div>';
-    team.forEach(function(l){h+=personCard(l,'lider');});
-    h+='<button type="button" class="cs-add" data-addlider="'+code+'" data-coordid="'+c.id+'">＋ Adicionar liderança a '+esc(c.nome)+'</button>';
+  var _dl=(MUNDOB[code]||[]).slice().sort(function(a,b){return (a.dobrada||'').localeCompare(b.dobrada||'','pt-BR');});
+  var udobs=[], seen={}; _dl.forEach(function(d){ if(d.dobrada&&!seen[d.dobrada]){seen[d.dobrada]=1; udobs.push(d.dobrada);} });
+  udobs.sort(function(a,b){return a.localeCompare(b,'pt-BR');});
+  var cols=[''].concat(udobs);
+  var board='<div class="kan-board">';
+  cols.forEach(function(dob){
+    var title=dob?('\uD83E\uDD1D '+esc(dob)):'Sem dobrada';
+    var cc=coords.filter(function(c){return (c.dobrada||'')===dob;});
+    var ll=lids.filter(function(l){return (l.dobrada||'')===dob;});
+    var colVotes=ll.reduce(function(s,l){return s+(l.expectativa_votos||0);},0)+cc.reduce(function(s,c){return s+(allLidersOf(c.id).length?0:(c.estimativa_votos||0));},0);
+    board+='<div class="kan-col" data-dob="'+esc(dob)+'"><div class="kan-col-h">'+title+' <span class="kc-count" style="color:#8a93a0;font-weight:400">('+(cc.length+ll.length)+')</span><div class="kc-votes" style="font-size:11px;font-weight:700;color:#bd0026;margin-top:2px">'+fmt(colVotes)+' votos</div></div><div class="kan-col-body">';
+    cc.forEach(function(c){ board+=kanCard(c,'coord'); });
+    ll.forEach(function(l){ board+=kanCard(l,'lider'); });
+    board+='</div></div>';
   });
-  var orphan=lids.filter(function(l){return !l.coordenador_id;});
-  h+='<div class="cs-h" style="margin-top:16px">Lideranças sem coordenador ('+orphan.length+')</div>';
-  orphan.forEach(function(l){h+=personCard(l,'lider');});
-  h+='<button type="button" class="cs-add" data-addlider="'+code+'">＋ Adicionar liderança (sem coordenador)</button>';
-  var elsewhere=lids.filter(function(l){return l.coordenador_id && !coords.some(function(c){return c.id===l.coordenador_id;});});
-  if(elsewhere.length){ h+='<div class="cs-h" style="margin-top:16px">Lideranças desta cidade sob coordenador de outra cidade</div>'; elsewhere.forEach(function(l){h+=personCard(l,'lider');}); }
-  h+='</div>';
-  return h;
+  board+='</div>';
+  var right='<div class="cm-right"><div class="cs-h" style="margin-top:0">Dobradas da cidade ('+udobs.length+')</div>';
+  _dl.forEach(function(d){ right+='<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 10px;background:#fff;border:1px solid #e6e8ec;border-radius:8px;margin-bottom:6px;font-size:13px"><span>\uD83E\uDD1D <b>'+esc(d.dobrada)+'</b></span><a data-deldobrada="'+d.id+'" style="cursor:pointer;color:#bd0026;font-size:11.5px">excluir</a></div>'; });
+  right+='<button type="button" class="cs-add" data-adddobrada="'+code+'">＋ Adicionar dobrada</button></div>';
+  return '<div class="cm-layout">'+right+'<div class="cm-left"><div style="font-size:11px;color:#8a93a0;margin:0 0 8px">Arraste os cards entre as dobradas para reclassificar (azul = coordenador, branco = liderança).</div>'+board+'</div></div>';
 }
 function peopleSummary(code){ var coords=COORD[code]||[],lids=LIDER[code]||[]; if(!coords.length&&!lids.length) return ''; var h='<br><b>Coordenação</b><br>'; coords.forEach(function(c){ h+='Coord.: '+esc(c.nome)+' ('+fmt(coordVotes(c))+' votos)<br>'; }); h+=lids.length?(lids.length+' liderança'+(lids.length>1?'s':'')):'sem liderança'; return h; }
 function updateCoordMarkers(){if(!coordMarkers)return;coordMarkers.clearLayers();var keys={};for(var k in COORD)keys[k]=1;for(var k2 in LIDER)keys[k2]=1;for(var code in keys){var layer=layerByCode[code];if(!layer)continue;var coords=COORD[code]||[],lids=LIDER[code]||[],isC=coords.length>0;var tip=tooltipHtml(layer._rec?layer._rec.cidade:layer._nm, layer._rec)+peopleSummary(code);try{var _zs=ZONA_BY_MUN[code]; var ctr=(_zs&&_zs.length)?zonaPos(layer,0,_zs.length):null; if(!ctr) ctr=(layer.getCenter?layer.getCenter():layer.getBounds().getCenter()); var mk=L.circleMarker(ctr,{radius:isC?6:4,color:'#012240',weight:2,fillColor:isC?'#F4D700':'#00BD5B',fillOpacity:1,pane:'ppl'});mk._city=layer;mk.bindTooltip(tip);mk.on('click',function(){clickCity(this._city);});mk.addTo(coordMarkers);}catch(e){}}}
@@ -547,6 +585,7 @@ function openPersonForm(tipo,code,mun,person,coordId){
   var _cw=document.getElementById('mp-coord-wrap'), _zw=document.getElementById('mp-zona-wrap');
   if(tipo==='lider'){ _cw.style.display=''; _zw.style.display=''; var _sel=document.getElementById('mp-coord'); var _cs=COORD[code]||[]; var _opts='<option value="">— Sem coordenador —</option>'; _cs.forEach(function(c){ _opts+='<option value="'+c.id+'">'+esc(c.nome)+'</option>'; }); _sel.innerHTML=_opts; _sel.value=(person?(person.coordenador_id||''):(coordId||''))||''; document.getElementById('mp-zona').value=(person&&person.zona!=null)?person.zona:''; } else { _cw.style.display='none'; _zw.style.display='none'; }
   document.getElementById('mp-email').value=person?(person.email||''):'';document.getElementById('mp-tel').value=person?(person.telefone||''):'';
+  (function(){ var _ds=document.getElementById('mp-dobrada'); if(!_ds) return; var _mun=MUNDOB[code]||[]; var _seen={}, _o='<option value="">— Sem dobrada —</option>'; _mun.forEach(function(d){ if(d.dobrada&&!_seen[d.dobrada]){ _seen[d.dobrada]=1; _o+='<option value="'+esc(d.dobrada)+'">'+esc(d.dobrada)+'</option>'; } }); var _cur=person?(person.dobrada||''):''; if(_cur&&!_seen[_cur]){ _o+='<option value="'+esc(_cur)+'">'+esc(_cur)+'</option>'; } _ds.innerHTML=_o; _ds.value=_cur; })();
   document.getElementById('mp-del').style.display=person?'inline-block':'none';
   document.getElementById('mp-status').textContent='';
   document.getElementById('mp-modal').classList.add('show');
@@ -556,7 +595,7 @@ function savePerson(){
   if(!mpCtx||!SB)return;
   var nome=(document.getElementById('mp-nome').value||'').trim();if(!nome){document.getElementById('mp-status').textContent='Informe o nome.';return;}
   var email=(document.getElementById('mp-email').value||'').trim();var tel=(document.getElementById('mp-tel').value||'').trim();
-  var row={municipio_cod:mpCtx.code,municipio_nome:mpCtx.mun,nome:nome,facebook:(document.getElementById('mp-fb').value||'').trim()||null,instagram:(document.getElementById('mp-ig').value||'').trim()||null,tiktok:(document.getElementById('mp-tt').value||'').trim()||null,updated_at:new Date().toISOString()};
+  var row={municipio_cod:mpCtx.code,municipio_nome:mpCtx.mun,nome:nome,facebook:(document.getElementById('mp-fb').value||'').trim()||null,instagram:(document.getElementById('mp-ig').value||'').trim()||null,tiktok:(document.getElementById('mp-tt').value||'').trim()||null,dobrada:(document.getElementById('mp-dobrada').value||'').trim()||null,updated_at:new Date().toISOString()};
   var _ev=document.getElementById('mp-est').value; var _evn=(_ev!=='')?parseInt(_ev,10):null; if(mpCtx.tipo==='coord') row.estimativa_votos=_evn; else row.expectativa_votos=_evn;
   if(mpCtx.tipo==='lider'){row.bairros=(document.getElementById('mp-bairros').value||'').split(',').map(function(x){return x.trim();}).filter(Boolean); var _ci=(document.getElementById('mp-coord').value||''); row.coordenador_id=_ci||null; var _zn=(document.getElementById('mp-zona').value||'').trim(); row.zona=_zn!==''?parseInt(_zn,10):null;}
   row.email=email||null; row.telefone=tel||null;
@@ -615,6 +654,10 @@ function openDobForm(code,mun){ dobCtx={code:code,mun:mun}; fillDobSelect('dob-s
 function closeDobForm(){ document.getElementById('dob-modal').classList.remove('show'); dobCtx=null; }
 function saveDob(){ if(!dobCtx||!SB) return; var v=(document.getElementById('dob-sel').value||'').trim(); if(!v){ document.getElementById('dob-status').textContent='Selecione uma dobrada.'; return; } var btn=document.getElementById('dob-save'); btn.disabled=true; SB.from('municipio_dobradas').insert({municipio_cod:dobCtx.code,municipio_nome:dobCtx.mun,dobrada:v}).then(function(r){ btn.disabled=false; if(r&&r.error){ document.getElementById('dob-status').textContent='Erro: '+r.error.message; return; } closeDobForm(); loadMunDob(refreshCoordModal); }); }
 function delDobrada(id){ if(!SB) return; if(!confirm('Remover esta dobrada?')) return; SB.from('municipio_dobradas').delete().eq('id',id).then(function(){ loadMunDob(refreshCoordModal); }); }
+function _cmMun(){ return selected?(selected._rec?selected._rec.cidade:(selected._nm||'')):''; }
+function cmAddDobrada(){ if(selected) openDobForm(selected._code6,_cmMun()); }
+function cmAddCoord(){ if(selected) openPersonForm('coord',selected._code6,_cmMun(),null); }
+function cmAddLider(){ if(selected) openPersonForm('lider',selected._code6,_cmMun(),null); }
 function openCoordModal(){ if(!selected) return; var code=selected._code6, cidade=selected._rec?selected._rec.cidade:(selected._nm||''); document.getElementById('coord-modal-title').textContent='Dobrada, Coordenadores e Lideranças — '+cidade; document.getElementById('coord-modal-body').innerHTML=coordSection(code,cidade); document.getElementById('coord-modal').classList.add('show'); }
 function closeCoordModal(){ document.getElementById('coord-modal').classList.remove('show'); }
 var dashSort={key:'votos',dir:-1}; var dashDobAgg={};
@@ -718,17 +761,21 @@ function buildDashboard(){
   var coordPerf=[]; for(var cc in COORD){ (COORD[cc]||[]).forEach(function(co){ var team=allLidersOf(co.id); var cs={}; team.forEach(function(t){cs[t.municipio_cod]=1;}); cs[co.municipio_cod]=1; var v22=0; Object.keys(cs).forEach(function(cd){ var la=layerByCode[cd]; v22+=(la&&la._rec&&la._rec.votos)||0; }); coordPerf.push({nome:co.nome,votos:v22,exp:coordVotes(co)}); }); }
   coordPerf.sort(function(a,b){return b.exp-a.exp;});
   h+='<div class="dash-cols" style="margin-top:8px"><div class="dash-card"><h4>Cobertura frágil — base forte com poucas lideranças</h4>'+chartBars(fragil,'#F4D700')+'</div><div class="dash-card"><h4>Desempenho dos coordenadores — 2022 × expectativa</h4><div style="display:flex;gap:16px;font-size:11px;margin-bottom:6px"><span><span style="display:inline-block;width:10px;height:10px;background:#5aa9e6;border-radius:2px;vertical-align:-1px"></span> Votos 2022 da área</span><span><span style="display:inline-block;width:10px;height:10px;background:#37c871;border-radius:2px;vertical-align:-1px"></span> Expectativa</span></div>'+chartVotosExp(coordPerf.slice(0,8))+'</div></div>';
-  var expByCode={}; cities.forEach(function(c){ expByCode[c.code]=c.exp; });
-  var dobAgg={}; for(var mc2 in MUNDOB){ (MUNDOB[mc2]||[]).forEach(function(d){ var key=d.dobrada||'(sem nome)'; if(!dobAgg[key]) dobAgg[key]={exp:0,muns:[]}; var e=expByCode[mc2]||0; dobAgg[key].exp+=e; dobAgg[key].muns.push({nome:munNameOf(mc2),exp:e}); }); }
-  cities.forEach(function(c){ if(!(MUNDOB[c.code]&&MUNDOB[c.code].length) && c.exp>0){ if(!dobAgg['Sem dobrada']) dobAgg['Sem dobrada']={exp:0,muns:[]}; dobAgg['Sem dobrada'].exp+=c.exp; dobAgg['Sem dobrada'].muns.push({nome:c.nome,exp:c.exp}); } });
-  Object.keys(dobAgg).forEach(function(k){ dobAgg[k].pct = expTotal>0? dobAgg[k].exp/expTotal*100 : 0; });
+  // Votos por dobrada baseados na relação real dobrada x coordenador x liderança:
+  // liderança contribui com sua expectativa; coordenador SÓ contribui (estimativa) quando não tem liderança vinculada (evita dupla contagem).
+  var dobAgg={};
+  function _addDob(key,code,v){ if(!(v>0)) return; if(!key) key='Sem dobrada'; if(!dobAgg[key]) dobAgg[key]={exp:0,munMap:{}}; dobAgg[key].exp+=v; var mn=munNameOf(code); dobAgg[key].munMap[mn]=(dobAgg[key].munMap[mn]||0)+v; }
+  for(var _lc in LIDER){ (LIDER[_lc]||[]).forEach(function(l){ _addDob(l.dobrada, _lc, l.expectativa_votos||0); }); }
+  for(var _cc in COORD){ (COORD[_cc]||[]).forEach(function(co){ if(allLidersOf(co.id).length===0) _addDob(co.dobrada, _cc, co.estimativa_votos||0); }); }
+  var expTotalDob=0; Object.keys(dobAgg).forEach(function(k){ expTotalDob+=dobAgg[k].exp; });
+  Object.keys(dobAgg).forEach(function(k){ dobAgg[k].pct = expTotalDob>0? dobAgg[k].exp/expTotalDob*100 : 0; dobAgg[k].muns=Object.keys(dobAgg[k].munMap).map(function(mn){return {nome:mn,exp:dobAgg[k].munMap[mn]};}); });
   dashDobAgg=dobAgg;
   var dobArr=Object.keys(dobAgg).map(function(k){return {nome:k,exp:dobAgg[k].exp,pct:dobAgg[k].pct,n:dobAgg[k].muns.length};}).sort(function(a,b){return b.exp-a.exp;});
   var _PAL=['#F4D700','#5aa9e6','#37c871','#e0a800','#2a6aa8','#3ddc84','#8a6d1f','#20a4a4','#c98a1f','#1c7ed6','#6bbf59','#0b5563','#efc84a','#4dbf9a']; dobArr.forEach(function(x,i){ x.color=(x.nome==='Sem dobrada')?'#6b7f99':_PAL[i%_PAL.length]; });
   var dobMax=Math.max(1, dobArr.length?dobArr[0].exp:1);
   var dobLeg=dobArr.map(function(x){ return '<div class="dob-row" data-dob="'+esc(x.nome)+'" style="cursor:pointer;display:flex;align-items:center;gap:8px;padding:4px 2px;font-size:12.5px"><span style="width:11px;height:11px;border-radius:3px;background:'+x.color+';flex:none"></span><span style="flex:1;color:#eaf1fb;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(x.nome)+' <small style=\'color:#8a93a0\'>('+x.n+')</small></span><b style="color:#F4D700">'+fmt1(x.pct)+'%</b></div>'; }).join('');
   var dobRows=dobDonut(dobArr)+'<div style="max-height:210px;overflow-y:auto;margin-top:8px;border-top:1px solid #123a68;padding-top:8px">'+dobLeg+'</div>';
-  h+='<div class="dash-sec-h">Votos estimados por dobrada <span style="font-weight:400;color:#8a93a0;font-size:11px">(% dos votos estimados nos municípios vinculados — clique para ver os municípios)</span></div>';
+  h+='<div class="dash-sec-h">Votos estimados por dobrada <span style="font-weight:400;color:#8a93a0;font-size:11px">(% dos votos estimados de lideranças e coordenadores por dobrada — clique para ver os municípios)</span></div>';
   h+='<div class="dash-cols"><div class="dash-card">'+dobRows+'</div><div class="dash-card"><div id="dash-dob-detail" style="color:#8a93a0;font-size:12px">Clique numa dobrada para ver os municípios.</div></div></div>';
   h+='<div style="margin:14px 0 6px"><button type="button" id="dash-tbl-btn" class="dash-exp" style="background:#334155">▸ Ver tabela detalhada</button></div>';
   var key=dashSort.key, dir=dashSort.dir;
@@ -791,13 +838,19 @@ function initPeople(){
   var dal=document.getElementById('dir-add-lider'); if(dal) dal.onclick=function(){dirAdd('lider');};
   var dci=document.getElementById('dir-add-city'); if(dci) dci.addEventListener('input',function(){ dirFilter=this.value; renderDirectory(); });
   var dbody=document.getElementById('dir-body'); if(dbody) dbody.addEventListener('click',detailClick);
-  var cbody=document.getElementById('coord-modal-body'); if(cbody) cbody.addEventListener('click',detailClick);
+  var cbody=document.getElementById('coord-modal-body'); if(cbody){ cbody.addEventListener('click',detailClick);
+    cbody.addEventListener('dragstart',function(e){ var c=e.target.closest('.kan-card'); if(!c) return; dragData={pid:c.getAttribute('data-pid'),ptype:c.getAttribute('data-ptype'),el:c}; if(e.dataTransfer){ e.dataTransfer.effectAllowed='move'; try{e.dataTransfer.setData('text/plain',dragData.pid);}catch(_){} } c.style.opacity='.5'; });
+    cbody.addEventListener('dragend',function(e){ var c=e.target.closest('.kan-card'); if(c) c.style.opacity=''; });
+    cbody.addEventListener('dragover',function(e){ var col=e.target.closest('.kan-col'); if(col){ e.preventDefault(); if(e.dataTransfer) e.dataTransfer.dropEffect='move'; col.classList.add('drag-over'); } });
+    cbody.addEventListener('dragleave',function(e){ var col=e.target.closest('.kan-col'); if(col&&!col.contains(e.relatedTarget)) col.classList.remove('drag-over'); });
+    cbody.addEventListener('drop',function(e){ var col=e.target.closest('.kan-col'); if(!col||!dragData) return; e.preventDefault(); col.classList.remove('drag-over'); moveDob(dragData.ptype,dragData.pid,col.getAttribute('data-dob')||null,dragData.el,col); dragData=null; });
+  }
   var cmv=document.getElementById('coord-modal'); if(cmv){ cmv.addEventListener('click',function(e){ if(e.target===this) closeCoordModal(); }); }
   var igb=document.getElementById('mp-ig-import'); if(igb) igb.onclick=importIgFoto;
   var bi=document.getElementById('btn-info'); if(bi) bi.onclick=toggleInfo;
   var ic=document.getElementById('im-close'); if(ic) ic.onclick=function(){document.getElementById('infomodal').classList.remove('show');};
   var im=document.getElementById('infomodal'); if(im) im.addEventListener('click',function(e){ if(e.target===this) this.classList.remove('show'); });
-  if(SB){SB.channel('people_rt').on('postgres_changes',{event:'*',schema:'public',table:'coordenadores'},function(){loadPeople();}).on('postgres_changes',{event:'*',schema:'public',table:'liderancas'},function(){loadPeople();}).on('postgres_changes',{event:'*',schema:'public',table:'dobradas'},function(){loadDobradas();}).on('postgres_changes',{event:'*',schema:'public',table:'municipio_dobradas'},function(){loadMunDob(function(){refreshCoordModal();});}).subscribe();}
+  if(SB){SB.channel('people_rt').on('postgres_changes',{event:'*',schema:'public',table:'coordenadores'},function(){ if(!suppressPeople) loadPeople(); }).on('postgres_changes',{event:'*',schema:'public',table:'liderancas'},function(){ if(!suppressPeople) loadPeople(); }).on('postgres_changes',{event:'*',schema:'public',table:'dobradas'},function(){loadDobradas();}).on('postgres_changes',{event:'*',schema:'public',table:'municipio_dobradas'},function(){loadMunDob(function(){refreshCoordModal();});}).subscribe();}
 }
 
 
