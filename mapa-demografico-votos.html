@@ -548,7 +548,7 @@ function clearSelect(){ const d=document.getElementById('detail'); if(d) d.class
 // ---- Coordenadores & lideranças (Supabase) ----
 const SB=(window.supabase&&window.supabase.createClient)?window.supabase.createClient('https://xofegurmrfkaavhtndqk.supabase.co','sb_publishable_jAedlYOqMrbgp7wG5yhD6A_AyWaXwT9'):null;
 // ===== Autenticação e papéis (Google via Supabase) =====
-var APP_USER=null, _appBooted=false;
+var APP_USER=null, _appBooted=false, GEO_READY=false;
 function isAdmin(){ return !!(APP_USER && APP_USER.papel==='admin' && APP_USER.status==='aprovado'); }
 function canEdit(){ return !!(APP_USER && APP_USER.status==='aprovado' && (APP_USER.papel==='admin'||APP_USER.papel==='edicao')); }
 function _ro(){ if(canEdit()) return false; try{ alert('Seu acesso e somente leitura — voce nao pode adicionar, editar ou excluir.'); }catch(_){ } return true; }
@@ -569,7 +569,7 @@ function applyRoleUI(){
   if(ub && APP_USER){ ub.style.display='inline-flex'; var pt=APP_USER.papel==='admin'?'Admin':(APP_USER.papel==='edicao'?'Edição':'Leitura'); var nm=ub.querySelector('.ub-name'); if(nm) nm.textContent=(APP_USER.nome||APP_USER.email||'')+' · '+pt; }
   if(isAdmin()) refreshAdminBadge();
 }
-function startApp(){ if(_appBooted) return; _appBooted=true; agHide(); try{ initPeople(); buildLegend(); }catch(e){ console.error(e); } applyRoleUI(); }
+function startApp(){ if(_appBooted) return; _appBooted=true; agHide(); try{ initPeople(); buildLegend(); if(GEO_READY) loadPeople(); try{map.invalidateSize();}catch(_a){} setTimeout(function(){ try{map.invalidateSize();}catch(_b){} },200); }catch(e){ console.error(e); } applyRoleUI(); }
 function evalProfile(prof, email){
   if(!prof){ agPending(email); return; }
   if(prof.status==='bloqueado'){ APP_USER=null; agBlocked(email); return; }
@@ -981,7 +981,7 @@ Promise.all([tryFetch(GEO_URLS,true),tryFetch(POP_URLS,false)]).then(([gj,popTxt
   const densVals=[];
   for(const k in VOTOS){ const r=VOTOS[k]; if(r._pop){ r._electors=r._pop*ratio; r._dens = r._electors>0 ? r.votos/r._electors*1000 : null; if(r._dens>0) densVals.push(r._dens); } else { r._dens=(r.votos===0?0:null);} records.push(r);} 
   densBreaks=quantileBreaks(densVals,DENS_COLORS.length);
-  repaint(); fillDensStats(); loadPeople();
+  repaint(); fillDensStats(); GEO_READY=true; if(APP_USER&&APP_USER.status==='aprovado') loadPeople();
   const popMatched=Object.keys(VOTOS).filter(k=>VOTOS[k]._pop).length;
   statusEl.textContent=`${matched} municípios coloridos · população cruzada em ${popMatched}`+(unmatched.length?` · ${unmatched.length} sem geometria`:'');
   if(unmatched.length) console.warn('Sem match de votos:',unmatched);
