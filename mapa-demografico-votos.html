@@ -584,8 +584,8 @@ function fetchProfileAndRoute(user){
 function bootAuth(){
   if(!SB){ agShow('<h2>Configuração ausente</h2><p>Supabase indisponível.</p>'); return; }
   agLoading();
-  SB.auth.getSession().then(function(res){ var s=res&&res.data?res.data.session:null; if(s&&s.user) fetchProfileAndRoute(s.user); else agLogin(); });
-  SB.auth.onAuthStateChange(function(ev,session){ if((ev==='SIGNED_IN'||ev==='TOKEN_REFRESHED') && session&&session.user){ if(!_appBooted) fetchProfileAndRoute(session.user); } else if(ev==='SIGNED_OUT'){ APP_USER=null; if(!_appBooted) agLogin(); } });
+  SB.auth.getSession().then(function(res){ var s=res&&res.data?res.data.session:null; if(s&&s.user) fetchProfileAndRoute(s.user); else if(/[#&?](code|access_token|error)=/.test(location.href)){ agLoading(); } else agLogin(); });
+  SB.auth.onAuthStateChange(function(ev,session){ if((ev==='SIGNED_IN'||ev==='TOKEN_REFRESHED') && session&&session.user){ if(!_appBooted){ var _u=session.user; setTimeout(function(){ fetchProfileAndRoute(_u); },0); } } else if(ev==='SIGNED_OUT'){ APP_USER=null; if(!_appBooted) agLogin(); } });
 }
 // ---- Painel de administracao ----
 function openAdmin(){ if(!isAdmin()) return; document.getElementById('admin-modal').classList.add('show'); loadAdmin(); }
