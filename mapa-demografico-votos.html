@@ -567,9 +567,15 @@ function applyRoleUI(){
   var ab=document.getElementById('admin-btn'); if(ab) ab.style.display=isAdmin()?'inline-flex':'none';
   var ub=document.getElementById('user-badge');
   if(ub && APP_USER){ ub.style.display='inline-flex'; var pt=APP_USER.papel==='admin'?'Admin':(APP_USER.papel==='edicao'?'Edição':'Leitura'); var nm=ub.querySelector('.ub-name'); if(nm) nm.textContent=(APP_USER.nome||APP_USER.email||'')+' · '+pt; }
+  var ce=canEdit();
+  Array.prototype.forEach.call(document.querySelectorAll('.cm-hbtn'),function(b){ b.style.display=ce?'':'none'; });
+  var _mb=document.getElementById('massdob-btn'); if(_mb) _mb.style.display=ce?'':'none';
+  var _cm=document.getElementById('coord-modal'); if(_cm&&_cm.classList.contains('show')) refreshCoordModal();
   if(isAdmin()) refreshAdminBadge();
 }
-function startApp(){ if(_appBooted) return; _appBooted=true; agHide(); try{ initPeople(); buildLegend(); if(GEO_READY) loadPeople(); try{map.invalidateSize();}catch(_a){} setTimeout(function(){ try{map.invalidateSize();}catch(_b){} },200); }catch(e){ console.error(e); } applyRoleUI(); }
+var _initLoad=false,_initPending=false;
+function driveInitialLoad(){ if(_initLoad) return; if(!(APP_USER&&APP_USER.status==='aprovado')) return; if(!GEO_READY){ if(!_initPending){ _initPending=true; setTimeout(function(){ _initPending=false; driveInitialLoad(); },150); } return; } _initLoad=true; loadPeople(); setTimeout(function(){ loadPeople(); },1200); }
+function startApp(){ if(_appBooted) return; _appBooted=true; agHide(); try{ initPeople(); buildLegend(); driveInitialLoad(); try{map.invalidateSize();}catch(_a){} setTimeout(function(){ try{map.invalidateSize();}catch(_b){} },200); }catch(e){ console.error(e); } applyRoleUI(); }
 function evalProfile(prof, email){
   if(!prof){ agPending(email); return; }
   if(prof.status==='bloqueado'){ APP_USER=null; agBlocked(email); return; }
@@ -639,10 +645,10 @@ function personCard(p,tipo){
   var cityline=(tipo==='lider'&&p.municipio_nome)?'<div class="pc-city" style="font-size:10.5px;color:#8a93a0;margin-top:1px">'+esc(p.municipio_nome)+'</div>':'';
   var dob=(p.dobrada)?'<div class="pc-dob" style="font-size:11px;color:#c9a227;font-weight:700;margin:2px 0">\uD83E\uDD1D '+esc(p.dobrada)+'</div>':'';
   var foto=p.foto_url?'<img class="pc-foto" src="'+esc(p.foto_url)+'">':'<div class="pc-foto pc-noimg">'+esc((p.nome||'?').slice(0,1))+'</div>';
-  return '<div class="pc">'+foto+'<div class="pc-body"><div class="pc-nome">'+esc(p.nome)+'</div><div class="pc-redes">'+redes+'</div>'+cityline+dob+zona+bairros+est+contato+'<div class="pc-acts"><a data-edit="'+tipo+':'+p.id+'">editar</a><a data-del="'+tipo+':'+p.id+'">excluir</a>'+(tipo==='lider'?'<a data-promote="'+p.id+'">tornar coordenador</a>':'')+(tipo==='coord'?'<a data-demote="'+p.id+'">tornar liderança</a>':'')+'</div></div></div>';
+  return '<div class="pc">'+foto+'<div class="pc-body"><div class="pc-nome">'+esc(p.nome)+'</div><div class="pc-redes">'+redes+'</div>'+cityline+dob+zona+bairros+est+contato+(canEdit()?('<div class="pc-acts"><a data-edit="'+tipo+':'+p.id+'">editar</a><a data-del="'+tipo+':'+p.id+'">excluir</a>'+(tipo==='lider'?'<a data-promote="'+p.id+'">tornar coordenador</a>':'')+(tipo==='coord'?'<a data-demote="'+p.id+'">tornar liderança</a>':'')+'</div>'):'')+'</div></div>';
 }
 var dragData=null, suppressPeople=false;
-function kanCard(p,tipo){ var isC=tipo==='coord'; var votes=isC?coordVotes(p):(p.expectativa_votos||0); var cv=isC?(allLidersOf(p.id).length?0:(p.estimativa_votos||0)):(p.expectativa_votos||0); var tel=p.telefone?'<div class="kc-tel">\u260E '+esc(p.telefone)+'</div>':''; return '<div class="kan-card '+(isC?'kc-coord':'kc-lider')+'" draggable="true" data-pid="'+p.id+'" data-ptype="'+tipo+'" data-cv="'+cv+'"><div class="kc-nome">'+esc(p.nome)+'</div><div class="kc-meta">'+(isC?'Coordenador':'Liderança')+' \u00b7 '+fmt(votes)+' votos</div>'+tel+'<div class="kc-acts"><a data-edit="'+tipo+':'+p.id+'">editar</a><a data-del="'+tipo+':'+p.id+'">excluir</a>'+(tipo==='lider'?'<a data-promote="'+p.id+'">\u2192 coord</a>':'<a data-demote="'+p.id+'">\u2192 líder</a>')+'</div></div>'; }
+function kanCard(p,tipo){ var isC=tipo==='coord'; var votes=isC?coordVotes(p):(p.expectativa_votos||0); var cv=isC?(allLidersOf(p.id).length?0:(p.estimativa_votos||0)):(p.expectativa_votos||0); var tel=p.telefone?'<div class="kc-tel">\u260E '+esc(p.telefone)+'</div>':''; var ce=canEdit(); var acts=ce?('<div class="kc-acts"><a data-edit="'+tipo+':'+p.id+'">editar</a><a data-del="'+tipo+':'+p.id+'">excluir</a>'+(tipo==='lider'?'<a data-promote="'+p.id+'">\u2192 coord</a>':'<a data-demote="'+p.id+'">\u2192 líder</a>')+'</div>'):''; return '<div class="kan-card '+(isC?'kc-coord':'kc-lider')+'" draggable="'+(ce?'true':'false')+'" data-pid="'+p.id+'" data-ptype="'+tipo+'" data-cv="'+cv+'"><div class="kc-nome">'+esc(p.nome)+'</div><div class="kc-meta">'+(isC?'Coordenador':'Liderança')+' \u00b7 '+fmt(votes)+' votos</div>'+tel+acts+'</div>'; }
 function updateKanCounts(){ var cols=document.querySelectorAll('#coord-modal-body .kan-col'); Array.prototype.forEach.call(cols,function(col){ var cards=col.querySelectorAll('.kan-card'); var v=0; Array.prototype.forEach.call(cards,function(c){ v+=parseInt(c.getAttribute('data-cv')||'0',10)||0; }); var sc=col.querySelector('.kc-count'); if(sc) sc.textContent='('+cards.length+')'; var sv=col.querySelector('.kc-votes'); if(sv) sv.textContent=fmt(v)+' votos'; }); }
 function moveDob(ptype,pid,newDob,cardEl,colEl){ if(!SB) return; if(!canEdit()) return; var p=findPerson(ptype,pid); if(!p) return; if((p.dobrada||'')===(newDob||'')) return; var table=ptype==='coord'?'coordenadores':'liderancas'; p.dobrada=newDob; if(cardEl&&colEl){ var body=colEl.querySelector('.kan-col-body'); if(body){ body.appendChild(cardEl); updateKanCounts(); } } suppressPeople=true; SB.from(table).update({dobrada:newDob,updated_at:new Date().toISOString()}).eq('id',pid).then(function(r){ setTimeout(function(){suppressPeople=false;},1000); if(r&&r.error){ alert('Erro: '+r.error.message); loadPeople(); } },function(){ suppressPeople=false; loadPeople(); }); }
 function coordSection(code,mun){
@@ -665,7 +671,7 @@ function coordSection(code,mun){
   });
   board+='</div>';
   var right='<div class="cm-right"><div class="cs-h" style="margin-top:0">Dobradas da cidade ('+udobs.length+')</div>';
-  _dl.forEach(function(d){ right+='<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 10px;background:#fff;border:1px solid #e6e8ec;border-radius:8px;margin-bottom:6px;font-size:13px"><span>\uD83E\uDD1D <b>'+esc(d.dobrada)+'</b></span><a data-deldobrada="'+d.id+'" style="cursor:pointer;color:#bd0026;font-size:11.5px">excluir</a></div>'; });
+  _dl.forEach(function(d){ right+='<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 10px;background:#fff;border:1px solid #e6e8ec;border-radius:8px;margin-bottom:6px;font-size:13px"><span>\uD83E\uDD1D <b>'+esc(d.dobrada)+'</b></span>'+(canEdit()?'<a data-deldobrada="'+d.id+'" style="cursor:pointer;color:#bd0026;font-size:11.5px">excluir</a>':'')+'</div>'; });
   right+='<button type="button" class="cs-add" data-adddobrada="'+code+'">＋ Adicionar dobrada</button></div>';
   return '<div class="cm-layout">'+right+'<div class="cm-left"><div style="font-size:11px;color:#8a93a0;margin:0 0 8px">Arraste os cards entre as dobradas para reclassificar (azul = coordenador, branco = liderança).</div>'+board+'</div></div>';
 }
@@ -981,7 +987,7 @@ Promise.all([tryFetch(GEO_URLS,true),tryFetch(POP_URLS,false)]).then(([gj,popTxt
   const densVals=[];
   for(const k in VOTOS){ const r=VOTOS[k]; if(r._pop){ r._electors=r._pop*ratio; r._dens = r._electors>0 ? r.votos/r._electors*1000 : null; if(r._dens>0) densVals.push(r._dens); } else { r._dens=(r.votos===0?0:null);} records.push(r);} 
   densBreaks=quantileBreaks(densVals,DENS_COLORS.length);
-  repaint(); fillDensStats(); GEO_READY=true; if(APP_USER&&APP_USER.status==='aprovado') loadPeople();
+  repaint(); fillDensStats(); GEO_READY=true; driveInitialLoad();
   const popMatched=Object.keys(VOTOS).filter(k=>VOTOS[k]._pop).length;
   statusEl.textContent=`${matched} municípios coloridos · população cruzada em ${popMatched}`+(unmatched.length?` · ${unmatched.length} sem geometria`:'');
   if(unmatched.length) console.warn('Sem match de votos:',unmatched);
