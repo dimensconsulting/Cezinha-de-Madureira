@@ -241,13 +241,27 @@ table.dash-tb tr:hover td{background:#f4f7fb;}
   .adm-tag.t-aprov{background:#dff5e6;color:#1c7a3f;}
   .adm-tag.t-bloq{background:#fde2e2;color:#bd0026;}
   #admin-modal .adm-act{cursor:pointer;text-decoration:underline;}
+  #rank-modal .im-box2{max-width:900px;}
+  #rank-modal .rk-tbwrap{max-height:60vh;overflow:auto;border:1px solid #eef1f5;border-radius:10px;}
+  #rank-modal table.rk{width:100%;border-collapse:collapse;font-size:12.5px;}
+  #rank-modal table.rk th{text-align:left;color:#8a93a0;font-weight:600;padding:7px 8px;border-bottom:2px solid #e6e8ec;position:sticky;top:0;background:#fff;font-size:10.5px;text-transform:uppercase;letter-spacing:.3px;}
+  #rank-modal table.rk td{padding:7px 8px;border-bottom:1px solid #eef1f5;}
+  #rank-modal table.rk td.num,#rank-modal table.rk th.num{text-align:right;}
+  #rank-modal table.rk tr.naoencontrado{opacity:.5;}
+  #rank-modal .rk-pos{display:inline-block;min-width:22px;height:22px;line-height:22px;text-align:center;border-radius:6px;background:#eef2f7;font-weight:700;color:#10233d;}
+  #rank-modal .rk-pos.top1{background:#F4D700;color:#5a4a00;}
+  #rank-modal .rk-pos.top2{background:#d6dde6;color:#333;}
+  #rank-modal .rk-pos.top3{background:#e8c9a0;color:#5a3a00;}
+  #rank-modal a.rk-ig{color:#bd0026;text-decoration:none;}
+  #rank-modal a.rk-ig:hover{text-decoration:underline;}
 </style>
 </head>
 <body>
 <div id="topbar">
   <div class="brand">Votação — Cezinha <small>SP · 2022</small></div>
   <div class="search"><span class="ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span><input id="q" type="search" placeholder="Buscar cidade, dobrada, coordenador, zona ou bairro…" autocomplete="off"><div id="q-sug" class="sug" hidden></div></div>
-  <button type="button" id="massdob-btn" title="Dobrada em massa"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></button><button type="button" id="dash-btn" title="Gestão e Estratégia de Votos"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></button><button type="button" id="dir-btn" title="Lista de coordenadores e lideranças"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg></button>
+  <button type="button" id="massdob-btn" title="Dobrada em massa"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></button>
+  <button type="button" id="rank-btn" title="Ranking de Engajamento" onclick="openRank()"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></button><button type="button" id="dash-btn" title="Gestão e Estratégia de Votos"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></button><button type="button" id="dir-btn" title="Lista de coordenadores e lideranças"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg></button>
   <button type="button" id="admin-btn" title="Controle de acesso" onclick="openAdmin()"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span class="adm-badge" id="admin-pend-badge" style="display:none">0</span></button>
   <span id="user-badge"><span class="ub-dot"></span><span class="ub-name"></span><button type="button" class="ub-logout" onclick="doLogout()">sair</button></span>
 </div>
@@ -259,6 +273,25 @@ table.dash-tb tr:hover td{background:#f4f7fb;}
     <h3>Controle de acesso</h3>
     <p style="color:#8a93a0;font-size:12.5px;margin:-6px 0 12px">Aprove solicita&ccedil;&otilde;es e defina o papel de cada usu&aacute;rio. <b>Leitura</b> s&oacute; visualiza; <b>Edi&ccedil;&atilde;o</b> cadastra e edita; <b>Admin</b> faz tudo, inclusive gerenciar acessos.</p>
     <div id="admin-list"></div>
+  </div>
+</div>
+<div id="rank-modal" class="im-ov">
+  <div class="im-box2">
+    <button type="button" class="im-close" onclick="closeRank()">&#10005;</button>
+    <h3>Ranking de Engajamento &mdash; Instagram</h3>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:-4px 0 12px">
+      <label style="font-size:12.5px;color:#51637a">Per&iacute;odo:
+        <select id="rank-dias" style="padding:5px 6px;border:1px solid #cfd6e0;border-radius:6px;font-size:12.5px;margin-left:4px">
+          <option value="7" selected>7 dias</option>
+          <option value="15">15 dias</option>
+          <option value="30">30 dias</option>
+          <option value="45">45 dias</option>
+        </select>
+      </label>
+      <button type="button" id="rank-go" onclick="loadRank()" style="background:#012240;color:#fff;border:none;border-radius:8px;padding:7px 14px;font-size:12.5px;font-weight:700;cursor:pointer">Atualizar</button>
+      <span id="rank-status" style="font-size:12px;color:#8a93a0"></span>
+    </div>
+    <div id="rank-body"></div>
   </div>
 </div>
 <div id="title" class="ovl">
@@ -923,6 +956,52 @@ function openDir(){ renderDirectory(); document.getElementById('dir-modal').clas
 function closeDir(){ document.getElementById('dir-modal').classList.remove('show'); }
 function dirAdd(tipo){ var v=(document.getElementById('dir-add-city').value||'').trim(); if(!v) return; var r=IDX[norm(v)]; if(!r){ alert('Município não encontrado: '+v); return; } openPersonForm(tipo, norm(r.cidade), r.cidade, null); }
 
+// ===== Ranking de Engajamento (Instagram) =====
+function igHandle(v){ if(!v) return ''; v=(''+v).trim(); var m=v.match(/instagram\.com\/([^/?#]+)/i); if(m) v=m[1]; v=v.replace(/^@+/,'').replace(/\/+$/,'').replace(/\s+/g,'').trim(); return v.toLowerCase(); }
+function gatherIgMap(){ var mp={}; function add(p,tipo){ var h=igHandle(p.instagram); if(!h) return; if(!mp[h]) mp[h]={handle:h,nome:p.nome,tipo:tipo,cidade:p.municipio_nome||''}; }
+  for(var c in COORD){ (COORD[c]||[]).forEach(function(p){ add(p,'coord'); }); }
+  for(var l in LIDER){ (LIDER[l]||[]).forEach(function(p){ add(p,'lider'); }); }
+  return mp; }
+function openRank(){ document.getElementById('rank-modal').classList.add('show'); loadRank(); }
+function closeRank(){ document.getElementById('rank-modal').classList.remove('show'); }
+function rankStatus(m){ var e=document.getElementById('rank-status'); if(e) e.textContent=m||''; }
+function loadRank(){
+  if(!SB){ return; }
+  var igmap=gatherIgMap(); var handles=Object.keys(igmap);
+  var body=document.getElementById('rank-body');
+  if(!handles.length){ if(body) body.innerHTML='<p style="color:#8a93a0;font-size:13px">Nenhum coordenador ou liderança com Instagram cadastrado.</p>'; rankStatus(''); return; }
+  var dias=parseInt((document.getElementById('rank-dias')||{}).value)||7;
+  rankStatus('Consultando '+handles.length+' perfis…'); if(body) body.innerHTML='<div style="padding:22px;text-align:center;color:#8a93a0">Carregando ranking…</div>';
+  var go=document.getElementById('rank-go'); if(go) go.disabled=true;
+  SB.functions.invoke('ranking-engajamento',{body:{usuarios:handles.join(','),dias:dias}}).then(function(res){
+    if(go) go.disabled=false;
+    var data=res&&res.data?res.data:null;
+    if(!data||data.error||!Array.isArray(data.resultados)){ if(body) body.innerHTML='<p style="color:#bd0026;font-size:13px">Erro ao consultar o ranking'+(data&&data.error?': '+esc(data.error):'')+'.</p>'; rankStatus(''); return; }
+    renderRank(data, igmap, dias);
+  }, function(err){ if(go) go.disabled=false; if(body) body.innerHTML='<p style="color:#bd0026;font-size:13px">Falha na consulta: '+esc(String((err&&err.message)||err))+'</p>'; rankStatus(''); });
+}
+function renderRank(data, igmap, dias){
+  var rows=(data.resultados||[]).map(function(r){ var info=igmap[igHandle(r.usuario)]||{}; return {
+    usuario:r.usuario, nome:info.nome||r.usuario, tipo:info.tipo||'', cidade:info.cidade||'',
+    encontrado:!!r.encontrado, publicacoes:r.publicacoes||0, comentarios:r.comentarios||0, total:r.total||0,
+    posicao:r.posicao, percentil:r.percentil }; });
+  rows.sort(function(a,b){ if(b.total!==a.total) return b.total-a.total; return (a.nome||'').localeCompare(b.nome||'','pt-BR'); });
+  var enc=rows.filter(function(r){return r.encontrado;}).length;
+  rankStatus(data.consultados+' consultados · '+enc+' com atividade · '+((data.periodo&&data.periodo.dias)||dias)+' dias');
+  var th='<tr><th class="num">#</th><th>Nome</th><th>Instagram</th><th class="num">Public.</th><th class="num">Comentários</th><th class="num">Engajamento</th><th class="num">Percentil</th><th class="num">Pos. geral</th></tr>';
+  var tb=rows.map(function(r,i){ var pos=i+1; var pc=pos<=3?(' top'+pos):''; var trc=r.encontrado?'':' class="naoencontrado"';
+    return '<tr'+trc+'><td class="num"><span class="rk-pos'+pc+'">'+pos+'</span></td>'+
+      '<td><b>'+esc(r.nome)+'</b>'+(r.tipo?' <small style=\'color:#8a93a0\'>'+(r.tipo==='coord'?'coord.':'liderança')+'</small>':'')+(r.cidade?'<div style="font-size:10.5px;color:#8a93a0">'+esc(r.cidade)+'</div>':'')+'</td>'+
+      '<td><a class="rk-ig" href="https://instagram.com/'+encodeURIComponent(r.usuario)+'" target="_blank" rel="noopener">@'+esc(r.usuario)+'</a></td>'+
+      '<td class="num">'+fmt(r.publicacoes)+'</td><td class="num">'+fmt(r.comentarios)+'</td>'+
+      '<td class="num"><b>'+fmt(r.total)+'</b></td>'+
+      '<td class="num">'+(r.percentil!=null?r.percentil+'%':'—')+'</td>'+
+      '<td class="num">'+(r.posicao!=null?r.posicao+'º':'—')+'</td></tr>'; }).join('');
+  document.getElementById('rank-body').innerHTML='<div class="rk-tbwrap"><table class="rk"><thead>'+th+'</thead><tbody>'+tb+'</tbody></table></div>'+
+    '<div style="font-size:11px;color:#8a93a0;margin-top:8px">Engajamento = comentários + respostas no período. “Pos. geral” é a posição entre os '+(data.totalNoRanking||'?')+' perfis monitorados na plataforma.</div>';
+}
+// ===== fim ranking =====
+
 function initPeople(){
   if(map.createPane&&!map.getPane('ppl')){ map.createPane('ppl'); map.getPane('ppl').style.zIndex=646; }
   if(map.createPane&&!map.getPane('zonapane')){ map.createPane('zonapane'); map.getPane('zonapane').style.zIndex=643; }
@@ -936,6 +1015,7 @@ function initPeople(){
   var _msel=document.getElementById('massdob-sel'); if(_msel) _msel.onchange=massMarkExisting;
   var _mc=document.getElementById('massdob-cancel'); if(_mc) _mc.onclick=closeMassDob;
   var _mm=document.getElementById('massdob-modal'); if(_mm){ _mm.addEventListener('click',function(e){ if(e.target===this) closeMassDob(); }); }
+  var _rm=document.getElementById('rank-modal'); if(_rm){ _rm.addEventListener('click',function(e){ if(e.target===this) closeRank(); }); }
   var _mf=document.getElementById('massdob-filter'); if(_mf) _mf.addEventListener('input',function(){ var q=norm(this.value); var rows=document.querySelectorAll('#massdob-list .massdob-row'); Array.prototype.forEach.call(rows,function(r){ r.style.display=(!q||r.getAttribute('data-n').indexOf(q)>=0)?'block':'none'; }); });
   var _ml=document.getElementById('massdob-list'); if(_ml) _ml.addEventListener('change', massCount);
   var _mz=document.getElementById('mp-zona'); if(_mz) _mz.addEventListener('input',function(){ var z=(this.value||'').trim(); var bs=(z&&ZONA_BAIRROS[z])?ZONA_BAIRROS[z]:null; if(bs&&bs.length){ document.getElementById('mp-bairros').value=bs.join(', '); } });
