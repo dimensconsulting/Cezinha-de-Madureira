@@ -227,7 +227,7 @@ table.dash-tb tr:hover td{background:#f4f7fb;}
   #user-badge{display:none;align-items:center;gap:7px;color:#cfe0f5;font-size:12.5px;margin-left:8px;white-space:nowrap;}
   #user-badge .ub-dot{width:8px;height:8px;border-radius:50%;background:#37c871;flex:none;}
   #user-badge .ub-logout{background:none;border:none;color:#9fb6d6;cursor:pointer;font-size:12px;text-decoration:underline;padding:0;}
-  #admin-btn{display:none;position:relative;}
+  #admin-btn{display:none;position:relative;margin-left:8px;width:38px;height:38px;border-radius:9px;background:#0a2c54;border:1px solid #1c4a82;color:#eaf1fb;cursor:pointer;align-items:center;justify-content:center;}
   #admin-btn .adm-badge{position:absolute;top:-6px;right:-6px;background:#bd0026;color:#fff;border-radius:10px;font-size:10px;min-width:16px;height:16px;line-height:16px;padding:0 3px;font-weight:700;}
   body.ro #massdob-btn, body.ro .cm-hbtn, body.ro .pc-acts, body.ro .kc-acts,
   body.ro [data-deldobrada], body.ro .dir-add, body.ro .dir-adds{display:none !important;}
@@ -254,6 +254,56 @@ table.dash-tb tr:hover td{background:#f4f7fb;}
   #rank-modal .rk-pos.top3{background:#e8c9a0;color:#5a3a00;}
   #rank-modal a.rk-ig{color:#bd0026;text-decoration:none;}
   #rank-modal a.rk-ig:hover{text-decoration:underline;}
+  /* ===== Botoes topbar unificados ===== */
+  #rank-btn{flex:none;margin-left:8px;width:38px;height:38px;border-radius:9px;background:#0a2c54;border:1px solid #1c4a82;color:#eaf1fb;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s ease,border-color .15s ease;}
+  #topbar #massdob-btn:hover,#topbar #rank-btn:hover,#topbar #dash-btn:hover,#topbar #dir-btn:hover,#topbar #admin-btn:hover{background:#15406f;border-color:#F4D700;}
+  #topbar #massdob-btn:active,#topbar #rank-btn:active,#topbar #dash-btn:active,#topbar #dir-btn:active,#topbar #admin-btn:active{transform:translateY(1px);}
+  /* ===== Leaderboard gamificado ===== */
+  #rank-modal .im-box2{max-width:860px;}
+  .lb-podium{display:flex;justify-content:center;align-items:flex-end;gap:10px;padding:18px 8px 8px;background:radial-gradient(120% 100% at 50% 0,#eef4fc 0,#e3ecf8 60%,#dbe6f6 100%);border-radius:16px;}
+  .lb-col{flex:1 1 0;max-width:190px;display:flex;flex-direction:column;align-items:center;text-align:center;min-width:0;}
+  .lb-col.lb-empty{visibility:hidden;}
+  .lb-medal{font-size:22px;line-height:1;margin-bottom:2px;}
+  .lb-1 .lb-medal{font-size:30px;}
+  .lb-avawrap{margin-bottom:6px;}
+  .lb-avaimg{border-radius:50%;object-fit:cover;border:3px solid #fff;box-shadow:0 4px 12px rgba(1,34,64,.25);}
+  .lb-avatxt{border-radius:50%;background:#123a68;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;border:3px solid #fff;box-shadow:0 4px 12px rgba(1,34,64,.25);}
+  .lb-avaimg.lb-big,.lb-avatxt.lb-big{width:58px;height:58px;font-size:24px;}
+  .lb-1 .lb-avaimg.lb-big,.lb-1 .lb-avatxt.lb-big{width:74px;height:74px;font-size:30px;border-color:#F4D700;}
+  .lb-name{font-weight:800;color:#10233d;font-size:13px;line-height:1.15;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .lb-sub{font-size:10.5px;color:#6b7f99;margin:1px 0 2px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .lb-ig{font-size:10.5px;color:#bd0026;text-decoration:none;margin-bottom:8px;}
+  .lb-ig:hover{text-decoration:underline;}
+  .lb-pedestal{width:100%;border-radius:12px 12px 0 0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:9px;position:relative;box-shadow:inset 0 2px 0 rgba(255,255,255,.4);}
+  .lb-ped1{height:106px;background:linear-gradient(180deg,#ffd84d,#e0a800);color:#5a4300;}
+  .lb-ped2{height:80px;background:linear-gradient(180deg,#d3dbe6,#9fb0c4);color:#2a3a4d;}
+  .lb-ped3{height:62px;background:linear-gradient(180deg,#eabf93,#c98a4f);color:#5a3417;}
+  .lb-pts{font-size:20px;font-weight:900;line-height:1;}
+  .lb-1 .lb-pts{font-size:25px;}
+  .lb-ptslabel{font-size:9px;font-weight:800;opacity:.8;text-transform:uppercase;letter-spacing:.5px;}
+  .lb-rank{position:absolute;bottom:4px;font-size:28px;font-weight:900;opacity:.3;}
+  .lb-list{margin-top:12px;display:flex;flex-direction:column;gap:6px;}
+  .lb-row{display:flex;align-items:center;gap:10px;padding:8px 12px;background:#fff;border:1px solid #e9edf3;border-radius:12px;}
+  .lb-row.lb-zero{opacity:.5;}
+  .lb-rk{flex:none;width:24px;text-align:center;font-weight:800;color:#8a93a0;font-size:13px;}
+  .lb-avaimg.lb-sm,.lb-avatxt.lb-sm{width:38px;height:38px;font-size:16px;flex:none;}
+  .lb-rinfo{flex:1;min-width:0;}
+  .lb-rname{font-weight:700;color:#10233d;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .lb-tag{font-size:10px;color:#8a93a0;font-weight:600;}
+  .lb-ig2{font-size:11px;color:#bd0026;text-decoration:none;}
+  .lb-ig2:hover{text-decoration:underline;}
+  .lb-city{font-size:11px;color:#8a93a0;}
+  .lb-stats{display:flex;gap:10px;font-size:11.5px;color:#6b7f99;flex:none;}
+  .lb-rpts{flex:none;text-align:right;font-weight:900;color:#012240;font-size:16px;min-width:54px;}
+  .lb-rpts small{display:block;font-size:9px;font-weight:700;color:#8a93a0;text-transform:uppercase;letter-spacing:.4px;}
+  .lb-foot{font-size:11px;color:#8a93a0;margin-top:12px;}
+  @media (max-width:560px){
+    .lb-avaimg.lb-big,.lb-avatxt.lb-big{width:46px;height:46px;font-size:19px;}
+    .lb-1 .lb-avaimg.lb-big,.lb-1 .lb-avatxt.lb-big{width:58px;height:58px;font-size:24px;}
+    .lb-ped1{height:84px;} .lb-ped2{height:64px;} .lb-ped3{height:50px;}
+    .lb-name{font-size:11.5px;} .lb-stats{display:none;} .lb-podium{gap:5px;padding:14px 4px 6px;}
+    .lb-rpts{font-size:15px;min-width:44px;}
+  }
 </style>
 </head>
 <body>
@@ -261,7 +311,7 @@ table.dash-tb tr:hover td{background:#f4f7fb;}
   <div class="brand">Votação — Cezinha <small>SP · 2022</small></div>
   <div class="search"><span class="ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span><input id="q" type="search" placeholder="Buscar cidade, dobrada, coordenador, zona ou bairro…" autocomplete="off"><div id="q-sug" class="sug" hidden></div></div>
   <button type="button" id="massdob-btn" title="Dobrada em massa"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></button>
-  <button type="button" id="rank-btn" title="Ranking de Engajamento" onclick="openRank()"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></button><button type="button" id="dash-btn" title="Gestão e Estratégia de Votos"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></button><button type="button" id="dir-btn" title="Lista de coordenadores e lideranças"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg></button>
+  <button type="button" id="rank-btn" title="Ranking de Engajamento" onclick="openRank()"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg></button><button type="button" id="dash-btn" title="Gestão e Estratégia de Votos"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></button><button type="button" id="dir-btn" title="Lista de coordenadores e lideranças"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg></button>
   <button type="button" id="admin-btn" title="Controle de acesso" onclick="openAdmin()"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span class="adm-badge" id="admin-pend-badge" style="display:none">0</span></button>
   <span id="user-badge"><span class="ub-dot"></span><span class="ub-name"></span><button type="button" class="ub-logout" onclick="doLogout()">sair</button></span>
 </div>
@@ -958,7 +1008,7 @@ function dirAdd(tipo){ var v=(document.getElementById('dir-add-city').value||'')
 
 // ===== Ranking de Engajamento (Instagram) =====
 function igHandle(v){ if(!v) return ''; v=(''+v).trim(); var m=v.match(/instagram\.com\/([^/?#]+)/i); if(m) v=m[1]; v=v.replace(/^@+/,'').replace(/\/+$/,'').replace(/\s+/g,'').trim(); return v.toLowerCase(); }
-function gatherIgMap(){ var mp={}; function add(p,tipo){ var h=igHandle(p.instagram); if(!h) return; if(!mp[h]) mp[h]={handle:h,nome:p.nome,tipo:tipo,cidade:p.municipio_nome||''}; }
+function gatherIgMap(){ var mp={}; function add(p,tipo){ var h=igHandle(p.instagram); if(!h) return; if(!mp[h]) mp[h]={handle:h,nome:p.nome,tipo:tipo,cidade:p.municipio_nome||'',foto:p.foto_url||''}; }
   for(var c in COORD){ (COORD[c]||[]).forEach(function(p){ add(p,'coord'); }); }
   for(var l in LIDER){ (LIDER[l]||[]).forEach(function(p){ add(p,'lider'); }); }
   return mp; }
@@ -980,26 +1030,42 @@ function loadRank(){
     renderRank(data, igmap, dias);
   }, function(err){ if(go) go.disabled=false; if(body) body.innerHTML='<p style="color:#bd0026;font-size:13px">Falha na consulta: '+esc(String((err&&err.message)||err))+'</p>'; rankStatus(''); });
 }
+function lbAva(r,cls){ return r.foto?('<img class="lb-avaimg '+(cls||'')+'" src="'+esc(r.foto)+'" alt="">'):('<div class="lb-avatxt '+(cls||'')+'">'+esc((r.nome||'?').slice(0,1).toUpperCase())+'</div>'); }
 function renderRank(data, igmap, dias){
   var rows=(data.resultados||[]).map(function(r){ var info=igmap[igHandle(r.usuario)]||{}; return {
-    usuario:r.usuario, nome:info.nome||r.usuario, tipo:info.tipo||'', cidade:info.cidade||'',
+    usuario:r.usuario, nome:info.nome||r.usuario, tipo:info.tipo||'', cidade:info.cidade||'', foto:info.foto||'',
     encontrado:!!r.encontrado, publicacoes:r.publicacoes||0, comentarios:r.comentarios||0, total:r.total||0,
     posicao:r.posicao, percentil:r.percentil }; });
   rows.sort(function(a,b){ if(b.total!==a.total) return b.total-a.total; return (a.nome||'').localeCompare(b.nome||'','pt-BR'); });
   var enc=rows.filter(function(r){return r.encontrado;}).length;
   rankStatus(data.consultados+' consultados · '+enc+' com atividade · '+((data.periodo&&data.periodo.dias)||dias)+' dias');
-  var th='<tr><th class="num">#</th><th>Nome</th><th>Instagram</th><th class="num">Public.</th><th class="num">Comentários</th><th class="num">Engajamento</th><th class="num">Percentil</th><th class="num">Pos. geral</th></tr>';
-  var tb=rows.map(function(r,i){ var pos=i+1; var pc=pos<=3?(' top'+pos):''; var trc=r.encontrado?'':' class="naoencontrado"';
-    return '<tr'+trc+'><td class="num"><span class="rk-pos'+pc+'">'+pos+'</span></td>'+
-      '<td><b>'+esc(r.nome)+'</b>'+(r.tipo?' <small style=\'color:#8a93a0\'>'+(r.tipo==='coord'?'coord.':'liderança')+'</small>':'')+(r.cidade?'<div style="font-size:10.5px;color:#8a93a0">'+esc(r.cidade)+'</div>':'')+'</td>'+
-      '<td><a class="rk-ig" href="https://instagram.com/'+encodeURIComponent(r.usuario)+'" target="_blank" rel="noopener">@'+esc(r.usuario)+'</a></td>'+
-      '<td class="num">'+fmt(r.publicacoes)+'</td><td class="num">'+fmt(r.comentarios)+'</td>'+
-      '<td class="num"><b>'+fmt(r.total)+'</b></td>'+
-      '<td class="num">'+(r.percentil!=null?r.percentil+'%':'—')+'</td>'+
-      '<td class="num">'+(r.posicao!=null?r.posicao+'º':'—')+'</td></tr>'; }).join('');
-  document.getElementById('rank-body').innerHTML='<div class="rk-tbwrap"><table class="rk"><thead>'+th+'</thead><tbody>'+tb+'</tbody></table></div>'+
-    '<div style="font-size:11px;color:#8a93a0;margin-top:8px">Engajamento = comentários + respostas no período. “Pos. geral” é a posição entre os '+(data.totalNoRanking||'?')+' perfis monitorados na plataforma.</div>';
+  var medals=['🥇','🥈','🥉'];
+  function podCol(r,rank){ if(!r) return '<div class="lb-col lb-empty"></div>';
+    return '<div class="lb-col lb-'+rank+'">'
+      +'<div class="lb-medal">'+medals[rank-1]+'</div>'
+      +'<div class="lb-avawrap">'+lbAva(r,'lb-big')+'</div>'
+      +'<div class="lb-name" title="'+esc(r.nome)+'">'+esc(r.nome)+'</div>'
+      +'<div class="lb-sub">'+(r.tipo?(r.tipo==='coord'?'Coordenador':'Liderança'):'')+(r.cidade?' · '+esc(r.cidade):'')+'</div>'
+      +'<a class="lb-ig" href="https://instagram.com/'+encodeURIComponent(r.usuario)+'" target="_blank" rel="noopener">@'+esc(r.usuario)+'</a>'
+      +'<div class="lb-pedestal lb-ped'+rank+'"><div class="lb-pts">'+fmt(r.total)+'</div><div class="lb-ptslabel">engaj.</div><div class="lb-rank">'+rank+'</div></div>'
+      +'</div>'; }
+  var top=rows.slice(0,3);
+  var podium='<div class="lb-podium">'+podCol(top[1],2)+podCol(top[0],1)+podCol(top[2],3)+'</div>';
+  var rest=rows.slice(3);
+  var list=rest.map(function(r,i){ var pos=i+4; var z=r.total<=0?' lb-zero':'';
+    return '<div class="lb-row'+z+'">'
+      +'<div class="lb-rk">'+pos+'</div>'
+      +lbAva(r,'lb-sm')
+      +'<div class="lb-rinfo"><div class="lb-rname">'+esc(r.nome)+(r.tipo?' <span class="lb-tag">'+(r.tipo==='coord'?'coord.':'liderança')+'</span>':'')+'</div>'
+      +'<a class="lb-ig2" href="https://instagram.com/'+encodeURIComponent(r.usuario)+'" target="_blank" rel="noopener">@'+esc(r.usuario)+'</a>'+(r.cidade?' <span class="lb-city">· '+esc(r.cidade)+'</span>':'')+'</div>'
+      +'<div class="lb-stats"><span title="Publicações">📸 '+fmt(r.publicacoes)+'</span><span title="Comentários">💬 '+fmt(r.comentarios)+'</span></div>'
+      +'<div class="lb-rpts">'+fmt(r.total)+'<small>engaj.</small></div>'
+      +'</div>'; }).join('');
+  var listWrap=rest.length?('<div class="lb-list">'+list+'</div>'):'';
+  document.getElementById('rank-body').innerHTML=podium+listWrap
+    +'<div class="lb-foot">Engajamento = comentários + respostas no período. A posição geral considera os '+(data.totalNoRanking||'?')+' perfis monitorados na plataforma.</div>';
 }
+
 // ===== fim ranking =====
 
 function initPeople(){
