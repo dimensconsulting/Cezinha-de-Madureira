@@ -1088,17 +1088,30 @@ function renderRank(data, igmap, dias){
     +'<div class="lb-foot">Faróis: <b style="color:#2fb457">verde</b> ≥70% · <b style="color:#c9a227">amarelo</b> 30–69% · <b style="color:#e5484d">vermelho</b> &lt;30% (percentil). Engajamento = comentários + respostas no período.</div>';
 }
 function exportRankXls(){
-  if(!LAST_RANK||!LAST_RANK.length){ alert('Gere o ranking primeiro (clique em Atualizar).'); return; }
   if(typeof XLSX==='undefined'){ alert('Biblioteca de Excel ainda carregando. Tente novamente em instantes.'); return; }
+  var dobSel=(document.getElementById('rank-dobrada')||{}).value||'__todas';
+  var coordById={}; for(var cc in COORD){ (COORD[cc]||[]).forEach(function(x){ coordById[x.id]=x; }); }
+  var rankByHandle={}; (LAST_RANK||[]).forEach(function(r,i){ var h=igHandle(r.usuario); if(h) rankByHandle[h]={pos:i+1,total:r.total}; });
+  var people=[];
+  function push(p,tipo){ var dob=p.dobrada||''; if(dobSel!=='__todas' && dob!==dobSel) return; var h=igHandle(p.instagram); var rk=h?rankByHandle[h]:null;
+    people.push({tipo:tipo,nome:p.nome||'',handle:h,instagramRaw:p.instagram||'',telefone:p.telefone||'',dobrada:dob,
+      coordNome:(tipo==='lider'&&p.coordenador_id&&coordById[p.coordenador_id])?coordById[p.coordenador_id].nome:'',
+      pos:rk?rk.pos:null,total:rk?rk.total:null}); }
+  for(var c in COORD){ (COORD[c]||[]).forEach(function(p){ push(p,'coord'); }); }
+  for(var l in LIDER){ (LIDER[l]||[]).forEach(function(p){ push(p,'lider'); }); }
+  if(!people.length){ alert('Nenhum cadastro para exportar'+(dobSel!=='__todas'?' nesta dobrada':'')+'.'); return; }
+  function grp(p){ if(p.pos!=null) return 0; if(p.handle) return 1; return 2; }
+  people.sort(function(a,b){ var ga=grp(a),gb=grp(b); if(ga!==gb) return ga-gb; if(ga===0) return a.pos-b.pos; return (a.nome||'').localeCompare(b.nome||'','pt-BR'); });
   var aoa=[['Posição','Nome','Instagram','Contato','Coordenador responsável','Dobrada']];
-  LAST_RANK.forEach(function(r,i){ aoa.push([i+1, r.nome||'', r.usuario?('@'+r.usuario):'', r.telefone||'', r.coordNome||'', r.dobrada||'']); });
+  people.forEach(function(p){ aoa.push([ (p.pos!=null?p.pos:''), p.nome, (p.handle?('@'+p.handle):(p.instagramRaw||'')), p.telefone||'', p.coordNome||'', p.dobrada||'' ]); });
   var ws=XLSX.utils.aoa_to_sheet(aoa);
   ws['!cols']=[{wch:9},{wch:30},{wch:24},{wch:16},{wch:26},{wch:20}];
-  var wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,'Ranking');
+  ws['!autofilter']={ref:'A1:F'+aoa.length};
+  var wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,'Base');
   var dias=parseInt((document.getElementById('rank-dias')||{}).value)||7;
-  var dob=(document.getElementById('rank-dobrada')||{}).value||'__todas';
-  var suf=(dob&&dob!=='__todas')?('_'+dob.replace(/[^a-zA-Z0-9]+/g,'-')):'';
-  XLSX.writeFile(wb,'ranking_engajamento_'+dias+'dias'+suf+'.xlsx');
+  var suf=(dobSel&&dobSel!=='__todas')?('_'+dobSel.replace(/[^a-zA-Z0-9]+/g,'-')):'';
+  var semig=people.filter(function(p){return !p.handle;}).length;
+  XLSX.writeFile(wb,'base_ranking_'+dias+'dias'+suf+(semig?('_'+semig+'-sem-instagram'):'')+'.xlsx');
 }
 // ===== fim ranking =====
 
