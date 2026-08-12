@@ -944,7 +944,7 @@
           <div class="dm-left"><div id="dobmat-ficha"></div></div>
           <div class="dm-right">
             <div style="font-size:12px;color:var(--grey-2);margin:0 0 10px">Ative os materiais desta dobrada, informe a quantidade, o status e anexe a arte.</div>
-            <button type="button" id="dobmat-bulk-btn" class="dm-bulkbtn">&#11014; Subir v&aacute;rias artes de uma vez</button>
+            <div style="display:flex;align-items:center;gap:8px;margin:0 0 10px;flex-wrap:wrap"><label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--grey-2);flex:none"><span>Respons&aacute;vel:</span><select id="dm-resp" style="background:var(--bg);border:1px solid var(--line);color:#e9eef6;border-radius:6px;padding:6px 8px;font-size:13px"><option value="">Nenhum</option><option value="Heitor">Heitor</option><option value="Kaique">Kaique</option></select></label><button type="button" id="dobmat-bulk-btn" class="dm-bulkbtn" style="flex:1;margin:0">&#11014; Subir v&aacute;rias artes de uma vez</button></div>
             <div id="dobmat-body"></div>
           </div>
         </div>
@@ -1119,6 +1119,7 @@
           +fcAsset('curriculo','Curr&iacute;culo',f.curriculo_ok,f.curriculo_url)
           +'</div></div>';
         try{ hydratePdfThumbs(); }catch(_e){}
+        var _rs=gid('dm-resp'); if(_rs) _rs.value=CURFICHA.responsavel_interno||'';
       }
       function saveFicha(patch){ if(!ensureSB()||!CURDOB) return; Object.keys(patch).forEach(function(k){ CURFICHA[k]=patch[k]; }); var payload=Object.assign({dobrada_id:CURDOB.id,updated_at:new Date().toISOString()},patch); sb.from('dobrada_entrega').upsert(payload,{onConflict:'dobrada_id'}).then(function(r){ if(r&&r.error) console.warn('ficha',r.error); }); }
       function uploadFichaAsset(k,file){ if(!ensureSB()||!CURDOB) return; upStart(); var ext=(file.name.split('.').pop()||'bin').toLowerCase(); var path='entrega/'+CURDOB.id+'/'+k+'-'+Date.now()+'.'+ext; sb.storage.from('criativos').upload(path,file,{contentType:file.type||'application/octet-stream',upsert:true}).then(function(up){ if(up.error){ upEnd(); alert('Erro no upload: '+up.error.message); renderFicha(CURFICHA); return; } var url=sb.storage.from('criativos').getPublicUrl(path).data.publicUrl; var patch={}; patch[k+'_url']=url; patch[k+'_ok']=true; saveFicha(patch); renderFicha(CURFICHA); upEnd(); },function(){ upEnd(); renderFicha(CURFICHA); }); }
@@ -1172,6 +1173,7 @@
         ensureSB(); var el=e.target;
         if(el.id==='bulk-files'){ onBulkFiles(el.files); return; }
         if(el.id==='entrega-filtro'){ renderEntrega(); return; }
+        if(el.id==='dm-resp'){ var _rv=el.value||null; saveFicha({responsavel_interno:_rv}); CURFICHA.responsavel_interno=_rv; if(window.refreshDobradasMeta) window.refreshDobradasMeta(); return; }
         if(el.id==='fc-resp'){ saveFicha({responsavel_nome:el.value.trim()}); return; }
         if(el.id==='fc-whats'){ saveFicha({responsavel_whatsapp:el.value.trim()}); renderFicha(CURFICHA); return; }
         if(el.id==='fc-cargo'){ saveFicha({cargo:el.value.trim()}); return; }
@@ -1401,6 +1403,9 @@
     #calendario .cal-dwd{font-size:11px;color:var(--grey-2);text-transform:uppercase;letter-spacing:.5px}
     #calendario .cal-dnum{font-family:'Archivo Black',sans-serif;font-size:15px;color:#fff}
     #calendario .cal-dadd{cursor:pointer;color:var(--grey-2);font-size:16px;font-weight:700;border:none;background:none;line-height:1}
+    #calendario [draggable="true"]{cursor:grab}
+    #calendario [draggable="true"]:active{cursor:grabbing}
+    #calendario .cal-drop{outline:2px dashed var(--lime)!important;outline-offset:-2px;background:rgba(244,215,0,.12)!important}
     #calendario .cal-chip{text-align:left;width:100%;background:var(--panel-2);border:1px solid var(--line);border-left:3px solid var(--grey-2);border-radius:6px;padding:5px 7px;margin-bottom:5px;cursor:pointer;color:#e9eef6;font-size:12px;line-height:1.25}
     #calendario .cal-chip .t{font-weight:700;display:block}
     #calendario .cal-chip .m{color:var(--grey-2);font-size:10.5px;margin-top:2px;display:flex;gap:5px;flex-wrap:wrap;align-items:center}
@@ -1784,9 +1789,9 @@
     var items=[];
     var sortMode='alpha'; try{ sortMode=localStorage.getItem('dobradas_sort')||'alpha'; }catch(e){}
     var order=['blue','green','rocket','proibido'];
-    var ASSETS={}, MATDONE={};
+    var ASSETS={}, MATDONE={}, RESP={};
     function loadMats(cb){ if(!sb){ if(cb)cb(); return; } sb.from('dobrada_materiais').select('dobrada_id,ativo,arte_url').then(function(res){ var agg={}; (res&&res.data?res.data:[]).forEach(function(r){ if(!r.ativo) return; var a=agg[r.dobrada_id]=agg[r.dobrada_id]||{t:0,c:0}; a.t++; if(r.arte_url) a.c++; }); MATDONE={}; Object.keys(agg).forEach(function(d){ if(agg[d].t>0 && agg[d].c===agg[d].t) MATDONE[d]=true; }); if(cb)cb(); },function(){ if(cb)cb(); }); }
-    function loadAssets(cb){ if(!sb){ if(cb)cb(); return; } sb.from('dobrada_entrega').select('dobrada_id,foto_ok,logo_ok,curriculo_ok,curriculo_url,fotos,logos').then(function(res){ ASSETS={}; (res&&res.data?res.data:[]).forEach(function(r){ var has=r.foto_ok||r.logo_ok||r.curriculo_ok||r.curriculo_url||(r.fotos&&r.fotos.length)||(r.logos&&r.logos.length); if(has) ASSETS[r.dobrada_id]=true; }); if(cb)cb(); },function(){ if(cb)cb(); }); }
+    function loadAssets(cb){ if(!sb){ if(cb)cb(); return; } sb.from('dobrada_entrega').select('dobrada_id,foto_ok,logo_ok,curriculo_ok,curriculo_url,fotos,logos,responsavel_interno').then(function(res){ ASSETS={}; RESP={}; (res&&res.data?res.data:[]).forEach(function(r){ var has=r.foto_ok||r.logo_ok||r.curriculo_ok||r.curriculo_url||(r.fotos&&r.fotos.length)||(r.logos&&r.logos.length); if(has) ASSETS[r.dobrada_id]=true; if(r.responsavel_interno) RESP[r.dobrada_id]=r.responsavel_interno; }); if(cb)cb(); },function(){ if(cb)cb(); }); }
     function statusRank(s){ var r={green:0,rocket:1,blue:2,proibido:3}; return (s in r)?r[s]:9; }
     function norm(s){ return (s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase(); }
     function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
@@ -1807,7 +1812,7 @@
       var ig=document.createElement('span'); ig.style.cssText='cursor:pointer;flex:none;margin-top:1px'; ig.innerHTML=igHTML(!!it.instagram); ig.title=it.instagram?('Abrir Instagram: '+it.instagram):'Sem link — clique para adicionar';
       ig.onclick=function(){ if(it.instagram){ window.open(it.instagram,'_blank','noopener'); } else { editLink(it); } };
       var cons=null; if(MATDONE[it.id]){ cons=document.createElement('span'); cons.style.cssText='flex:none;margin-top:1px'; cons.title='Pronto para impressão — todos os materiais com arte'; cons.innerHTML='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#37c871" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>'; } else if(ASSETS[it.id]){ cons=document.createElement('span'); cons.style.cssText='flex:none;margin-top:1px'; cons.title='Em constru\u00e7\u00e3o \u2014 j\u00e1 recebeu foto/logo/curr\u00edculo'; cons.innerHTML='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#F4D700" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>'; }
-      var nm=document.createElement('span'); nm.style.cssText='flex:1;min-width:0;cursor:pointer'; nm.title='Materiais desta dobrada'; nm.innerHTML='<span style="color:#e9eef6">'+esc(it.nome)+'</span>'+(it.regiao?' <span style="color:var(--grey-2)">— '+esc(it.regiao)+'</span>':''); nm.onclick=function(){ if(window.openDobradaMateriais) window.openDobradaMateriais(it); };
+      var nm=document.createElement('span'); nm.style.cssText='flex:1;min-width:0;cursor:pointer'; nm.title='Materiais desta dobrada'; nm.innerHTML='<span style="color:#e9eef6">'+esc(it.nome)+'</span>'+(it.regiao?' <span style="color:var(--grey-2)">— '+esc(it.regiao)+'</span>':'')+(RESP[it.id]?' <span style="color:#F4D700;font-weight:700">('+esc(RESP[it.id])+')</span>':''); nm.onclick=function(){ if(window.openDobradaMateriais) window.openDobradaMateriais(it); };
       var ed=document.createElement('span'); ed.textContent='✎'; ed.title='Editar link do Instagram'; ed.style.cssText='cursor:pointer;flex:none;color:var(--grey-2);font-size:13px;margin-top:1px'; ed.onclick=function(){ editLink(it); };
       li.appendChild(sic); li.appendChild(ig); if(cons) li.appendChild(cons); li.appendChild(nm); li.appendChild(ed);
       var rm=document.createElement('span'); rm.textContent='✕'; rm.title='Remover'; rm.style.cssText='cursor:pointer;flex:none;color:var(--grey-2);font-size:12px;margin-top:1px'; rm.onclick=function(){ removeItem(it); }; li.appendChild(rm);
@@ -1852,12 +1857,12 @@
       var col=ST_COLOR[it.status]||'#6f88a8';
       var rd=(it.redes||[]).map(function(r){return '<span class="cal-rd" style="background:'+(RD_COLOR[r]||'#888')+'" title="'+r+'"></span>';}).join('');
       var meta=[]; if(it.hora)meta.push(esc(it.hora.slice(0,5))); if(it.formato&&it.formato.length)meta.push(esc([].concat(it.formato).join(', ')));
-      return '<button type="button" class="cal-chip" data-id="'+it.id+'" style="border-left-color:'+col+'"><span class="t">'+esc(it.titulo)+'</span><span class="m">'+rd+(meta.length?'<span>'+meta.join(' · ')+'</span>':'')+'</span></button>';
+      return '<button type="button" class="cal-chip" draggable="true" data-id="'+it.id+'" style="border-left-color:'+col+'"><span class="t">'+esc(it.titulo)+'</span><span class="m">'+rd+(meta.length?'<span>'+meta.join(' · ')+'</span>':'')+'</span></button>';
     }
     function renderWeek(){
       var s=startOfWeek(cursor), e=addDays(s,6), html='<div class="cal-week">';
       for(var i=0;i<7;i++){ var d=addDays(s,i), ds=ymd(d), list=itemsOn(ds);
-        html+='<div class="cal-daycol'+(sameDay(d,today)?' today':'')+'"><div class="cal-dhead"><span><span class="cal-dwd">'+WD[i]+'</span> <span class="cal-dnum">'+d.getDate()+'</span></span><button type="button" class="cal-dadd" data-add="'+ds+'" title="Novo conteúdo">＋</button></div>';
+        html+='<div class="cal-daycol'+(sameDay(d,today)?' today':'')+'" data-day="'+ds+'"><div class="cal-dhead"><span><span class="cal-dwd">'+WD[i]+'</span> <span class="cal-dnum">'+d.getDate()+'</span></span><button type="button" class="cal-dadd" data-add="'+ds+'" title="Novo conteúdo">＋</button></div>';
         var evs=eventsOn(ds);
         if(evs.length||list.length){ evs.forEach(function(e){html+=evChip(e);}); list.forEach(function(it){html+=chip(it);}); } else { html+='<div class="cal-empty">—</div>'; }
         html+='</div>';
@@ -1870,9 +1875,9 @@
       var y=cursor.getFullYear(), m=cursor.getMonth(), start=startOfWeek(new Date(y,m,1)), html='<div class="cal-month">';
       WD.forEach(function(w){html+='<div class="cal-mwd">'+w+'</div>';});
       for(var i=0;i<42;i++){ var d=addDays(start,i), ds=ymd(d), out=(d.getMonth()!=m), list=itemsOn(ds);
-        html+='<div class="cal-mcell'+(out?' out':'')+(sameDay(d,today)?' today':'')+'" data-add="'+ds+'"><div class="cal-mnum">'+d.getDate()+'</div>';
-        var evs=eventsOn(ds); evs.slice(0,2).forEach(function(e){html+='<div class="cal-mchip cal-mev" data-eid="'+e.id+'">\uD83D\uDCCC '+esc(e.descricao)+'</div>';});
-        list.slice(0,3).forEach(function(it){var col=ST_COLOR[it.status]||'#6f88a8';html+='<div class="cal-mchip" data-id="'+it.id+'" style="border-left-color:'+col+'">'+esc(it.titulo)+'</div>';});
+        html+='<div class="cal-mcell'+(out?' out':'')+(sameDay(d,today)?' today':'')+'" data-add="'+ds+'" data-day="'+ds+'"><div class="cal-mnum">'+d.getDate()+'</div>';
+        var evs=eventsOn(ds); evs.slice(0,2).forEach(function(e){html+='<div class="cal-mchip cal-mev" draggable="true" data-eid="'+e.id+'">\uD83D\uDCCC '+esc(e.descricao)+'</div>';});
+        list.slice(0,3).forEach(function(it){var col=ST_COLOR[it.status]||'#6f88a8';html+='<div class="cal-mchip" draggable="true" data-id="'+it.id+'" style="border-left-color:'+col+'">'+esc(it.titulo)+'</div>';});
         if(list.length>3)html+='<div class="cal-mmore">+'+(list.length-3)+' mais</div>';
         html+='</div>';
       }
@@ -1929,7 +1934,7 @@
     function delForm(){ if(!editId)return; if(!confirm('Excluir este conteúdo?'))return; sb.from('calendario_editorial').delete().eq('id',editId).then(function(){closeForm();loadAll();}); }
     function loadAll(){ sb.from('calendario_editorial').select('*').order('data',{ascending:true}).order('hora',{ascending:true}).then(function(res){ items=(res&&res.data)?res.data:[]; sb.from('eventos').select('*').order('data',{ascending:true}).order('hora',{ascending:true}).then(function(r2){ eventos=(r2&&r2.data)?r2.data:[]; render(); }); }); }
     function eventsOn(ds){ return eventos.filter(function(e){return e.data==ds;}).sort(function(a,b){return((a.hora||'99')<(b.hora||'99'))?-1:1;}); }
-    function evChip(e){ return '<button type="button" class="cal-evchip" data-eid="'+e.id+'"><span class="t">\uD83D\uDCCC '+esc(e.descricao)+'</span>'+(e.hora?'<span class="m">'+esc(e.hora.slice(0,5))+'</span>':'')+'</button>'; }
+    function evChip(e){ return '<button type="button" class="cal-evchip" draggable="true" data-eid="'+e.id+'"><span class="t">\uD83D\uDCCC '+esc(e.descricao)+'</span>'+(e.hora?'<span class="m">'+esc(e.hora.slice(0,5))+'</span>':'')+'</button>'; }
 
     function rangeBounds(){ if(view=='semana'){var s=startOfWeek(cursor);return [s,addDays(s,6)];} if(view=='mes'){var y=cursor.getFullYear(),m=cursor.getMonth();return [new Date(y,m,1),new Date(y,m+1,0)];} var yy=cursor.getFullYear(); return [new Date(yy,0,1),new Date(yy,11,31)]; }
     var WDF=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
@@ -1947,6 +1952,7 @@
       return out;
     }
     function shareWhats(){ var t=buildExport(); window.open('https://wa.me/?text='+encodeURIComponent(t),'_blank'); }
+    function moveDrag(d,nd){ if(!d||!nd)return; var arr=d.t=='e'?eventos:items, hit=null; for(var i=0;i<arr.length;i++){ if(arr[i].id==d.id){hit=arr[i];break;} } if(!hit||hit.data==nd)return; hit.data=nd; render(); var table=d.t=='e'?'eventos':'calendario_editorial'; sb.from(table).update({data:nd}).eq('id',d.id).then(function(res){ if(res&&res.error){ alert('Erro ao mover: '+res.error.message); loadAll(); } },function(){ alert('Erro ao mover.'); loadAll(); }); }
     function openEvent(id,ds){
       editEv=id||null; var e=null; if(id){ for(var i=0;i<eventos.length;i++){ if(eventos[i].id==id){e=eventos[i];break;} } }
       $('cal-ev-data').value=e?e.data:(ds||ymd(cursor));
@@ -1990,6 +1996,13 @@
         var yd=e.target.closest('[data-date]'); if(yd){ cursor=parseYMD(yd.getAttribute('data-date')); view='mes'; render(); return; }
         var ad=e.target.closest('[data-add]'); if(ad){ openForm(null,ad.getAttribute('data-add')); return; }
       });
+      var DRAG=null,_dropCell=null;
+      function _clearDrop(){ if(_dropCell){_dropCell.classList.remove('cal-drop');_dropCell=null;} }
+      var _cb=$('cal-body');
+      _cb.addEventListener('dragstart',function(e){ var c=e.target.closest&&e.target.closest('[data-id],[data-eid]'); if(!c)return; var eid=c.getAttribute('data-eid'), id=c.getAttribute('data-id'); DRAG=eid?{t:'e',id:eid}:{t:'c',id:id}; try{e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',DRAG.id);}catch(_){} c.style.opacity='.45'; });
+      _cb.addEventListener('dragend',function(e){ var c=e.target.closest&&e.target.closest('[data-id],[data-eid]'); if(c)c.style.opacity=''; _clearDrop(); DRAG=null; });
+      _cb.addEventListener('dragover',function(e){ if(!DRAG)return; var cell=e.target.closest&&e.target.closest('[data-day]'); if(!cell)return; e.preventDefault(); try{e.dataTransfer.dropEffect='move';}catch(_){} if(_dropCell!==cell){ _clearDrop(); cell.classList.add('cal-drop'); _dropCell=cell; } });
+      _cb.addEventListener('drop',function(e){ if(!DRAG)return; var cell=e.target.closest&&e.target.closest('[data-day]'); if(!cell)return; e.preventDefault(); var nd=cell.getAttribute('data-day'); var d=DRAG; DRAG=null; _clearDrop(); moveDrag(d,nd); });
       render(); loadAll();
       sb.channel('cal_rt').on('postgres_changes',{event:'*',schema:'public',table:'calendario_editorial'},function(){ loadAll(); }).subscribe();
     }
