@@ -796,6 +796,19 @@
       </div>
     </div>
 
+    <div id="dob-edit-ov" style="display:none;position:fixed;inset:0;background:rgba(1,8,20,.72);z-index:200;align-items:center;justify-content:center;padding:16px">
+      <div style="background:var(--bg);border:1px solid var(--line);border-radius:14px;max-width:460px;width:100%;padding:22px">
+        <div style="font-family:'Archivo Black',sans-serif;font-size:18px;color:#fff;margin:0 0 6px">Editar dobrada</div>
+        <label style="display:block;font-size:12px;color:var(--grey-2);margin:10px 0 4px;margin-top:2px">Nome</label><input id="dob-ed-nome" placeholder="Nome" style="background:var(--panel-2);border:1px solid var(--line);color:#e9eef6;font-size:13px;padding:9px 11px;border-radius:6px;width:100%;box-sizing:border-box">
+        <label style="display:block;font-size:12px;color:var(--grey-2);margin:10px 0 4px">Regi&atilde;o</label><input id="dob-ed-regiao" placeholder="Regi&atilde;o" style="background:var(--panel-2);border:1px solid var(--line);color:#e9eef6;font-size:13px;padding:9px 11px;border-radius:6px;width:100%;box-sizing:border-box">
+        <label style="display:block;font-size:12px;color:var(--grey-2);margin:10px 0 4px">Instagram (@ ou link)</label><input id="dob-ed-ig" placeholder="Instagram (@ ou link)" style="background:var(--panel-2);border:1px solid var(--line);color:#e9eef6;font-size:13px;padding:9px 11px;border-radius:6px;width:100%;box-sizing:border-box">
+        <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:20px">
+          <button id="dob-ed-cancel" style="background:transparent;color:#e9eef6;border:1px solid var(--line);font-weight:700;font-size:13px;padding:9px 16px;border-radius:6px;cursor:pointer">Cancelar</button>
+          <button id="dob-ed-save" style="background:var(--lime);color:#000;border:1px solid var(--lime);font-weight:700;font-size:13px;padding:9px 20px;border-radius:6px;cursor:pointer">Salvar</button>
+        </div>
+      </div>
+    </div>
+
         <!-- ===== Materiais por dobrada ===== -->
     <style>
       .matx-ov{position:fixed;inset:0;background:rgba(2,8,18,.82);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:99990;padding:20px}
@@ -1802,7 +1815,11 @@
     function sortedItems(){ var a=items.slice(); a.sort(function(x,y){ if(sortMode==='status'){ var rx=statusRank(x.status||'blue'), ry=statusRank(y.status||'blue'); if(rx!==ry) return rx-ry; } if(sortMode==='recebido'){ var hx=ASSETS[x.id]?0:1, hy=ASSETS[y.id]?0:1; if(hx!==hy) return hx-hy; } var nx=norm(x.nome),ny=norm(y.nome); return nx<ny?-1:nx>ny?1:0; }); return a; }
     function shareWhats(){ var lines=sortedItems().map(function(it){ return statusEmoji(it.status||'blue')+' '+it.nome+(it.regiao?' - '+it.regiao:''); }); var txt='*Lista de Dobradas*\n\n'+lines.join('\n'); window.open('https://wa.me/?text='+encodeURIComponent(txt),'_blank','noopener'); }
     function upd(it,patch){ Object.keys(patch).forEach(function(k){ it[k]=patch[k]; }); if(sb) sb.from('dobradas').update(patch).eq('id',it.id).then(function(){},function(){}); }
-    function editLink(it){ var cur=it.instagram||''; var v=prompt('Instagram de '+it.nome+' (@ ou link). Vazio remove:', cur); if(v===null) return; var u=igUrl(v); upd(it,{instagram:u||null}); render(); }
+    var EDIT_DOB=null;
+    function openEdit(it){ EDIT_DOB=it; var n=document.getElementById('dob-ed-nome'), r=document.getElementById('dob-ed-regiao'), g=document.getElementById('dob-ed-ig'); if(n)n.value=it.nome||''; if(r)r.value=it.regiao||''; if(g)g.value=it.instagram||''; var ov=document.getElementById('dob-edit-ov'); if(ov)ov.style.display='flex'; if(n){n.focus();n.select();} }
+    function closeEdit(){ EDIT_DOB=null; var ov=document.getElementById('dob-edit-ov'); if(ov)ov.style.display='none'; }
+    function saveEdit(){ if(!EDIT_DOB) return; var n=(document.getElementById('dob-ed-nome').value||'').trim(); if(!n){ alert('Informe o nome.'); return; } var r=(document.getElementById('dob-ed-regiao').value||'').trim(); var g=igUrl(document.getElementById('dob-ed-ig').value); upd(EDIT_DOB,{nome:n,regiao:r||null,instagram:g||null}); closeEdit(); render(); }
+    function editLink(it){ openEdit(it); }
     function removeItem(it){ if(!confirm('Remover '+it.nome+'?')) return; items=items.filter(function(x){return x.id!==it.id;}); if(sb) sb.from('dobradas').delete().eq('id',it.id).then(function(){},function(){}); render(); }
     function render(){ var ul=document.getElementById('dob-list'); if(!ul) return; ul.innerHTML=''; sortedItems().forEach(function(it){
       var li=document.createElement('li'); li.style.cssText='break-inside:avoid;padding:5px 2px;border-bottom:1px solid var(--line);font-size:13px;line-height:1.3;display:flex;align-items:flex-start;gap:6px';
@@ -1813,7 +1830,7 @@
       ig.onclick=function(){ if(it.instagram){ window.open(it.instagram,'_blank','noopener'); } else { editLink(it); } };
       var cons=null; if(MATDONE[it.id]){ cons=document.createElement('span'); cons.style.cssText='flex:none;margin-top:1px'; cons.title='Pronto para impressão — todos os materiais com arte'; cons.innerHTML='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#37c871" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>'; } else if(ASSETS[it.id]){ cons=document.createElement('span'); cons.style.cssText='flex:none;margin-top:1px'; cons.title='Em constru\u00e7\u00e3o \u2014 j\u00e1 recebeu foto/logo/curr\u00edculo'; cons.innerHTML='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#F4D700" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>'; }
       var nm=document.createElement('span'); nm.style.cssText='flex:1;min-width:0;cursor:pointer'; nm.title='Materiais desta dobrada'; nm.innerHTML='<span style="color:#e9eef6">'+esc(it.nome)+'</span>'+(it.regiao?' <span style="color:var(--grey-2)">— '+esc(it.regiao)+'</span>':'')+(RESP[it.id]?' <span style="color:#F4D700;font-weight:700">('+esc(RESP[it.id])+')</span>':''); nm.onclick=function(){ if(window.openDobradaMateriais) window.openDobradaMateriais(it); };
-      var ed=document.createElement('span'); ed.textContent='✎'; ed.title='Editar link do Instagram'; ed.style.cssText='cursor:pointer;flex:none;color:var(--grey-2);font-size:13px;margin-top:1px'; ed.onclick=function(){ editLink(it); };
+      var ed=document.createElement('span'); ed.textContent='✎'; ed.title='Editar dobrada (nome, regi\u00e3o, Instagram)'; ed.style.cssText='cursor:pointer;flex:none;color:var(--grey-2);font-size:13px;margin-top:1px'; ed.onclick=function(){ editLink(it); };
       li.appendChild(sic); li.appendChild(ig); if(cons) li.appendChild(cons); li.appendChild(nm); li.appendChild(ed);
       var rm=document.createElement('span'); rm.textContent='✕'; rm.title='Remover'; rm.style.cssText='cursor:pointer;flex:none;color:var(--grey-2);font-size:12px;margin-top:1px'; rm.onclick=function(){ removeItem(it); }; li.appendChild(rm);
       ul.appendChild(li);
@@ -1821,7 +1838,9 @@
     function addItem(){ var n=(document.getElementById('dob-add-nome').value||'').trim(); if(!n){ alert('Informe o nome.'); return; } var r=(document.getElementById('dob-add-regiao').value||'').trim(); var ig=igUrl(document.getElementById('dob-add-ig').value); if(sb){ sb.from('dobradas').insert({nome:n,regiao:r||null,instagram:ig||null,status:'blue'}).select().then(function(res){ if(res&&res.data&&res.data[0]){ items.push(res.data[0]); render(); } },function(){}); } document.getElementById('dob-add-nome').value=''; document.getElementById('dob-add-regiao').value=''; document.getElementById('dob-add-ig').value=''; }
     function load(){ if(!sb) return; sb.from('dobradas').select('*').then(function(res){ items=(res&&res.data)?res.data:[]; loadAssets(function(){ loadMats(render); }); },function(){}); }
     window.refreshDobradasMeta=function(){ loadAssets(function(){ loadMats(render); }); };
-    function init(){ var b=document.getElementById('dob-add-btn'); if(b) b.onclick=addItem; var sh=document.getElementById('dob-share'); if(sh) sh.onclick=shareWhats; var so=document.getElementById('dob-sort'); if(so){ so.value=sortMode; so.onchange=function(){ sortMode=this.value; try{localStorage.setItem('dobradas_sort',sortMode);}catch(e){} render(); }; }
+    function init(){ var b=document.getElementById('dob-add-btn'); if(b) b.onclick=addItem;
+      var _ec=document.getElementById('dob-ed-cancel'); if(_ec) _ec.onclick=closeEdit; var _es=document.getElementById('dob-ed-save'); if(_es) _es.onclick=saveEdit; var _eov=document.getElementById('dob-edit-ov'); if(_eov) _eov.addEventListener('click',function(e){ if(e.target===_eov) closeEdit(); });
+      ['dob-ed-nome','dob-ed-regiao','dob-ed-ig'].forEach(function(id){ var _x=document.getElementById(id); if(_x) _x.addEventListener('keydown',function(e){ if(e.key==='Enter'){ e.preventDefault(); saveEdit(); } else if(e.key==='Escape'){ closeEdit(); } }); }); var sh=document.getElementById('dob-share'); if(sh) sh.onclick=shareWhats; var so=document.getElementById('dob-sort'); if(so){ so.value=sortMode; so.onchange=function(){ sortMode=this.value; try{localStorage.setItem('dobradas_sort',sortMode);}catch(e){} render(); }; }
       load();
       if(sb){ sb.channel('dobradas_rt').on('postgres_changes',{event:'*',schema:'public',table:'dobradas'},function(){ load(); }).on('postgres_changes',{event:'*',schema:'public',table:'dobrada_entrega'},function(){ loadAssets(render); }).on('postgres_changes',{event:'*',schema:'public',table:'dobrada_materiais'},function(){ loadMats(render); }).subscribe(); }
     }
