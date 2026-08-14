@@ -326,7 +326,7 @@
     <h1 class="display">Andamento do<br><span class="sub">Projeto Cezinha</span></h1>
     <p class="lead">Acompanhamento da execução do plano de marketing político — Deputado Federal por São Paulo · PL · Eleições 2026. Status consolidado da Fase 1 (Diagnóstico e base) e preparação para a Fase 2.</p>
     <div class="meta-row">
-      <span class="pill lime">Fase atual: <b>F2 — Conteúdo e distribuição</b></span>
+      <span class="pill lime">Fase atual: <b>F3 — Abertura</b></span>
       <span class="pill">Atualizado em <b>15 jun 2026</b></span>
       <span class="pill purple">Dia D: <b>04 out 2026</b></span>
       <span class="pill">Campanha oficial: <b>16 ago 2026</b></span>
@@ -369,14 +369,14 @@
 
     <div class="progress-card">
       <div class="progress-head">
-        <div class="t">Fase 2 — Conteúdo e distribuição · em andamento</div>
-        <div class="p" id="pctText">30%</div>
+        <div class="t">Fase 3 — Abertura · em andamento</div>
+        <div class="p" id="pctText">10%</div>
       </div>
-      <div class="bar"><span id="bar1" data-w="30%"></span></div>
+      <div class="bar"><span id="bar1" data-w="10%"></span></div>
       <div class="phase-mini">
         <div class="pm done">F1 · Concluída</div>
-        <div class="pm now">F2 · Conteúdo</div>
-        <div class="pm">F3 · Abertura</div>
+        <div class="pm done">F2 · Conteúdo</div>
+        <div class="pm now">F3 · Abertura</div>
         <div class="pm">F4 · Aceleração</div>
         <div class="pm">F5 · Sprint final</div>
       </div>
@@ -405,25 +405,25 @@
           <li class="ok">Calendário editorial</li>
         </ul>
       </div>
-      <div class="ph now">
+      <div class="ph done">
         <div class="top"></div>
         <span class="tag">F2</span>
         <h3>Conteúdo e distribuição</h3>
         <div class="when">Jul – 15 ago · 6 sem.</div>
-        <div class="status">● Em andamento</div>
+        <div class="status">✓ Concluído</div>
         <ul>
-          <li>Reels curtos e compartilháveis</li>
-          <li>Ativação WhatsApp Communities</li>
+          <li class="ok">Reels curtos e compartilháveis</li>
+          <li class="ok">Ativação WhatsApp Communities</li>
           <li class="ok">Stories e feed em cadência diária</li>
-          <li>Rede de multiplicadores</li>
+          <li class="ok">Rede de multiplicadores</li>
         </ul>
       </div>
-      <div class="ph next">
+      <div class="ph now">
         <div class="top"></div>
         <span class="tag">F3</span>
         <h3>Abertura</h3>
         <div class="when">16 ago – 7 set · ~3 sem.</div>
-        <div class="status">Pendente</div>
+        <div class="status">● Em andamento</div>
         <ul>
           <li>Propaganda eleitoral autorizada</li>
           <li>Meta Ads ativos</li>
@@ -834,7 +834,7 @@
       .dm-tog.on{background:#25c667}
       .dm-knob{position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:left .15s}
       .dm-tog.on .dm-knob{left:21px}
-      .dm-qty{width:74px;background:var(--panel-2);border:1px solid var(--line);color:#e9eef6;border-radius:6px;padding:6px 8px;font-size:12.5px}
+      .dm-qty{width:118px;background:var(--panel-2);border:1px solid var(--line);color:#e9eef6;border-radius:6px;padding:6px 8px;font-size:12.5px}
       .dm-qty:disabled{opacity:.35}
       .dm-artcell{flex:none;display:flex;align-items:center;gap:8px;white-space:nowrap}
       .dm-art{cursor:pointer;display:inline-flex;color:#7aa2d6}
@@ -1042,7 +1042,7 @@
           return '<div class="dm-row" data-mid="'+t.id+'" data-status="'+esc(d.status_entrega||'aguardando')+'">'
             +'<div class="dm-tog'+(on?' on':'')+'" data-mid="'+t.id+'"><span class="dm-knob"></span></div>'
             +'<div class="dm-info"><div><b>'+esc(t.nome)+'</b>'+(t.tamanho?' <span style="color:var(--grey-2);font-size:12px">· '+esc(t.tamanho)+'</span>':'')+'</div>'+(on?statusSel(t.id,d.status_entrega):'')+'</div>'
-            +'<input type="number" min="0" class="dm-qty" data-mid="'+t.id+'" value="'+q+'"'+(on?'':' disabled')+'>'
+            +'<input type="number" min="0" max="99999999" class="dm-qty" data-mid="'+t.id+'" value="'+q+'"'+(on?'':' disabled')+'>'
             +'<div class="dm-artcell" data-mid="'+t.id+'">'+artCellInner(t.id,art)+'</div>'
             +'</div>'; }).join('');
       }
@@ -1208,6 +1208,166 @@
     <div class="carousel">
         <button class="car-btn prev" aria-label="Voltar">&#8249;</button>
         <div class="mat-grid">
+      <div class="mat">
+        <div class="doc"><span class="rl">Devocional</span><span class="rt">Descanso em Deus (Mt 11:28)</span><span class="rn">Episódio 07</span></div>
+        <div class="body">
+          <span class="mhead"><span class="badge done">Concluído</span><span class="cdate">Ago/2026</span></span>
+          <h4>Devocional 07 — Descanso em Deus</h4>
+          <p>Reflexão sobre entregar a Deus o cansaço e o peso da rotina, a partir de Mateus 11:28 — o descanso que Ele oferece é para a alma.</p>
+          <div class="tags"><span>Fé</span><span>Devocional</span><span>Descanso</span></div>
+          <div class="actions"><a class="open" href="Roteiros/Devocional%2007%20-%20Descanso.pdf" target="_blank" rel="noopener">Abrir roteiro →</a><a class="dl" href="Roteiros/Devocional%2007%20-%20Descanso.pdf" download>Baixar ↓</a></div>
+        </div>
+      </div>
+      <div class="mat">
+        <div class="doc"><span class="rl">Bíblia e Política</span><span class="rt">Neemias — reconstruir com propósito</span><span class="rn">Episódio 04</span></div>
+        <div class="body">
+          <span class="mhead"><span class="badge done">Concluído</span><span class="cdate">Ago/2026</span></span>
+          <h4>Bíblia e Política — Ep. 4: Neemias</h4>
+          <p>Neemias deixa o conforto do palácio para reconstruir os muros de Jerusalém: liderança, coragem e serviço ao povo.</p>
+          <div class="tags"><span>Fé</span><span>Liderança</span><span>Neemias</span></div>
+          <div class="actions"><a class="open" href="Roteiros/Biblia%20e%20Politica%20-%20Ep%204%20-%20Neemias.pdf" target="_blank" rel="noopener">Abrir roteiro →</a><a class="dl" href="Roteiros/Biblia%20e%20Politica%20-%20Ep%204%20-%20Neemias.pdf" download>Baixar ↓</a></div>
+        </div>
+      </div>
+      <div class="mat">
+        <div class="doc"><span class="rl">Você Sabia Disso?</span><span class="rt">A Bíblia e a Inteligência Artificial</span><span class="rn">Especial</span></div>
+        <div class="body">
+          <span class="mhead"><span class="badge done">Concluído</span><span class="cdate">Ago/2026</span></span>
+          <h4>Você Sabia Disso? — Bíblia e IA</h4>
+          <p>A IA já escreve, cria e diagnostica — mas Provérbios 2:6 lembra que sabedoria e discernimento vêm de Deus. Tecnologia é ferramenta.</p>
+          <div class="tags"><span>IA</span><span>Fé</span><span>Sabedoria</span></div>
+          <div class="actions"><a class="open" href="Roteiros/Voce%20Sabia%20Disso%20-%20Inteligencia%20Artificial.pdf" target="_blank" rel="noopener">Abrir roteiro →</a><a class="dl" href="Roteiros/Voce%20Sabia%20Disso%20-%20Inteligencia%20Artificial.pdf" download>Baixar ↓</a></div>
+        </div>
+      </div>
+      <div class="mat">
+        <div class="doc"><span class="rl">Devocional</span><span class="rt">Não temas (Is 41:10)</span><span class="rn">Episódio 08</span></div>
+        <div class="body">
+          <span class="mhead"><span class="badge done">Concluído</span><span class="cdate">Ago/2026</span></span>
+          <h4>Devocional 08 — Não temas</h4>
+          <p>Sobre vencer o medo confiando que Deus caminha conosco em cada dificuldade — Isaías 41:10.</p>
+          <div class="tags"><span>Fé</span><span>Devocional</span><span>Coragem</span></div>
+          <div class="actions"><a class="open" href="Roteiros/Devocional%2008%20-%20Nao%20Temas.pdf" target="_blank" rel="noopener">Abrir roteiro →</a><a class="dl" href="Roteiros/Devocional%2008%20-%20Nao%20Temas.pdf" download>Baixar ↓</a></div>
+        </div>
+      </div>
+      <div class="mat">
+        <div class="doc"><span class="rl">Viral · Gen Z</span><span class="rt">Farmar aura vs. farmar resultado</span><span class="rn">Roteiro 05</span></div>
+        <div class="body">
+          <span class="mhead"><span class="badge done">Concluído</span><span class="cdate">Ago/2026</span></span>
+          <h4>Roteiro Gen Z — Farmar aura</h4>
+          <p>Cezinha "lê o roteiro do marketing" para falar com a geração Z: em vez de farmar aura, recapitula entregas reais e fecha com "prefiro farmar resultado".</p>
+          <div class="tags"><span>Gen Z</span><span>Humor</span><span>Resultados</span></div>
+          <div class="actions"><a class="open" href="Roteiros/Roteiro%20Gen%20Z%20-%20Farmar%20Aura.pdf" target="_blank" rel="noopener">Abrir roteiro →</a><a class="dl" href="Roteiros/Roteiro%20Gen%20Z%20-%20Farmar%20Aura.pdf" download>Baixar ↓</a></div>
+        </div>
+      </div>
+      <div class="mat">
+        <div class="doc"><span class="rl">Pauta · STF</span><span class="rt">Isenção para PCDs e autistas</span><span class="rn">05/08</span></div>
+        <div class="body">
+          <span class="mhead"><span class="badge done">Concluído</span><span class="cdate">Ago/2026</span></span>
+          <h4>Isenção para PCDs e autistas</h4>
+          <p>STF garante por unanimidade a isenção na compra de carros para PCDs e autistas — mobilidade como independência, saúde e inclusão.</p>
+          <div class="tags"><span>STF</span><span>Inclusão</span><span>Direitos</span></div>
+          <div class="actions"><a class="open" href="Roteiros/Isencao%20PCDs%20e%20Autistas%20-%20STF.pdf" target="_blank" rel="noopener">Abrir roteiro →</a><a class="dl" href="Roteiros/Isencao%20PCDs%20e%20Autistas%20-%20STF.pdf" download>Baixar ↓</a></div>
+        </div>
+      </div>
+      <div class="mat">
+        <div class="doc"><span class="rl">Bíblia e Política</span><span class="rt">Daniel — princípios acima do cargo</span><span class="rn">Episódio 05</span></div>
+        <div class="body">
+          <span class="mhead"><span class="badge done">Concluído</span><span class="cdate">Ago/2026</span></span>
+          <h4>Bíblia e Política — Ep. 5: Daniel</h4>
+          <p>Daniel prefere perder o cargo a abrir mão dos princípios: integridade e fidelidade sob pressão.</p>
+          <div class="tags"><span>Fé</span><span>Integridade</span><span>Daniel</span></div>
+          <div class="actions"><a class="open" href="Roteiros/Biblia%20e%20Politica%20-%20Ep%205%20-%20Daniel.pdf" target="_blank" rel="noopener">Abrir roteiro →</a><a class="dl" href="Roteiros/Biblia%20e%20Politica%20-%20Ep%205%20-%20Daniel.pdf" download>Baixar ↓</a></div>
+        </div>
+      </div>
+      <div class="mat">
+        <div class="doc"><span class="rl">Você Sabia Disso?</span><span class="rt">Autodefesa e a lei do spray de pimenta</span><span class="rn">Especial</span></div>
+        <div class="body">
+          <span class="mhead"><span class="badge done">Concluído</span><span class="cdate">Ago/2026</span></span>
+          <h4>Você Sabia Disso? — Autodefesa</h4>
+          <p>O direito à legítima defesa e a nova legislação do spray de pimenta — proteção não é vingança, é resguardar a própria vida.</p>
+          <div class="tags"><span>Segurança</span><span>Direitos</span><span>Autodefesa</span></div>
+          <div class="actions"><a class="open" href="Roteiros/Voce%20Sabia%20Disso%20-%20Autodefesa%20e%20Spray.pdf" target="_blank" rel="noopener">Abrir roteiro →</a><a class="dl" href="Roteiros/Voce%20Sabia%20Disso%20-%20Autodefesa%20e%20Spray.pdf" download>Baixar ↓</a></div>
+        </div>
+      </div>
+      <div class="mat">
+        <div class="doc"><span class="rl">Pauta</span><span class="rt">O boleto da Enel</span><span class="rn">Roteiro 08</span></div>
+        <div class="body">
+          <span class="mhead"><span class="badge done">Concluído</span><span class="cdate">Ago/2026</span></span>
+          <h4>O boleto da Enel</h4>
+          <p>Tom próximo e bem-humorado sobre o susto da conta de luz e os reajustes da Enel que pesam no bolso do trabalhador e do comércio de bairro.</p>
+          <div class="tags"><span>Enel</span><span>Consumidor</span><span>Comércio</span></div>
+          <div class="actions"><a class="open" href="Roteiros/Roteiro%20-%20O%20Boleto%20da%20Enel.pdf" target="_blank" rel="noopener">Abrir roteiro →</a><a class="dl" href="Roteiros/Roteiro%20-%20O%20Boleto%20da%20Enel.pdf" download>Baixar ↓</a></div>
+        </div>
+      </div>
+      <div class="mat">
+        <div class="doc"><span class="rl">Pauta</span><span class="rt">A história do balcão</span><span class="rn">Roteiro 09</span></div>
+        <div class="body">
+          <span class="mhead"><span class="badge done">Concluído</span><span class="cdate">Ago/2026</span></span>
+          <h4>A história do balcão</h4>
+          <p>Do dono da lojinha de bairro: "abrir a porta todo dia é um ato de fé" — menos burocracia e apoio a quem empreende e gera emprego.</p>
+          <div class="tags"><span>Empreendedor</span><span>Burocracia</span><span>Comércio</span></div>
+          <div class="actions"><a class="open" href="Roteiros/Roteiro%20-%20A%20Historia%20do%20Balcao.pdf" target="_blank" rel="noopener">Abrir roteiro →</a><a class="dl" href="Roteiros/Roteiro%20-%20A%20Historia%20do%20Balcao.pdf" download>Baixar ↓</a></div>
+        </div>
+      </div>
+      <div class="mat">
+        <div class="doc"><span class="rl">Pauta</span><span class="rt">Esporte, educação e cultura</span><span class="rn">Roteiro 10</span></div>
+        <div class="body">
+          <span class="mhead"><span class="badge done">Concluído</span><span class="cdate">Ago/2026</span></span>
+          <h4>Educação e cultura pelo esporte</h4>
+          <p>Projeto social com o Minotauro chega a São Paulo (Guaianazes): esporte e educação de mãos dadas transformando a vida dos jovens.</p>
+          <div class="tags"><span>Esporte</span><span>Educação</span><span>Juventude</span></div>
+          <div class="actions"><a class="open" href="Roteiros/Roteiro%20-%20Educacao%20e%20Cultura.pdf" target="_blank" rel="noopener">Abrir roteiro →</a><a class="dl" href="Roteiros/Roteiro%20-%20Educacao%20e%20Cultura.pdf" download>Baixar ↓</a></div>
+        </div>
+      </div>
+      <div class="mat">
+        <div class="doc"><span class="rl">Devocional</span><span class="rt">A história de Ester</span><span class="rn">Episódio 09</span></div>
+        <div class="body">
+          <span class="mhead"><span class="badge done">Concluído</span><span class="cdate">Ago/2026</span></span>
+          <h4>Devocional 09 — A história de Ester</h4>
+          <p>Ester chega a uma posição de influência e tem coragem de usar a voz para defender seu povo — liderança que serve com propósito.</p>
+          <div class="tags"><span>Fé</span><span>Ester</span><span>Liderança</span></div>
+          <div class="actions"><a class="open" href="Roteiros/Devocional%2009%20-%20A%20Historia%20de%20Ester.pdf" target="_blank" rel="noopener">Abrir roteiro →</a><a class="dl" href="Roteiros/Devocional%2009%20-%20A%20Historia%20de%20Ester.pdf" download>Baixar ↓</a></div>
+        </div>
+      </div>
+      <div class="mat">
+        <div class="doc"><span class="rl">Devocional</span><span class="rt">José — o processo é preparação (Gn 45:5)</span><span class="rn">Episódio 10</span></div>
+        <div class="body">
+          <span class="mhead"><span class="badge done">Concluído</span><span class="cdate">Ago/2026</span></span>
+          <h4>Devocional 10 — José</h4>
+          <p>A história de José mostra que o processo não é punição, é preparação — Deus cuida de cada detalhe (Gênesis 45:5).</p>
+          <div class="tags"><span>Fé</span><span>José</span><span>Esperança</span></div>
+          <div class="actions"><a class="open" href="Roteiros/Devocional%2010%20-%20Jose.pdf" target="_blank" rel="noopener">Abrir roteiro →</a><a class="dl" href="Roteiros/Devocional%2010%20-%20Jose.pdf" download>Baixar ↓</a></div>
+        </div>
+      </div>
+      <div class="mat">
+        <div class="doc"><span class="rl">Pauta</span><span class="rt">Proteção à infância</span><span class="rn">Roteiro 13</span></div>
+        <div class="body">
+          <span class="mhead"><span class="badge done">Concluído</span><span class="cdate">Ago/2026</span></span>
+          <h4>Proteção à infância</h4>
+          <p>Posicionamento firme por leis mais duras e rigor da Justiça na proteção das crianças e no combate à violência contra a infância.</p>
+          <div class="tags"><span>Proteção</span><span>Infância</span><span>Justiça</span></div>
+          <div class="actions"><a class="open" href="Roteiros/Roteiro%20-%20Protecao%20a%20Infancia.pdf" target="_blank" rel="noopener">Abrir roteiro →</a><a class="dl" href="Roteiros/Roteiro%20-%20Protecao%20a%20Infancia.pdf" download>Baixar ↓</a></div>
+        </div>
+      </div>
+      <div class="mat">
+        <div class="doc"><span class="rl">Pauta</span><span class="rt">O perigo das bets</span><span class="rn">Roteiro 14</span></div>
+        <div class="body">
+          <span class="mhead"><span class="badge done">Concluído</span><span class="cdate">Ago/2026</span></span>
+          <h4>O perigo das bets</h4>
+          <p>As apostas online como questão de saúde pública: regulação mais dura, responsabilização das plataformas e acolhimento a quem sofre com o vício.</p>
+          <div class="tags"><span>Bets</span><span>Saúde pública</span><span>Regulação</span></div>
+          <div class="actions"><a class="open" href="Roteiros/Roteiro%20-%20O%20Perigo%20das%20Bets.pdf" target="_blank" rel="noopener">Abrir roteiro →</a><a class="dl" href="Roteiros/Roteiro%20-%20O%20Perigo%20das%20Bets.pdf" download>Baixar ↓</a></div>
+        </div>
+      </div>
+      <div class="mat">
+        <div class="doc"><span class="rl">Pauta</span><span class="rt">Golpes na internet</span><span class="rn">Roteiro 15</span></div>
+        <div class="body">
+          <span class="mhead"><span class="badge done">Concluído</span><span class="cdate">Ago/2026</span></span>
+          <h4>Golpes na internet</h4>
+          <p>Mais de 34 bilhões de tentativas de fraude em um ano: regulação, responsabilidade das instituições financeiras e orientação a quem foi vítima.</p>
+          <div class="tags"><span>Golpes</span><span>Segurança</span><span>Consumidor</span></div>
+          <div class="actions"><a class="open" href="Roteiros/Roteiro%20-%20Golpes%20na%20Internet.pdf" target="_blank" rel="noopener">Abrir roteiro →</a><a class="dl" href="Roteiros/Roteiro%20-%20Golpes%20na%20Internet.pdf" download>Baixar ↓</a></div>
+        </div>
+      </div>
       <div class="mat">
         <div class="doc"><span class="rl">A Bíblia e o Poder</span><span class="rt">José e o futuro</span><span class="rn">Episódio 01</span></div>
         <div class="body">
@@ -1558,37 +1718,14 @@
   <section id="andamento">
     <span class="sec-label purple">Em andamento</span>
     <h2 class="sec-title display">O que está em produção</h2>
-    <p class="sec-desc">Itens da Fase 1 ainda em execução, com destaque para a criação da identidade visual da pré-campanha e da campanha oficial.</p>
-
-    <div class="wip-feature">
-      <div class="head">
-        <h3>Criação da Identidade Visual</h3>
-        <span class="badge wip">Em andamento</span>
-      </div>
-      <p>Desenvolvimento do sistema visual da pré-campanha e da campanha oficial — base que orienta todas as peças de Reels, stories, feed e mídia paga. Construção em board colaborativo (Miro).</p>
-      <div class="wip-grid">
-      
-        <div class="wip-item">
-          <div class="l">Identidade — Campanha oficial</div>
-          <div class="s">Versão eleitoral com número, aplicação de regras TSE e variações para tráfego pago.</div>
-          <span class="st next">A iniciar</span>
-        </div>
-        <div class="wip-item">
-          <div class="l">Templates editoriais</div>
-          <div class="s">Modelos para os 4 pilares + série de Transparência, prontos para a cadência diária.</div>
-          <span class="st">Em produção</span>
-        </div>
-      
-      </div>
-    </div>
+    <p class="sec-desc">Frentes de produção criativa em execução para a campanha e as dobradas.</p>
 
     <div class="deliv-grid">
       <div class="card">
         <div class="head"><span class="num">&#8594;</span><span class="badge wip">Em andamento</span></div>
-        <h3>Prestação de contas Rodrigo Capel</h3>
-        <p>Novo folheto: um lado com informações do Cezinha e outro da dobrada Rodrigo Capel, com trajetória e projetos de ambos, conectando seus trabalhos para a população.</p>
-        <div class="tags"><span>Folheto</span><span>Dobrada</span><span>Rodrigo Capel</span></div>
-        <div style="margin-top:12px;font-size:11.5px;color:var(--grey-2)">Solicitado em 16/07/2026</div>
+        <h3>Criativos de campanha dobradas</h3>
+        <p>Realizar a produção criativa dos materiais de campanha em conjunto com as dobradas — garantir informações de CNPJ de campanha, CNPJ da gráfica e tiragem de cada material proposto.</p>
+        <div class="tags"><span>Criativos</span><span>Dobradas</span><span>Materiais</span></div>
       </div>
     </div>
   </section>
