@@ -969,6 +969,31 @@
       </div>
     </div>
 
+    <div id="graf-modal" class="matx-ov" style="z-index:100000">
+      <div class="matx-box" style="max-width:620px;width:100%">
+        <button type="button" class="matx-x">&#10005;</button>
+        <h3 id="graf-title">Gerar p/ gr&aacute;fica</h3>
+        <div style="font-size:12px;color:var(--grey-2);margin:-4px 0 10px">Arraste a legenda na pr&eacute;via para posicionar. A arte original n&atilde;o &eacute; alterada.</div>
+        <div id="graf-nav" style="display:none;align-items:center;justify-content:center;gap:12px;margin:0 0 10px"><button type="button" id="graf-prev" style="background:var(--panel-2);border:1px solid var(--line);color:#e9eef6;font-size:16px;font-weight:700;width:32px;height:30px;border-radius:6px;cursor:pointer">&#8249;</button><span id="graf-pageinfo" style="font-size:13px;color:#e9eef6;font-weight:700">P&aacute;gina 1 / 1</span><button type="button" id="graf-next" style="background:var(--panel-2);border:1px solid var(--line);color:#e9eef6;font-size:16px;font-weight:700;width:32px;height:30px;border-radius:6px;cursor:pointer">&#8250;</button></div>
+        <div id="graf-canvas-wrap" style="position:relative;margin:0 auto;background:#fff;border:1px solid var(--line);max-width:100%;overflow:hidden">
+          <canvas id="graf-canvas" style="display:block;width:100%"></canvas>
+          <div id="graf-leg" style="position:absolute;left:0;bottom:0;white-space:nowrap;color:#111;font-family:Helvetica,Arial,sans-serif;cursor:move;line-height:1;font-weight:600">legenda</div>
+          <div id="graf-guide" title="Sangria de 3mm" style="position:absolute;left:0;right:0;top:0;bottom:0;border:1px dashed rgba(228,42,42,.85);pointer-events:none"></div>
+        </div>
+        <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-top:12px">
+          <label style="font-size:12px;color:var(--grey-2);display:flex;align-items:center;gap:6px">Tiragem <input id="graf-tir" type="number" min="0" style="width:120px;background:var(--panel-2);border:1px solid var(--line);color:#e9eef6;border-radius:6px;padding:5px 8px;font-size:13px"></label>
+          <label style="font-size:12px;color:var(--grey-2);display:flex;align-items:center;gap:6px">Tamanho fonte <input id="graf-fs" type="range" min="1" max="72" step="0.5"><input id="graf-fsn" type="number" min="0.1" step="0.5" title="Digite qualquer tamanho" style="width:66px;background:var(--panel-2);border:1px solid var(--line);color:#e9eef6;border-radius:6px;padding:5px 8px;font-size:13px"></label>
+          <label style="font-size:12px;color:var(--grey-2);display:flex;align-items:center;gap:6px">Cor <input id="graf-color" type="color" value="#111111" style="width:34px;height:26px;padding:0;border:1px solid var(--line);background:none;border-radius:4px;cursor:pointer"></label>
+          <button type="button" id="graf-rot" style="background:var(--panel-2);border:1px solid var(--line);color:#e9eef6;font-size:12px;font-weight:700;padding:6px 12px;border-radius:6px;cursor:pointer">↻ Girar (0°)</button>
+          <label style="font-size:12px;color:var(--grey-2);display:flex;align-items:center;gap:6px">Carimbar em <select id="graf-apply" style="background:var(--panel-2);border:1px solid var(--line);color:#e9eef6;border-radius:6px;padding:5px 8px;font-size:13px"><option value="page">Esta p&aacute;gina</option><option value="all">Todas as p&aacute;ginas</option></select></label>
+        </div>
+        <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap">
+          <button type="button" id="graf-save" style="background:transparent;color:#e9eef6;border:1px solid var(--line);font-weight:700;font-size:13px;padding:8px 14px;border-radius:6px;cursor:pointer">Salvar posi&ccedil;&atilde;o padr&atilde;o</button>
+          <button type="button" id="graf-dl" style="background:var(--lime);color:#000;border:1px solid var(--lime);font-weight:700;font-size:13px;padding:8px 18px;border-radius:6px;cursor:pointer">&#11015; Baixar PDF carimbado</button>
+        </div>
+      </div>
+    </div>
+
     <div id="bulk-modal" class="matx-ov">
       <div class="matx-box">
         <button type="button" class="matx-x">&#10005;</button>
@@ -1041,7 +1066,7 @@
       // ---- Materiais por dobrada ----
       window.openDobradaMateriais=function(dob){ ensureSB(); CURDOB=dob; var t=gid('dobmat-title'); if(t) t.textContent='Materiais — '+dob.nome; open_('dobmat-modal'); var fb=gid('dobmat-ficha'); if(fb) fb.innerHTML=''; GAL_IDX={foto:0,logo:0}; loadFicha(dob.id, renderFicha); var body=gid('dobmat-body'); if(body) body.innerHTML='<div class="rel-empty" style="padding:10px">Carregando…</div>';
         loadTipos(function(){ if(!ensureSB()){ renderDobMat({}); return; } sb.from('dobrada_materiais').select('*').eq('dobrada_id',dob.id).then(function(r){ var by={}; ((r&&r.data)||[]).forEach(function(x){ by[x.material_id]=x; }); renderDobMat(by); },function(){ renderDobMat({}); }); }); };
-      function artCellInner(mid,url){ var fi='<input type="file" accept="image/*,application/pdf" data-mid="'+mid+'" style="display:none">'; if(url){ return '<a href="'+esc(url)+'" target="_blank" rel="noopener" class="dm-artlink">&#10003; ver arte</a><label class="dm-art" title="Trocar arte">'+fi+ICP+'</label><span class="dm-art-del" data-mid="'+mid+'" title="Remover arte">'+ICT+'</span>'; } return '<label class="dm-art">'+fi+'<span class="dm-artbtn">&#128206; anexar</span></label>'; }
+      function artCellInner(mid,url){ var fi='<input type="file" accept="image/*,application/pdf" data-mid="'+mid+'" style="display:none">'; if(url){ return '<a href="'+esc(url)+'" target="_blank" rel="noopener" class="dm-artlink">&#10003; ver arte</a>'+((url||'').toLowerCase().indexOf('.pdf')>=0?'<span class="dm-graf" data-mid="'+mid+'" title="Gerar PDF p/ gráfica">&#128424;&#65039;</span>':'')+'<label class="dm-art" title="Trocar arte">'+fi+ICP+'</label><span class="dm-art-del" data-mid="'+mid+'" title="Remover arte">'+ICT+'</span>'; } return '<label class="dm-art">'+fi+'<span class="dm-artbtn">&#128206; anexar</span></label>'; }
       function renderDobMat(by){ var body=gid('dobmat-body'); if(!body) return; if(!TIPOS.length){ body.innerHTML='<div class="rel-empty" style="padding:10px">Nenhum tipo de material cadastrado. Cadastre em <b>Materiais</b> primeiro.</div>'; return; }
         var ord=TIPOS.slice().sort(function(a,b){ var aa=(by[a.id]&&by[a.id].ativo)?0:1, bb=(by[b.id]&&by[b.id].ativo)?0:1; if(aa!==bb) return aa-bb; return (a.nome||'').localeCompare(b.nome||'','pt-BR'); });
         body.innerHTML=ord.map(function(t){ var d=by[t.id]||{}; var on=!!d.ativo; var q=(d.quantidade!=null?d.quantidade:0); var art=d.arte_url||'';
@@ -1056,9 +1081,87 @@
       function updateRowArt(mid,url){ var row=setArtCell(mid,url); if(row){ var tog=row.querySelector('.dm-tog'); if(tog) tog.classList.add('on'); var qty=row.querySelector('.dm-qty'); if(qty) qty.disabled=false; } }
       function removeArte(mid){ if(!ensureSB()) return; if(!confirm('Remover a arte deste material?')) return; upsertDM(mid,{arte_url:null}).then(function(r){ if(r&&r.error){ alert('Erro: '+r.error.message); return; } setArtCell(mid,''); }); }
       function upsertDM(mid,patch){ if(!ensureSB()||!CURDOB) return Promise.resolve({}); var payload=Object.assign({dobrada_id:CURDOB.id,material_id:mid,updated_at:new Date().toISOString()},patch); return sb.from('dobrada_materiais').upsert(payload,{onConflict:'dobrada_id,material_id'}); }
-      function uploadArte(mid,file,cb){ if(!ensureSB()||!CURDOB){ if(cb)cb(false); return; } upStart(); var ext=(file.name.split('.').pop()||'bin').toLowerCase(); var path='materiais/'+CURDOB.id+'/'+mid+'-'+Date.now()+'.'+ext; sb.storage.from('criativos').upload(path,file,{contentType:file.type||'application/octet-stream',upsert:true}).then(function(up){ if(up.error){ upEnd(); if(cb)cb(false,up.error.message); return; } var url=sb.storage.from('criativos').getPublicUrl(path).data.publicUrl; upsertDM(mid,{arte_url:url,ativo:true}).then(function(){ upEnd(); if(cb)cb(true,url); },function(){ upEnd(); if(cb)cb(false); }); },function(){ upEnd(); if(cb)cb(false); }); }
+      // ---- Compressao de PDF no navegador (apenas arquivos > 50MB) ----
+      var CMP_LIMIT=50*1024*1024, CMP_TARGET=49*1024*1024;
+      function needCmp(f){ return f && ((f.type==='application/pdf')||/\.pdf$/i.test(f.name||'')) && f.size>CMP_LIMIT; }
+      async function rasterizeAll(pdf,dpi,q){ var out=await window.PDFLib.PDFDocument.create(); var n=pdf.numPages, MAX=4000;
+        for(var p=1;p<=n;p++){ var page=await pdf.getPage(p); var v1=page.getViewport({scale:1}); var scale=dpi/72;
+          var big=Math.max(v1.width,v1.height)*scale; if(big>MAX) scale=MAX/Math.max(v1.width,v1.height);
+          var vp=page.getViewport({scale:scale}); var cv=document.createElement('canvas'); cv.width=Math.ceil(vp.width); cv.height=Math.ceil(vp.height);
+          var ctx=cv.getContext('2d'); ctx.fillStyle='#ffffff'; ctx.fillRect(0,0,cv.width,cv.height);
+          await page.render({canvasContext:ctx,viewport:vp}).promise;
+          var durl=cv.toDataURL('image/jpeg',q); var jbuf=await (await fetch(durl)).arrayBuffer();
+          var img=await out.embedJpg(jbuf); var pg=out.addPage([v1.width,v1.height]); pg.drawImage(img,{x:0,y:0,width:v1.width,height:v1.height});
+          cv.width=0; cv.height=0; }
+        return await out.save(); }
+      function compressPdf(file,target,cb){ if(!window.pdfjsLib||!window.PDFLib){ cb(file); return; } upStart(); var dpis=[200,150,110,90];
+        file.arrayBuffer().then(function(buf){ return window.pdfjsLib.getDocument({data:buf.slice(0)}).promise; }).then(function(pdf){ var best=null;
+          function attempt(idx){ rasterizeAll(pdf,dpis[idx],0.8).then(function(bytes){ best=bytes;
+            if(bytes.byteLength<=target || idx>=dpis.length-1){ upEnd(); cb(new File([bytes],file.name,{type:'application/pdf'})); }
+            else attempt(idx+1); }).catch(function(){ upEnd(); cb(best?new File([best],file.name,{type:'application/pdf'}):file); }); }
+          attempt(0); }).catch(function(){ upEnd(); cb(file); }); }
+      function uploadArte(mid,file,cb,_p){ if(!ensureSB()||!CURDOB){ if(cb)cb(false); return; } if(!_p && needCmp(file)){ compressPdf(file,CMP_TARGET,function(nf){ uploadArte(mid,nf,cb,true); }); return; } upStart(); var ext=(file.name.split('.').pop()||'bin').toLowerCase(); var path='materiais/'+CURDOB.id+'/'+mid+'-'+Date.now()+'.'+ext; sb.storage.from('criativos').upload(path,file,{contentType:file.type||'application/octet-stream',upsert:true}).then(function(up){ if(up.error){ upEnd(); if(cb)cb(false,up.error.message); return; } var url=sb.storage.from('criativos').getPublicUrl(path).data.publicUrl; upsertDM(mid,{arte_url:url,ativo:true}).then(function(){ upEnd(); if(cb)cb(true,url); },function(){ upEnd(); if(cb)cb(false); }); },function(){ upEnd(); if(cb)cb(false); }); }
 
       // ---- Enviar para a gr\u00e1fica ----
+      // ---- Gerar PDF p/ grafica ----
+      var CEZINHA_CNPJ='68.353.201/0001-06';
+      function GRAFHX(h){ var P=window.PDFLib; h=(h||'#111111').replace('#',''); if(h.length===3) h=h[0]+h[0]+h[1]+h[1]+h[2]+h[2]; return P.rgb(parseInt(h.slice(0,2),16)/255,parseInt(h.slice(2,4),16)/255,parseInt(h.slice(4,6),16)/255); }
+      var GRAF={mid:null,url:null,tipo:null,bytes:null,pageW:0,pageH:0,scale:1,x:0.04,y:0.03,fs:8,tiragem:0};
+      function tipoById(mid){ for(var i=0;i<TIPOS.length;i++){ if(String(TIPOS[i].id)===String(mid)) return TIPOS[i]; } return null; }
+      function brNum(n){ n=parseInt(n,10); if(isNaN(n)) n=0; return n.toLocaleString('pt-BR'); }
+      function legendaText(tir){ var part=((CURFICHA&&CURFICHA.partido)||'').trim().toUpperCase(); var t=brNum(tir);
+        if(part==='PL'){ return 'CNPJ CANDIDATO '+CEZINHA_CNPJ+' - TIRAGEM: '+t; }
+        var cd=(CURFICHA&&CURFICHA.cnpj)?CURFICHA.cnpj:'__________'; return 'CNPJ CANDIDATO '+CEZINHA_CNPJ+', CNPJ CANDIDATO '+cd+' - TIRAGEM: '+t; }
+      function openGrafica(mid){ var tp=tipoById(mid); if(!tp){ alert('Material nao encontrado.'); return; }
+        var row=document.querySelector('#dobmat-body .dm-row[data-mid="'+mid+'"]');
+        var q=0; if(row){ var qe=row.querySelector('.dm-qty'); if(qe) q=parseInt(qe.value,10)||0; }
+        var link=row?row.querySelector('.dm-artlink'):null; var url=link?link.getAttribute('href'):null;
+        if(!url){ alert('Anexe uma arte antes.'); return; }
+        if((url||'').toLowerCase().indexOf('.pdf')<0){ alert('A arte precisa ser um PDF para carimbar.'); return; }
+        GRAF={mid:mid,url:url,tipo:tp,bytes:null,pdfDoc:null,numPages:1,page:(tp.leg_page!=null?+tp.leg_page:1),apply:(tp.leg_apply||'page'),pageW:0,pageH:0,scale:1,mx:0,my:0,
+          x:(tp.leg_x!=null?+tp.leg_x:0.04), y:(tp.leg_y!=null?+tp.leg_y:0.03), fs:(tp.leg_fs!=null?+tp.leg_fs:8),
+          color:(tp.leg_color||'#111111'), rot:(tp.leg_rot!=null?+tp.leg_rot:0), tiragem:q};
+        gid('graf-title').textContent='Gerar p/ grafica — '+tp.nome+(tp.tamanho?(' ('+tp.tamanho+')'):'');
+        var ti=gid('graf-tir'); ti.value=q; ti.oninput=function(){ GRAF.tiragem=parseInt(this.value,10)||0; positionLeg(); };
+        var fsr=gid('graf-fs'), fsn=gid('graf-fsn'); fsr.value=GRAF.fs; fsn.value=GRAF.fs;
+        function setFs(v){ v=parseFloat(v); if(isNaN(v)||v<0.1) v=0.1; GRAF.fs=v; positionLeg(); }
+        fsr.oninput=function(){ fsn.value=this.value; setFs(this.value); };
+        fsn.oninput=function(){ var v=parseFloat(this.value); if(!isNaN(v)){ fsr.value=Math.max(1,Math.min(72,v)); } setFs(this.value); };
+        var cin=gid('graf-color'); cin.value=GRAF.color; cin.oninput=function(){ GRAF.color=this.value; positionLeg(); };
+        gid('graf-rot').textContent='↻ Girar ('+GRAF.rot+'°)';
+        var ap=gid('graf-apply'); ap.value=GRAF.apply; ap.onchange=function(){ GRAF.apply=this.value; };
+        open_('graf-modal'); renderGrafPreview(); }
+      function rotGrafica(){ GRAF.rot=(GRAF.rot+90)%360; gid('graf-rot').textContent='↻ Girar ('+GRAF.rot+'°)'; positionLeg(); }
+      function positionLeg(){ var leg=gid('graf-leg'), host=gid('graf-canvas-wrap'); if(!leg||!host) return;
+        GRAF.x=Math.max(GRAF.mx,Math.min(1-GRAF.mx,GRAF.x)); GRAF.y=Math.max(GRAF.my,Math.min(1-GRAF.my,GRAF.y));
+        leg.textContent=legendaText(GRAF.tiragem); leg.style.color=GRAF.color; leg.style.fontSize=(GRAF.fs*GRAF.scale)+'px';
+        leg.style.transformOrigin='left bottom'; leg.style.transform='rotate('+(-GRAF.rot)+'deg)';
+        leg.style.left=(GRAF.x*host.clientWidth)+'px'; leg.style.bottom=(GRAF.y*host.clientHeight)+'px';
+        var g=gid('graf-guide'); if(g){ var mpx=GRAF.mx*host.clientWidth, mpy=GRAF.my*host.clientHeight; g.style.left=mpx+'px'; g.style.right=mpx+'px'; g.style.top=mpy+'px'; g.style.bottom=mpy+'px'; } }
+      function renderGrafPreview(){ if(!window.pdfjsLib){ alert('Leitor PDF indisponivel.'); return; }
+        gid('graf-leg').textContent='carregando...';
+        fetch(GRAF.url).then(function(r){ return r.arrayBuffer(); }).then(function(ab){ GRAF.bytes=ab.slice(0);
+          return window.pdfjsLib.getDocument({data:ab}).promise; }).then(function(pdf){ GRAF.pdfDoc=pdf; GRAF.numPages=pdf.numPages; showGrafPage(GRAF.page||1); })
+          .catch(function(e){ gid('graf-leg').textContent='Erro: '+e; }); }
+      function showGrafPage(p){ var cv=gid('graf-canvas'), host=gid('graf-canvas-wrap'); if(!GRAF.pdfDoc) return; if(p<1)p=1; if(p>GRAF.numPages)p=GRAF.numPages; GRAF.page=p;
+        GRAF.pdfDoc.getPage(p).then(function(page){ var v1=page.getViewport({scale:1}); GRAF.pageW=v1.width; GRAF.pageH=v1.height; var MB=8.503937; GRAF.mx=MB/GRAF.pageW; GRAF.my=MB/GRAF.pageH;
+          var scale=520/v1.width; GRAF.scale=scale; var vp=page.getViewport({scale:scale});
+          cv.width=vp.width; cv.height=vp.height; host.style.width=vp.width+'px'; host.style.height=vp.height+'px';
+          return page.render({canvasContext:cv.getContext('2d'),viewport:vp}).promise; }).then(function(){ positionLeg(); updateGrafNav(); }).catch(function(e){ gid('graf-leg').textContent='Erro: '+e; }); }
+      function updateGrafNav(){ var pi=gid('graf-pageinfo'); if(pi) pi.textContent='Página '+GRAF.page+' / '+GRAF.numPages; var pv=gid('graf-prev'), nx=gid('graf-next'), wr=gid('graf-nav'); if(pv) pv.disabled=(GRAF.page<=1); if(nx) nx.disabled=(GRAF.page>=GRAF.numPages); if(wr) wr.style.display=(GRAF.numPages>1?'flex':'none'); }
+      function navGraf(d){ showGrafPage(GRAF.page+d); }
+      function genGrafica(){ var P=window.PDFLib; if(!P){ alert('Biblioteca PDF indisponivel.'); return; } if(!GRAF.bytes){ alert('PDF ainda carregando.'); return; }
+        P.PDFDocument.load(GRAF.bytes).then(function(doc){ return doc.embedFont(P.StandardFonts.Helvetica).then(function(f){
+          var txt=legendaText(GRAF.tiragem); var _pgs=doc.getPages(); var _tg=(GRAF.apply==='all')?_pgs:[_pgs[(GRAF.page||1)-1]]; _tg.forEach(function(p){ if(!p) return; var w=p.getWidth(), h=p.getHeight();
+            p.drawText(txt,{x:GRAF.x*w, y:GRAF.y*h, size:GRAF.fs, font:f, color:GRAFHX(GRAF.color), rotate:P.degrees(GRAF.rot)}); }); return doc.saveAsBase64({dataUri:true}); }); })
+          .then(function(uri){ var a=document.createElement('a'); a.href=uri;
+            var base=(((CURDOB&&CURDOB.nome)||'material')+' - '+(GRAF.tipo.nome||'')+' - tiragem '+GRAF.tiragem).replace(/[\\/:*?"<>|]+/g,'-');
+            a.download=base+'.pdf'; document.body.appendChild(a); a.click(); setTimeout(function(){ a.remove(); },1500); })
+          .catch(function(e){ alert('Erro ao gerar PDF: '+e); }); }
+      function saveGrafPos(){ if(!GRAF.tipo||!ensureSB()) return; sb.from('materiais_tipo').update({leg_x:GRAF.x,leg_y:GRAF.y,leg_fs:GRAF.fs,leg_color:GRAF.color,leg_rot:GRAF.rot,leg_page:GRAF.page,leg_apply:GRAF.apply}).eq('id',GRAF.mid).then(function(r){ if(r&&r.error){ alert('Erro: '+r.error.message); return; } GRAF.tipo.leg_x=GRAF.x; GRAF.tipo.leg_y=GRAF.y; GRAF.tipo.leg_fs=GRAF.fs; GRAF.tipo.leg_color=GRAF.color; GRAF.tipo.leg_rot=GRAF.rot; GRAF.tipo.leg_page=GRAF.page; GRAF.tipo.leg_apply=GRAF.apply; alert('Padrao salvo para "'+GRAF.tipo.nome+'" (vale para todas as dobradas).'); }); }
+      (function(){ var drag=false, host; document.addEventListener('mousedown',function(e){ var l=e.target.closest&&e.target.closest('#graf-leg'); if(!l) return; drag=true; host=gid('graf-canvas-wrap'); e.preventDefault(); });
+        document.addEventListener('mousemove',function(e){ if(!drag||!host) return; var r=host.getBoundingClientRect(); GRAF.x=Math.max(0,Math.min(1,(e.clientX-r.left)/r.width)); GRAF.y=Math.max(0,Math.min(1,(r.bottom-e.clientY)/r.height)); positionLeg(); });
+        document.addEventListener('mouseup',function(){ drag=false; }); })();
       function sendGrafica(){ if(!CURDOB) return; var rows=document.querySelectorAll('#dobmat-body .dm-row'); var lines=[]; Array.prototype.forEach.call(rows,function(r){ var tog=r.querySelector('.dm-tog'); if(!tog||!tog.classList.contains('on')) return; var mid=r.getAttribute('data-mid'); var t=null; for(var i=0;i<TIPOS.length;i++){ if(String(TIPOS[i].id)===String(mid)){ t=TIPOS[i]; break; } } if(!t) return; var qEl=r.querySelector('.dm-qty'); var q=qEl?(parseInt(qEl.value,10)||0):0; var tam=t.tamanho?(' - '+t.tamanho):''; lines.push(t.nome+tam+' - Quantidade: '+q); }); if(!lines.length){ alert('Nenhum material marcado como "sim" nesta dobrada.'); return; } var txt='*'+CURDOB.nome+'*\n'+lines.join('\n'); window.open('https://wa.me/?text='+encodeURIComponent(txt),'_blank','noopener'); }
 
       // ---- Upload em massa ----
@@ -1144,7 +1247,7 @@
         var _rs=gid('dm-resp'); if(_rs) _rs.value=CURFICHA.responsavel_interno||'';
       }
       function saveFicha(patch){ if(!ensureSB()||!CURDOB) return; Object.keys(patch).forEach(function(k){ CURFICHA[k]=patch[k]; }); var payload=Object.assign({dobrada_id:CURDOB.id,updated_at:new Date().toISOString()},patch); sb.from('dobrada_entrega').upsert(payload,{onConflict:'dobrada_id'}).then(function(r){ if(r&&r.error) console.warn('ficha',r.error); }); }
-      function uploadFichaAsset(k,file){ if(!ensureSB()||!CURDOB) return; upStart(); var ext=(file.name.split('.').pop()||'bin').toLowerCase(); var path='entrega/'+CURDOB.id+'/'+k+'-'+Date.now()+'.'+ext; sb.storage.from('criativos').upload(path,file,{contentType:file.type||'application/octet-stream',upsert:true}).then(function(up){ if(up.error){ upEnd(); alert('Erro no upload: '+up.error.message); renderFicha(CURFICHA); return; } var url=sb.storage.from('criativos').getPublicUrl(path).data.publicUrl; var patch={}; patch[k+'_url']=url; patch[k+'_ok']=true; saveFicha(patch); renderFicha(CURFICHA); upEnd(); },function(){ upEnd(); renderFicha(CURFICHA); }); }
+      function uploadFichaAsset(k,file,_p){ if(!ensureSB()||!CURDOB) return; if(!_p && needCmp(file)){ compressPdf(file,CMP_TARGET,function(nf){ uploadFichaAsset(k,nf,true); }); return; } upStart(); var ext=(file.name.split('.').pop()||'bin').toLowerCase(); var path='entrega/'+CURDOB.id+'/'+k+'-'+Date.now()+'.'+ext; sb.storage.from('criativos').upload(path,file,{contentType:file.type||'application/octet-stream',upsert:true}).then(function(up){ if(up.error){ upEnd(); alert('Erro no upload: '+up.error.message); renderFicha(CURFICHA); return; } var url=sb.storage.from('criativos').getPublicUrl(path).data.publicUrl; var patch={}; patch[k+'_url']=url; patch[k+'_ok']=true; saveFicha(patch); renderFicha(CURFICHA); upEnd(); },function(){ upEnd(); renderFicha(CURFICHA); }); }
       function uploadGallery(kind,files){ if(!ensureSB()||!CURDOB) return; var arr=Array.prototype.slice.call(files||[]); if(!arr.length) return; upStart(); var i=0; function next(){ if(i>=arr.length){ upEnd(); return; } var file=arr[i++]; var ext=(file.name.split('.').pop()||'bin').toLowerCase(); var path='entrega/'+CURDOB.id+'/'+kind+'-'+Date.now()+'-'+i+'.'+ext; sb.storage.from('criativos').upload(path,file,{contentType:file.type||'application/octet-stream',upsert:true}).then(function(up){ if(!up.error){ var url=sb.storage.from('criativos').getPublicUrl(path).data.publicUrl; var a=(CURFICHA[kind+'s']||[]).slice(); a.push(url); CURFICHA[kind+'s']=a; CURFICHA[kind+'_ok']=true; GAL_IDX[kind]=a.length-1; var p={}; p[kind+'s']=a; p[kind+'_ok']=true; saveFicha(p); renderGalleryCard(kind); } next(); },function(){ next(); }); } next(); }
       function removeFichaAsset(k){ if(k==='foto'||k==='logo'){ if(!confirm('Excluir este arquivo?')) return; var arr=(CURFICHA[k+'s']||[]).slice(); arr.splice(GAL_IDX[k]||0,1); CURFICHA[k+'s']=arr; if((GAL_IDX[k]||0)>=arr.length) GAL_IDX[k]=Math.max(0,arr.length-1); CURFICHA[k+'_ok']=arr.length>0; var p={}; p[k+'s']=arr; p[k+'_ok']=arr.length>0; saveFicha(p); renderGalleryCard(k); return; } if(!confirm('Excluir este anexo?')) return; var patch={}; patch[k+'_url']=null; patch[k+'_ok']=false; saveFicha(patch); renderFicha(CURFICHA); }
       function fichaCompleta(f){ f=f||{}; return !!(f.responsavel_nome && f.responsavel_whatsapp && f.curriculo_ok && f.foto_ok && f.logo_ok && f.numero_campanha && f.endereco); }
@@ -1178,6 +1281,11 @@
         if(t.closest('#dob-entrega-btn')){ e.preventDefault(); openEntrega(); return; }
         if(t.closest('#dobmat-bulk-btn')){ e.preventDefault(); openBulk(); return; }
         if(t.closest('#dobmat-grafica-btn')){ e.preventDefault(); sendGrafica(); return; }
+        if(t.closest('#graf-dl')){ e.preventDefault(); genGrafica(); return; }
+        if(t.closest('#graf-save')){ e.preventDefault(); saveGrafPos(); return; }
+        if(t.closest('#graf-rot')){ e.preventDefault(); rotGrafica(); return; }
+        if(t.closest('#graf-prev')){ e.preventDefault(); navGraf(-1); return; }
+        if(t.closest('#graf-next')){ e.preventDefault(); navGraf(1); return; }
         if(t.closest('#mat-add')){ e.preventDefault(); saveTipo(); return; }
         if(t.closest('#mat-cancel')){ e.preventDefault(); cancelEditTipo(); return; }
         if(t.closest('#bulk-send')){ e.preventDefault(); sendBulk(); return; }
@@ -1186,6 +1294,7 @@
         var x=t.closest('.matx-x'); if(x){ var mo=x.closest('.matx-ov'); if(mo){ mo.classList.remove('matx-open'); if(mo.id==='dobmat-modal' && window.refreshDobradasMeta) window.refreshDobradasMeta(); } return; }
         if(t.classList&&t.classList.contains('matx-ov')){ t.classList.remove('matx-open'); if(t.id==='dobmat-modal' && window.refreshDobradasMeta) window.refreshDobradasMeta(); return; }
         var ad=t.closest('.dm-art-del'); if(ad){ removeArte(ad.getAttribute('data-mid')); return; }
+        var gf=t.closest('.dm-graf'); if(gf){ openGrafica(gf.getAttribute('data-mid')); return; }
         var fdl=t.closest('.fc-del'); if(fdl){ removeFichaAsset(fdl.getAttribute('data-k')); return; }
         var _pv=t.closest('.fc-prev'); if(_pv){ var _k=_pv.getAttribute('data-kind'); var _a=CURFICHA[_k+'s']||[]; if(_a.length){ GAL_IDX[_k]=((GAL_IDX[_k]||0)-1+_a.length)%_a.length; renderGalleryCard(_k); } return; }
         var _nx=t.closest('.fc-next'); if(_nx){ var _k2=_nx.getAttribute('data-kind'); var _b=CURFICHA[_k2+'s']||[]; if(_b.length){ GAL_IDX[_k2]=((GAL_IDX[_k2]||0)+1)%_b.length; renderGalleryCard(_k2); } return; }
@@ -2185,6 +2294,7 @@
   </script>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
   <style>
   #cd-grid .cd-edit,#pc-grid .cd-edit{position:absolute;top:8px;right:8px;width:26px;height:26px;border-radius:6px;background:rgba(1,24,48,.82);border:1px solid var(--line);color:#e9eef6;display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer;z-index:3}
 .cd-copy,#pc-grid .cd-copy{position:absolute;top:8px;right:40px;width:26px;height:26px;border-radius:6px;background:rgba(1,24,48,.82);border:1px solid var(--line);color:#e9eef6;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:3}
