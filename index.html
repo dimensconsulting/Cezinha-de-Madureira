@@ -1108,9 +1108,10 @@
       var GRAF={mid:null,url:null,tipo:null,bytes:null,pageW:0,pageH:0,scale:1,x:0.04,y:0.03,fs:8,tiragem:0};
       function tipoById(mid){ for(var i=0;i<TIPOS.length;i++){ if(String(TIPOS[i].id)===String(mid)) return TIPOS[i]; } return null; }
       function brNum(n){ n=parseInt(n,10); if(isNaN(n)) n=0; return n.toLocaleString('pt-BR'); }
-      function legendaText(tir){ var part=((CURFICHA&&CURFICHA.partido)||'').trim().toUpperCase(); var t=brNum(tir);
-        if(part==='PL'){ return 'CNPJ CANDIDATO '+CEZINHA_CNPJ+' - TIRAGEM: '+t; }
-        var cd=(CURFICHA&&CURFICHA.cnpj)?CURFICHA.cnpj:'__________'; return 'CNPJ CANDIDATO '+CEZINHA_CNPJ+', CNPJ CANDIDATO '+cd+' - TIRAGEM: '+t; }
+      function legendaText(tir){ var part=((CURFICHA&&CURFICHA.partido)||'').trim().toUpperCase();
+        var base=(part==='PL') ? 'CNPJ CANDIDATO '+CEZINHA_CNPJ : ('CNPJ CANDIDATO '+CEZINHA_CNPJ+', CNPJ CANDIDATO '+((CURFICHA&&CURFICHA.cnpj)?CURFICHA.cnpj:'__________'));
+        var n=parseInt(tir,10); if(!isNaN(n) && n>0) base += ' - TIRAGEM: '+brNum(n);
+        return base; }
       function openGrafica(mid){ var tp=tipoById(mid); if(!tp){ alert('Material nao encontrado.'); return; }
         var row=document.querySelector('#dobmat-body .dm-row[data-mid="'+mid+'"]');
         var q=0; if(row){ var qe=row.querySelector('.dm-qty'); if(qe) q=parseInt(qe.value,10)||0; }
