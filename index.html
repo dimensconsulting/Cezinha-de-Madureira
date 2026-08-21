@@ -981,6 +981,7 @@
         </div>
         <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-top:12px">
           <label style="font-size:12px;color:var(--grey-2);display:flex;align-items:center;gap:6px">Tiragem <input id="graf-tir" type="number" min="0" style="width:120px;background:var(--panel-2);border:1px solid var(--line);color:#e9eef6;border-radius:6px;padding:5px 8px;font-size:13px"></label>
+          <label style="font-size:12px;color:var(--grey-2);display:flex;align-items:center;gap:6px">CNPJ Gr&aacute;fica <input id="graf-cnpj" type="text" inputmode="numeric" maxlength="18" placeholder="00.000.000/0000-00" title="Preenchido, o carimbo vira: GR&Aacute;FICA ... &middot; CANDIDATO ... &middot; TIRAGEM ..." style="width:172px;background:var(--panel-2);border:1px solid var(--line);color:#e9eef6;border-radius:6px;padding:5px 8px;font-size:13px"></label>
           <label style="font-size:12px;color:var(--grey-2);display:flex;align-items:center;gap:6px">Tamanho fonte <input id="graf-fs" type="range" min="1" max="72" step="0.5"><input id="graf-fsn" type="number" min="0.1" step="0.5" title="Digite qualquer tamanho" style="width:66px;background:var(--panel-2);border:1px solid var(--line);color:#e9eef6;border-radius:6px;padding:5px 8px;font-size:13px"></label>
           <label style="font-size:12px;color:var(--grey-2);display:flex;align-items:center;gap:6px">Cor <input id="graf-color" type="color" value="#111111" style="width:34px;height:26px;padding:0;border:1px solid var(--line);background:none;border-radius:4px;cursor:pointer"></label>
           <button type="button" id="graf-rot" style="background:var(--panel-2);border:1px solid var(--line);color:#e9eef6;font-size:12px;font-weight:700;padding:6px 12px;border-radius:6px;cursor:pointer">↻ Girar (0°)</button>
@@ -1105,12 +1106,24 @@
       // ---- Gerar PDF p/ grafica ----
       var CEZINHA_CNPJ='68.353.201/0001-06';
       function GRAFHX(h){ var P=window.PDFLib; h=(h||'#111111').replace('#',''); if(h.length===3) h=h[0]+h[0]+h[1]+h[1]+h[2]+h[2]; return P.rgb(parseInt(h.slice(0,2),16)/255,parseInt(h.slice(2,4),16)/255,parseInt(h.slice(4,6),16)/255); }
-      var GRAF={mid:null,url:null,tipo:null,bytes:null,pageW:0,pageH:0,scale:1,x:0.04,y:0.03,fs:8,tiragem:0};
+      var GRAF={mid:null,url:null,tipo:null,bytes:null,pageW:0,pageH:0,scale:1,x:0.04,y:0.03,fs:8,tiragem:0,cnpjGrafica:''};
+      function lsGet(k){ try{ return localStorage.getItem(k)||''; }catch(e){ return ''; } }
+      function lsSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+      function fmtCnpj(v){ v=(v||'').replace(/\D/g,'').slice(0,14); if(!v) return ''; var o=v.slice(0,2); if(v.length>2) o+='.'+v.slice(2,5); if(v.length>5) o+='.'+v.slice(5,8); if(v.length>8) o+='/'+v.slice(8,12); if(v.length>12) o+='-'+v.slice(12,14); return o; }
       function tipoById(mid){ for(var i=0;i<TIPOS.length;i++){ if(String(TIPOS[i].id)===String(mid)) return TIPOS[i]; } return null; }
       function brNum(n){ n=parseInt(n,10); if(isNaN(n)) n=0; return n.toLocaleString('pt-BR'); }
       function legendaText(tir){ var part=((CURFICHA&&CURFICHA.partido)||'').trim().toUpperCase();
+        var n=parseInt(tir,10); if(isNaN(n)||n<0) n=0;
+        var gcnpj=(GRAF.cnpjGrafica||'').trim();
+        if(gcnpj){
+          var cands=[CEZINHA_CNPJ];
+          if(part!=='PL') cands.push((CURFICHA&&CURFICHA.cnpj)?CURFICHA.cnpj:'__________');
+          var parts=['GR\u00c1FICA '+gcnpj];
+          for(var i=0;i<cands.length;i++) parts.push('CANDIDATO '+cands[i]);
+          if(n>0) parts.push('TIRAGEM '+brNum(n));
+          return parts.join(' \u00b7 '); }
         var base=(part==='PL') ? 'CNPJ CANDIDATO '+CEZINHA_CNPJ : ('CNPJ CANDIDATO '+CEZINHA_CNPJ+', CNPJ CANDIDATO '+((CURFICHA&&CURFICHA.cnpj)?CURFICHA.cnpj:'__________'));
-        var n=parseInt(tir,10); if(!isNaN(n) && n>0) base += ' - TIRAGEM: '+brNum(n);
+        if(n>0) base += ' - TIRAGEM: '+brNum(n);
         return base; }
       function openGrafica(mid){ var tp=tipoById(mid); if(!tp){ alert('Material nao encontrado.'); return; }
         var row=document.querySelector('#dobmat-body .dm-row[data-mid="'+mid+'"]');
@@ -1120,9 +1133,10 @@
         if((url||'').toLowerCase().indexOf('.pdf')<0){ alert('A arte precisa ser um PDF para carimbar.'); return; }
         GRAF={mid:mid,url:url,tipo:tp,bytes:null,pdfDoc:null,numPages:1,page:(tp.leg_page!=null?+tp.leg_page:1),apply:(tp.leg_apply||'page'),pageW:0,pageH:0,scale:1,mx:0,my:0,
           x:(tp.leg_x!=null?+tp.leg_x:0.04), y:(tp.leg_y!=null?+tp.leg_y:0.03), fs:(tp.leg_fs!=null?+tp.leg_fs:8),
-          color:(tp.leg_color||'#111111'), rot:(tp.leg_rot!=null?+tp.leg_rot:0), tiragem:q};
+          color:(tp.leg_color||'#111111'), rot:(tp.leg_rot!=null?+tp.leg_rot:0), tiragem:q, cnpjGrafica:fmtCnpj(lsGet('grafCnpj'))};
         gid('graf-title').textContent='Gerar p/ grafica — '+tp.nome+(tp.tamanho?(' ('+tp.tamanho+')'):'');
         var ti=gid('graf-tir'); ti.value=q; ti.oninput=function(){ GRAF.tiragem=parseInt(this.value,10)||0; positionLeg(); };
+        var ce=gid('graf-cnpj'); if(ce){ ce.value=GRAF.cnpjGrafica; ce.oninput=function(){ this.value=fmtCnpj(this.value); GRAF.cnpjGrafica=this.value; lsSet('grafCnpj',this.value); positionLeg(); }; }
         var fsr=gid('graf-fs'), fsn=gid('graf-fsn'); fsr.value=GRAF.fs; fsn.value=GRAF.fs;
         function setFs(v){ v=parseFloat(v); if(isNaN(v)||v<0.1) v=0.1; GRAF.fs=v; positionLeg(); }
         fsr.oninput=function(){ fsn.value=this.value; setFs(this.value); };
@@ -1404,6 +1418,66 @@
 #pednew-modal #ped-solic{min-width:260px}
 #pednew-modal #ped-grafica{background:var(--bg);border:1px solid var(--line);color:#e9eef6;border-radius:6px;padding:7px 9px;font-size:13px;min-width:300px}
 #pedidos-modal .ped-graf{font-size:11px;color:#8fd0ff;margin-top:6px}
+/* ---- Gestao de Impressao (dashboard) ---- */
+#pedgest-modal.matx-ov{padding:0;z-index:100002}
+#pedgest-modal .matx-box{max-width:100vw;width:100vw;height:100vh;max-height:100vh;border-radius:0;border:none;padding:20px 26px;display:flex;flex-direction:column;overflow:hidden;box-sizing:border-box}
+#pedgest-modal h3{margin:0 0 2px}
+#pedgest-modal .pg-sub{font-size:12px;color:var(--grey-2);margin:0 0 14px}
+#pedgest-modal .pg-scroll{flex:1 1 auto;min-height:0;overflow-y:auto;padding-right:6px}
+.pg-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(158px,1fr));gap:12px;margin-bottom:18px}
+.pg-kpi{background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:13px 15px}
+.pg-kpi span{font-size:10px;color:var(--grey-2);text-transform:uppercase;letter-spacing:.05em;font-weight:700}
+.pg-kpi b{display:block;font-size:27px;color:#e9eef6;line-height:1.15;font-variant-numeric:tabular-nums;margin-top:3px}
+.pg-kpi small{display:block;font-size:11px;color:var(--grey);margin-top:3px}
+.pg-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(430px,1fr));gap:16px;margin-bottom:16px}
+.pg-card{background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:14px 16px;min-width:0}
+.pg-card h4{margin:0 0 2px;font-size:13px;color:#e9eef6;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.pg-xls{background:var(--panel);border:1px solid var(--line);color:#cfe0f5;font-weight:700;font-size:11px;padding:5px 11px;border-radius:6px;cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.pg-xls:hover{background:var(--bg);color:#fff}
+.pg-xls[disabled]{opacity:.55;cursor:default}
+.pg-card .pg-note{font-size:11px;color:var(--grey-2);margin:0 0 12px}
+.pg-legend{display:flex;flex-wrap:wrap;gap:12px;margin:0 0 11px}
+.pg-lg{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--grey)}
+.pg-sw{width:10px;height:10px;border-radius:3px;flex:none}
+.pg-row{display:grid;grid-template-columns:minmax(92px,182px) 1fr auto;gap:10px;align-items:center;margin-bottom:7px;font-size:12px}
+.pg-lbl{color:var(--grey);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pg-val{color:#e9eef6;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap;font-size:12px}
+.pg-val i{color:var(--grey-2);font-style:normal;font-weight:400;font-size:11px}
+.pg-track{background:rgba(255,255,255,.05);border-radius:4px;height:16px;display:flex;overflow:hidden;gap:2px}
+.pg-seg{height:100%;border-radius:4px;min-width:3px;cursor:default}
+.pg-list{max-height:344px;overflow-y:auto;padding-right:4px}
+.pg-wrap{overflow:auto;max-height:430px}
+.pg-tbl{border-collapse:separate;border-spacing:2px;font-size:11px}
+.pg-tbl th{color:var(--grey-2);font-weight:700;text-align:right;padding:4px 7px;white-space:nowrap;font-size:10px;text-transform:uppercase;letter-spacing:.03em}
+.pg-tbl th.pg-l,.pg-tbl td.pg-l{text-align:left;position:sticky;left:0;background:var(--panel-2);z-index:1}
+.pg-tbl thead th{position:sticky;top:0;background:var(--panel-2);z-index:2}
+.pg-tbl thead th.pg-sort{cursor:pointer;user-select:none;white-space:nowrap}
+.pg-tbl thead th.pg-sort:hover{color:#cfe0f5}
+.pg-tbl thead th .pg-arw{font-style:normal;font-size:9px;opacity:.28;margin-left:3px}
+.pg-tbl thead th.pg-on{color:#F4D700}
+.pg-tbl thead th.pg-on .pg-arw{opacity:1;color:#F4D700}
+.pg-tbl thead th.pg-l{z-index:3}
+.pg-tbl td{text-align:right;padding:5px 7px;border-radius:4px;color:#e9eef6;font-variant-numeric:tabular-nums;white-space:nowrap}
+.pg-tbl td.pg-l{color:var(--grey);max-width:200px;overflow:hidden;text-overflow:ellipsis}
+.pg-tbl th.pg-l2,.pg-tbl td.pg-l2{text-align:left}
+.pg-dob{display:flex;align-items:center;gap:6px;min-width:0}
+.pg-ic{flex:none;display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px}
+.pg-ic-off{opacity:0}
+.pg-dob-n{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pg-tbl td.pg-l{max-width:320px}
+.pg-tbl td.pg-0{color:var(--grey-2);opacity:.4;background:rgba(255,255,255,.03)}
+.pg-tbl tr.pg-tot td{border-top:1px solid var(--line);font-weight:700;color:#e9eef6;background:none}
+.pg-tbl tr.pg-off td.pg-l{color:var(--grey-2);font-style:italic}
+.pg-tbl tr.pg-off td{color:var(--grey-2);opacity:.65}
+.pg-scale{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--grey-2);margin:10px 0 0}
+.pg-scale i{display:block;width:22px;height:9px;border-radius:2px}
+.pg-tip{position:fixed;z-index:100010;background:#02182e;border:1px solid var(--line);border-radius:6px;padding:7px 10px;font-size:12px;color:#e9eef6;pointer-events:none;display:none;box-shadow:0 8px 22px rgba(0,0,0,.5);max-width:280px;line-height:1.5}
+.pg-tip b{color:#fff}
+.pg-chips{display:flex;flex-wrap:wrap;gap:7px;max-height:250px;overflow-y:auto;padding-right:4px}
+.pg-chip{background:var(--bg);border:1px solid var(--line);border-left:3px solid #6f88a8;border-radius:6px;padding:5px 10px;font-size:12px;color:var(--grey);display:flex;align-items:center;gap:7px;white-space:nowrap}
+.pg-chip i{font-style:normal;font-size:10px;color:var(--grey-2);font-weight:700;letter-spacing:.03em}
+.pg-empty{font-size:12px;color:var(--grey-2);padding:10px 2px}
+#ped-gest{background:#0891b2;color:#fff;border:none;font-weight:700;font-size:12px;padding:7px 12px;border-radius:6px;cursor:pointer}
 #pedidos-modal.matx-ov{padding:0}
 #pedidos-modal .matx-box.dm-full{max-width:100vw;width:100vw;height:100vh;max-height:100vh;border-radius:0;border:none;padding:22px 26px;display:flex;flex-direction:column;overflow:hidden;box-sizing:border-box}
 </style>
@@ -1412,10 +1486,20 @@
   <div class="matx-box dm-full">
     <button type="button" class="matx-x">&#10005;</button>
     <h3>Pedidos</h3>
-    <div class="ped-toolbar"><button type="button" id="ped-new-btn" class="ped-btn-main" style="margin-left:0">&#43; Novo pedido</button><input id="ped-search" placeholder="Buscar dobrada…" autocomplete="off"><div id="ped-partfilter" class="ped-partfilter"></div><div class="ped-matfilter"><button type="button" id="ped-matbtn">Material</button><div id="ped-matpanel" class="ped-matpanel"></div></div><select id="ped-movesel" title="Mover selecionados"><option value="">Mover selecionados p/…</option><option value="solicitacao">Solicita&ccedil;&atilde;o</option><option value="criacao">Cria&ccedil;&atilde;o</option><option value="impressao">Impress&atilde;o</option><option value="entregue">Entregue</option></select><button type="button" id="ped-wpp" class="ped-wpp">&#128241; Enviar p/ gr&aacute;fica</button></div>
+    <div class="ped-toolbar"><button type="button" id="ped-new-btn" class="ped-btn-main" style="margin-left:0">&#43; Novo pedido</button><input id="ped-search" placeholder="Buscar dobrada…" autocomplete="off"><div id="ped-partfilter" class="ped-partfilter"></div><div class="ped-matfilter"><button type="button" id="ped-matbtn">Material</button><div id="ped-matpanel" class="ped-matpanel"></div></div><select id="ped-movesel" title="Mover selecionados"><option value="">Mover selecionados p/…</option><option value="solicitacao">Solicita&ccedil;&atilde;o</option><option value="criacao">Cria&ccedil;&atilde;o</option><option value="impressao">Impress&atilde;o</option><option value="entregue">Entregue</option></select><button type="button" id="ped-gest" title="Dashboard de acompanhamento">&#128202; Gest&atilde;o de Impress&atilde;o</button><button type="button" id="ped-wpp" class="ped-wpp">&#128241; Enviar p/ gr&aacute;fica</button></div>
     <div id="ped-board" class="ped-board"></div>
   </div>
 </div>
+
+<div id="pedgest-modal" class="matx-ov">
+  <div class="matx-box">
+    <button type="button" class="matx-x">&#10005;</button>
+    <h3>Gest&atilde;o de Impress&atilde;o</h3>
+    <div class="pg-sub" id="pg-sub">&mdash;</div>
+    <div class="pg-scroll" id="pg-body"></div>
+  </div>
+</div>
+<div class="pg-tip" id="pg-tip"></div>
 
 <div id="peddup-modal" class="matx-ov" style="z-index:100001">
   <div class="matx-box" style="max-width:460px;width:100%">
@@ -1465,7 +1549,7 @@
   var U='https://xofegurmrfkaavhtndqk.supabase.co', K='sb_publishable_jAedlYOqMrbgp7wG5yhD6A_AyWaXwT9';
   var sb=null; function ensure(){ if(sb) return sb; if(window.supabase){ try{ sb=window.supabase.createClient(U,K); }catch(e){} } return sb; }
   var ST=[['solicitacao','Solicitação'],['criacao','Criação'],['impressao','Impressão'],['entregue','Entregue']];
-  var DOB=[], TP=[], PED=[], CHIPS=[], DOBMAP={}, ENT={}, DUP_SRC=null, DUP_SEL={}, PEDNEW_SEL={}, PSEARCH='', PSEL={}, EDIT_ID=null, SENDSEL={}, MSEL={}; var TIPO_LABEL={dobrada:'Dobrada',lideranca:'Liderança',igreja:'Igreja'};
+  var DOB=[], TP=[], PED=[], CHIPS=[], DOBMAP={}, ENT={}, PGFLAG={}, DUP_SRC=null, DUP_SEL={}, PEDNEW_SEL={}, PSEARCH='', PSEL={}, EDIT_ID=null, SENDSEL={}, MSEL={}; var TIPO_LABEL={dobrada:'Dobrada',lideranca:'Liderança',igreja:'Igreja'};
   function gid(id){ return document.getElementById(id); }
   function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
   function tById(id){ for(var i=0;i<TP.length;i++){ if(TP[i].id===id) return TP[i]; } return null; }
@@ -1475,12 +1559,276 @@
   function open_(){ var m=gid('pedidos-modal'); if(m){ if(m.parentNode!==document.body) document.body.appendChild(m); m.classList.add('matx-open'); } }
   function isOpen(){ var m=gid('pedidos-modal'); return m && m.classList.contains('matx-open'); }
   function load(cb){ if(!ensure()){ if(cb)cb(); return; } Promise.all([
-      sb.from('dobradas').select('id,nome').order('nome',{ascending:true}),
+      sb.from('dobradas').select('id,nome,regiao,status').order('nome',{ascending:true}),
       sb.from('materiais_tipo').select('id,nome,tamanho').order('nome',{ascending:true}),
       sb.from('pedidos').select('*').order('created_at',{ascending:false}),
-      sb.from('dobrada_entrega').select('dobrada_id,partido,numero_campanha')
-    ]).then(function(r){ DOB=(r[0]&&r[0].data)||[]; TP=(r[1]&&r[1].data)||[]; PED=(r[2]&&r[2].data)||[]; ENT={}; ((r[3]&&r[3].data)||[]).forEach(function(e){ ENT[e.dobrada_id]={partido:(e.partido||'').trim(), numero:(e.numero_campanha||'').trim()}; }); if(cb)cb(); }, function(){ if(cb)cb(); }); }
+      sb.from('dobrada_entrega').select('dobrada_id,partido,numero_campanha,responsavel_interno,foto_ok,logo_ok,curriculo_ok,curriculo_url,fotos,logos'),
+      sb.from('dobrada_materiais').select('dobrada_id,ativo,arte_url')
+    ]).then(function(r){ DOB=(r[0]&&r[0].data)||[]; TP=(r[1]&&r[1].data)||[]; PED=(r[2]&&r[2].data)||[]; ENT={}; PGFLAG={}; ((r[3]&&r[3].data)||[]).forEach(function(e){ ENT[e.dobrada_id]={partido:(e.partido||'').trim(), numero:(e.numero_campanha||'').trim(), resp:(e.responsavel_interno||'').trim()}; var foto=e.foto_ok||(e.fotos&&e.fotos.length), logo=e.logo_ok||(e.logos&&e.logos.length), curr=e.curriculo_ok||e.curriculo_url; PGFLAG[e.dobrada_id]=PGFLAG[e.dobrada_id]||{}; PGFLAG[e.dobrada_id].assets=!!(foto||logo||curr); PGFLAG[e.dobrada_id].ficha=!!(foto&&logo&&curr); }); var _ag={}; ((r[4]&&r[4].data)||[]).forEach(function(m){ if(!m.ativo) return; var a=_ag[m.dobrada_id]=_ag[m.dobrada_id]||{t:0,c:0}; a.t++; if(m.arte_url) a.c++; }); Object.keys(_ag).forEach(function(k){ PGFLAG[k]=PGFLAG[k]||{}; PGFLAG[k].mat=(_ag[k].t>0 && _ag[k].c===_ag[k].t); }); if(cb)cb(); }, function(){ if(cb)cb(); }); }
   window.openPedidos=function(){ open_(); ensure(); load(function(){ buildMatFilter(); renderBoard(); }); };
+  // ---- Gestao de Impressao (dashboard) ----
+  // Cards ocultos por enquanto — troque para true para voltar a exibir.
+  var PG_SHOW={ pedidosPorDobrada:false, dobradasSemPedido:false };
+  var PG_COLOR={solicitacao:'#4aa3e8',criacao:'#F4D700',impressao:'#a855f7',entregue:'#37c871'};
+  var PG_RAMP=['#103d4a','#14566a','#17708b','#1a8bab','#22a7cb','#45c3e3'];
+  function nf(n){ n=parseInt(n,10); if(isNaN(n)) n=0; return n.toLocaleString('pt-BR'); }
+  function pgName(p,dm){ return p.dobrada_id ? (dm[p.dobrada_id]||'(dobrada removida)') : ((p.solicitante||'(sem nome)')+' · '+(TIPO_LABEL[p.tipo]||p.tipo||'')); }
+  function pgStatusIcon(st){
+    if(st==='proibido') return {t:'Bloqueada', s:'<svg width="15" height="15" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="#e02424" stroke-width="2.4"/><line x1="5" y1="5" x2="19" y2="19" stroke="#e02424" stroke-width="2.4" stroke-linecap="round"/></svg>'};
+    if(st==='rocket') return {t:'Prioritária', s:'<span style="display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border-radius:50%;background:#F4D700;font-size:9px">🚀</span>'};
+    var f=(st==='green')?'#00BD5B':'#1f6fc8';
+    return {t:(st==='green'?'Concluída':'Em andamento'),
+      s:'<svg width="15" height="15" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="'+f+'"/><path d="M7 12.5l3.3 3.3L17 8.8" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>'};}
+  function pgConsIcon(fl){ fl=fl||{};
+    var clip='<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>';
+    function svg(c,inner){ return '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+inner+'</svg>'; }
+    if(fl.mat) return {t:'Pronto para impressão — todos os materiais com arte',
+      s:svg('#37c871','<polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>')};
+    if(fl.ficha) return {t:'Foto, logo e currículo recebidos — materiais ainda incompletos', s:svg('#8fd0ff',clip)};
+    if(fl.assets) return {t:'Em construção — recebeu parte de foto/logo/currículo', s:svg('#F4D700',clip)};
+    return null; }
+  function pgDobMeta(id){ var d=null; for(var i=0;i<DOB.length;i++){ if(DOB[i].id===id){ d=DOB[i]; break; } }
+    var e=ENT[id]||{};
+    return { id:id, regiao:((d&&d.regiao)||'').trim(), resp:(e.resp||'').trim(),
+             status:((d&&d.status)||'blue'), flags:(PGFLAG[id]||{}) }; }
+  function pgDobHtml(nome,meta){ meta=meta||{};
+    var st=pgStatusIcon(meta.status||'blue'), cs=pgConsIcon(meta.flags);
+    var ic='<span class="pg-ic" title="'+esc(st.t)+'">'+st.s+'</span>'+
+           (cs?('<span class="pg-ic" title="'+esc(cs.t)+'">'+cs.s+'</span>'):'<span class="pg-ic pg-ic-off"></span>');
+    return '<span class="pg-dob">'+ic+'<span class="pg-dob-n"><span style="color:#e9eef6">'+esc(nome)+'</span>'+
+      (meta.regiao?(' <span style="color:var(--grey-2)">&mdash; '+esc(meta.regiao)+'</span>'):'')+
+      (meta.resp?(' <span style="color:#F4D700;font-weight:700">('+esc(meta.resp)+')</span>'):'')+'</span></span>'; }
+  function pgDobPlain(nome,meta){ meta=meta||{};
+    return nome+(meta.regiao?(' — '+meta.regiao):'')+(meta.resp?(' ('+meta.resp+')'):''); }
+  function pgGraf(p){ var g=(p.grafica||'').trim(); return g || 'Sem gráfica definida'; }
+  function pgMat(it){ var t=tById(it.material_id); return (t&&t.nome) || it.nome || '(material)'; }
+  function pgStep(v,max){ if(!v) return -1; var t=Math.log(v+1)/Math.log((max||1)+1); var i=Math.round(t*(PG_RAMP.length-1)); if(i<0)i=0; if(i>PG_RAMP.length-1)i=PG_RAMP.length-1; return i; }
+  function pgCellStyle(v,max){ var i=pgStep(v,max); if(i<0) return ''; return 'background:'+PG_RAMP[i]+(i>=4?';color:#04202e':''); }
+  function pgBar(label,segs,maxv,valHtml,tip){
+    var tot=0; segs.forEach(function(x){ tot+=x.v; });
+    var w=maxv>0?(tot/maxv*100):0;
+    var inner=segs.filter(function(x){return x.v>0;}).map(function(x){
+      return '<span class="pg-seg" style="background:'+x.c+';flex:'+x.v+' 1 0" data-tip="'+esc(x.t||'')+'"></span>'; }).join('');
+    return '<div class="pg-row"><span class="pg-lbl" data-tip="'+esc(tip||label)+'">'+esc(label)+'</span>'+
+      '<span class="pg-track" style="width:'+(w<1.5?1.5:w)+'%">'+inner+'</span>'+
+      '<span class="pg-val">'+valHtml+'</span></div>'; }
+  function pgAgg(){
+    var dm={}; DOB.forEach(function(d){ dm[d.id]=d.nome; });
+    var A={ total:PED.length, itens:0, pecas:0,
+            etapa:{}, dob:{}, dobMat:{}, graf:{}, grafMat:{}, mats:{}, semGraf:0, dobsAtend:{}, meta:{} };
+    ST.forEach(function(s){ A.etapa[s[0]]={n:0,q:0}; });
+    PED.forEach(function(p){
+      var k=p.status||'solicitacao'; if(!A.etapa[k]) A.etapa[k]={n:0,q:0};
+      var nome=pgName(p,dm), g=pgGraf(p);
+      if(!(p.grafica||'').trim()) A.semGraf++;
+      if(p.dobrada_id) A.dobsAtend[p.dobrada_id]=1;
+      if(!A.dob[nome]) A.dob[nome]={n:0,q:0,st:{}};
+      if(!A.meta[nome]) A.meta[nome]=p.dobrada_id?pgDobMeta(p.dobrada_id):{regiao:'',resp:''};
+      if(!A.graf[g]) A.graf[g]={n:0,q:0,st:{}};
+      if(!A.dobMat[nome]) A.dobMat[nome]={};
+      if(!A.grafMat[g]) A.grafMat[g]={n:0,mats:{}};
+      A.etapa[k].n++; A.dob[nome].n++; A.graf[g].n++; A.grafMat[g].n++;
+      A.dob[nome].st[k]=(A.dob[nome].st[k]||0)+1;
+      A.graf[g].st[k]=(A.graf[g].st[k]||0)+1;
+      (p.itens||[]).forEach(function(it){
+        var q=parseInt(it.qtd,10)||0, m=pgMat(it);
+        A.itens++; A.pecas+=q; A.etapa[k].q+=q; A.dob[nome].q+=q; A.graf[g].q+=q;
+        A.mats[m]=(A.mats[m]||0)+q;
+        A.dobMat[nome][m]=(A.dobMat[nome][m]||0)+q;
+        if(!A.grafMat[g].mats[m]) A.grafMat[g].mats[m]={n:0,q:0};
+        A.grafMat[g].mats[m].n++; A.grafMat[g].mats[m].q+=q;
+      });
+    });
+    return A; }
+  function pgLegend(){ return '<div class="pg-legend">'+ST.map(function(s){
+      return '<span class="pg-lg"><i class="pg-sw" style="background:'+PG_COLOR[s[0]]+'"></i>'+esc(s[1])+'</span>'; }).join('')+'</div>'; }
+  var PG_EXPORT={}, PG_SORT={};
+  function pgStamp(){ var d=new Date(); function z(n){ return ('0'+n).slice(-2); }
+    return d.getFullYear()+'-'+z(d.getMonth()+1)+'-'+z(d.getDate())+'_'+z(d.getHours())+z(d.getMinutes()); }
+  function pgDownload(blob,name){ var u=URL.createObjectURL(blob); var a=document.createElement('a');
+    a.href=u; a.download=name; document.body.appendChild(a); a.click();
+    setTimeout(function(){ a.remove(); URL.revokeObjectURL(u); },1500); }
+  function pgCsv(d,name){
+    var sep=';';
+    function cell(v){ if(typeof v==='number') return String(v);
+      var t=String(v==null?'':v); return /[";\n]/.test(t) ? ('"'+t.replace(/"/g,'""')+'"') : t; }
+    var lines=[d.head].concat(d.body).concat([d.foot]).map(function(r){ return r.map(cell).join(sep); });
+    pgDownload(new Blob(['﻿'+lines.join('\r\n')],{type:'text/csv;charset=utf-8;'}), name+'.csv'); }
+  function pgXlsx(id){
+    var d=PG_EXPORT[id]; if(!d){ alert('Nada para exportar.'); return; }
+    var btn=document.querySelector('.pg-xls[data-xls="'+id+'"]'); var lbl=btn?btn.innerHTML:'';
+    if(btn){ btn.disabled=true; btn.innerHTML='Gerando…'; }
+    function done(){ if(btn){ btn.disabled=false; btn.innerHTML=lbl; } }
+    var name=d.file+'_'+pgStamp();
+    function build(){
+      try{
+        var aoa=[d.head].concat(d.body).concat([d.foot]);
+        var ws=XLSX.utils.aoa_to_sheet(aoa);
+        ws['!cols']=d.head.map(function(hh,i){ return {wch: i===0?32:Math.max(12,String(hh).length+3)}; });
+        ws['!autofilter']={ref:XLSX.utils.encode_range({s:{r:0,c:0},e:{r:d.body.length,c:d.head.length-1}})};
+        var wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,d.sheet.slice(0,31));
+        XLSX.writeFile(wb,name+'.xlsx'); done();
+      }catch(e){ pgCsv(d,name); done(); } }
+    if(window.XLSX){ build(); return; }
+    var sc=document.createElement('script');
+    sc.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+    sc.onload=function(){ if(window.XLSX) build(); else { pgCsv(d,name); done(); } };
+    sc.onerror=function(){ pgCsv(d,name); done(); };
+    document.head.appendChild(sc); }
+  function pgMatrix(o){
+    var title=o.title,note=o.note,rows=o.rows,cols=o.cols,get=o.get,fmt=o.fmt||nf,rowLabel=o.rowLabel,
+        totLabel=o.totLabel||'Total',tipOf=o.tipOf,rowHtml=o.rowHtml,rowText=o.rowText,
+        extras=o.extras||(o.extra?[o.extra]:[]);
+    if(!rows.length||!cols.length) return '<div class="pg-card"><h4>'+esc(title)+'</h4><div class="pg-empty">Sem dados.</div></div>';
+    var skey=o.exportId||title; var srt=PG_SORT[skey]||null;
+    var vis=extras.filter(function(x){ return !x.exportOnly; });
+    if(srt){
+      var val=function(r){
+        if(srt.k==='r') return r;
+        if(srt.k==='t'){ var t=0; cols.forEach(function(c){ t+=get(r,c); }); return t; }
+        if(srt.k.charAt(0)==='x'){ var x=vis[+srt.k.slice(1)]; return x?x.get(r):0; }
+        return get(r,cols[+srt.k.slice(1)]); };
+      rows=rows.slice().sort(function(a,b){ var va=val(a), vb=val(b);
+        if(typeof va==='number' && typeof vb==='number') return (va-vb)*srt.d;
+        return String(va||'').localeCompare(String(vb||''),'pt-BR')*srt.d; }); }
+    var max=0; rows.forEach(function(r){ cols.forEach(function(c){ var v=get(r,c); if(v>max) max=v; }); });
+    var xid=o.exportId||'';
+    if(xid){ PG_EXPORT[xid]={file:o.exportFile||'export', sheet:o.exportSheet||'Dados',
+      head:[rowLabel].concat(extras.map(function(x){ return x.label; })).concat(cols).concat([totLabel]),
+      body:rows.map(function(r){ var tr=0; var line=[rowText?rowText(r):r].concat(extras.map(function(x){ return x.get(r); }));
+        cols.forEach(function(c){ var v=get(r,c); tr+=v; line.push(v); }); line.push(tr); return line; }) };
+      var ft=['Total'].concat(extras.map(function(x){ return x.total===false?'':rows.reduce(function(a,r){ var v=x.get(r); return a+(typeof v==='number'?v:0); },0); }));
+      var gt2=0; cols.forEach(function(c){ var cv=0; rows.forEach(function(r){ cv+=get(r,c); }); gt2+=cv; ft.push(cv); });
+      ft.push(gt2); PG_EXPORT[xid].foot=ft; }
+    var h='<div class="pg-card"><h4><span>'+esc(title)+'</span>'+
+      (xid?('<button type="button" class="pg-xls" data-xls="'+xid+'">&#128202; Exportar Excel</button>'):'')+
+      '</h4><div class="pg-note">'+esc(note)+'</div><div class="pg-wrap"><table class="pg-tbl"><thead><tr>'+th('r',rowLabel,'pg-l')+'';
+    function arw(k){ var on=srt&&srt.k===k; return '<i class="pg-arw">'+(on?(srt.d<0?'\u25bc':'\u25b2'):'\u25b4\u25be')+'</i>'; }
+    function th(k,label,cls){ var on=srt&&srt.k===k;
+      return '<th class="pg-sort'+(cls?' '+cls:'')+(on?' pg-on':'')+'" data-mx="'+esc(skey)+'" data-k="'+k+'" title="Clique para ordenar">'+esc(label)+arw(k)+'</th>'; }
+    vis.forEach(function(x,i){ h+=th('x'+i,x.label,x.left?'pg-l2':''); });
+    cols.forEach(function(c,i){ h+=th('c'+i,c); });
+    h+=th('t',totLabel)+'</tr></thead><tbody>';
+    var off=o.muted||{};
+    rows.forEach(function(r){
+      var tr=0, cells='';
+      cols.forEach(function(c){ var v=get(r,c); tr+=v;
+        var tp=tipOf?tipOf(r,c,v):('<b>'+esc(r)+'</b><br>'+esc(c)+'<br>'+fmt(v));
+        cells+= v? ('<td style="'+pgCellStyle(v,max)+'" data-tip="'+esc(tp)+'">'+fmt(v)+'</td>') : '<td class="pg-0">&mdash;</td>'; });
+      var lab=rowHtml?rowHtml(r):esc(r);
+      var exc=vis.map(function(x){ var v=x.get(r); return '<td'+(x.left?' class="pg-l2"':'')+'>'+(typeof v==='number'?('<b>'+fmt(v)+'</b>'):esc(String(v||'—')))+'</td>'; }).join('');
+      h+='<tr'+(off[r]?' class="pg-off"':'')+'><td class="pg-l" data-tip="'+esc(off[r]||r)+'">'+lab+'</td>'+exc+cells+'<td><b>'+fmt(tr)+'</b></td></tr>'; });
+    var gt=0, foot='';
+    cols.forEach(function(c){ var cv=0; rows.forEach(function(r){ cv+=get(r,c); }); gt+=cv; foot+='<td>'+fmt(cv)+'</td>'; });
+    var exf=vis.map(function(x){ if(x.total===false) return '<td'+(x.left?' class="pg-l2"':'')+'></td>';
+      var t=0; rows.forEach(function(r){ var v=x.get(r); if(typeof v==='number') t+=v; }); return '<td>'+fmt(t)+'</td>'; }).join('');
+    h+='<tr class="pg-tot"><td class="pg-l">Total</td>'+exf+foot+'<td>'+fmt(gt)+'</td></tr>';
+    h+='</tbody></table></div><div class="pg-scale">menos'+PG_RAMP.map(function(c){ return '<i style="background:'+c+'"></i>'; }).join('')+'mais <span style="margin-left:6px">(escala logar\u00edtmica &mdash; o n\u00famero na c\u00e9lula \u00e9 o valor real)</span></div></div>';
+    return h; }
+  function renderGest(){
+    var body=gid('pg-body'), sub=gid('pg-sub'); if(!body) return;
+    if(!PED.length){ body.innerHTML='<div class="pg-empty">Nenhum pedido cadastrado ainda.</div>'; if(sub)sub.textContent=''; return; }
+    var A=pgAgg();
+    var nDobs=Object.keys(A.dobsAtend).length, totDobs=DOB.length;
+    var agora=new Date();
+    if(sub) sub.textContent='Base: '+nf(A.total)+' pedidos · '+nf(A.itens)+' itens · atualizado em '+
+      ('0'+agora.getDate()).slice(-2)+'/'+('0'+(agora.getMonth()+1)).slice(-2)+'/'+agora.getFullYear()+' '+
+      ('0'+agora.getHours()).slice(-2)+':'+('0'+agora.getMinutes()).slice(-2);
+    var h='';
+    // KPIs
+    h+='<div class="pg-kpis">'+
+      '<div class="pg-kpi"><span>Total de pedidos</span><b>'+nf(A.total)+'</b><small>'+nf(A.itens)+' itens de material</small></div>'+
+      '<div class="pg-kpi"><span>Peças solicitadas</span><b>'+nf(A.pecas)+'</b><small>somando todos os itens</small></div>'+
+      '<div class="pg-kpi"><span>Dobradas atendidas</span><b>'+nf(nDobs)+'</b><small>de '+nf(totDobs)+' cadastradas'+(totDobs?(' · '+Math.round(nDobs/totDobs*100)+'%'):'')+' &mdash; '+nf(totDobs-nDobs)+' sem pedido</small></div>'+
+      '<div class="pg-kpi"><span>Entregues</span><b>'+nf((A.etapa.entregue||{}).n||0)+'</b><small>'+nf((A.etapa.entregue||{}).q||0)+' peças</small></div>'+
+      '<div class="pg-kpi"><span>Sem gráfica</span><b>'+nf(A.semGraf)+'</b><small>pedidos sem gráfica definida</small></div>'+
+      '</div>';
+    // Funil
+    var maxE=0; ST.forEach(function(s){ var e=A.etapa[s[0]]||{n:0}; if(e.n>maxE) maxE=e.n; });
+    h+='<div class="pg-grid"><div class="pg-card"><h4>Pedidos por etapa do funil</h4><div class="pg-note">Barra = número de pedidos na etapa. O valor entre parênteses é o total de peças.</div>';
+    ST.forEach(function(s){ var k=s[0], e=A.etapa[k]||{n:0,q:0};
+      var pct=A.total?Math.round(e.n/A.total*100):0;
+      h+=pgBar(s[1],[{v:e.n,c:PG_COLOR[k],t:'<b>'+esc(s[1])+'</b><br>'+nf(e.n)+' pedidos ('+pct+'%)<br>'+nf(e.q)+' peças'}],maxE,
+              nf(e.n)+' <i>('+nf(e.q)+' peças)</i>',s[1]); });
+    h+='</div>';
+    // Status por grafica
+    var gs=Object.keys(A.graf).sort(function(a,b){ return A.graf[b].n-A.graf[a].n; });
+    var maxG=0; gs.forEach(function(g){ if(A.graf[g].n>maxG) maxG=A.graf[g].n; });
+    h+='<div class="pg-card"><h4>Status dos pedidos por gráfica</h4><div class="pg-note">Cada barra é uma gráfica, dividida pela etapa em que os pedidos estão.</div>'+pgLegend();
+    gs.forEach(function(g){ var segs=ST.map(function(s){ var v=A.graf[g].st[s[0]]||0;
+        return {v:v,c:PG_COLOR[s[0]],t:'<b>'+esc(g)+'</b><br>'+esc(s[1])+': '+nf(v)+' pedido(s)'}; });
+      h+=pgBar(g,segs,maxG,nf(A.graf[g].n)+' <i>('+nf(A.graf[g].q)+' peças)</i>',g); });
+    h+='</div></div>';
+    // Pedidos por dobrada
+    var ds=Object.keys(A.dob).sort(function(a,b){ return A.dob[b].n-A.dob[a].n || A.dob[b].q-A.dob[a].q; });
+    var maxD=0; ds.forEach(function(d){ if(A.dob[d].n>maxD) maxD=A.dob[d].n; });
+    if(PG_SHOW.pedidosPorDobrada){
+      h+='<div class="pg-card" style="margin-bottom:16px"><h4>Pedidos por dobrada</h4><div class="pg-note">'+nf(ds.length)+' dobradas com pedido, da maior para a menor. A barra mostra em que etapa cada pedido está.</div>'+pgLegend()+'<div class="pg-list">';
+      ds.forEach(function(d){ var segs=ST.map(function(s){ var v=A.dob[d].st[s[0]]||0;
+          return {v:v,c:PG_COLOR[s[0]],t:'<b>'+esc(d)+'</b><br>'+esc(s[1])+': '+nf(v)+' pedido(s)'}; });
+        h+=pgBar(d,segs,maxD,nf(A.dob[d].n)+' <i>('+nf(A.dob[d].q)+' peças)</i>',d); });
+      h+='</div></div>'; }
+    // Dobradas sem nenhuma solicitacao
+    var semPed=DOB.filter(function(d){ return !A.dobsAtend[d.id]; })
+                  .sort(function(a,b){ return (a.nome||'').localeCompare(b.nome||'','pt-BR'); });
+    if(PG_SHOW.dobradasSemPedido){
+      h+='<div class="pg-card" style="margin-bottom:16px"><h4>Dobradas sem nenhuma solicita\u00e7\u00e3o</h4>'+
+         '<div class="pg-note">'+nf(semPed.length)+' de '+nf(totDobs)+' dobradas cadastradas ('+
+         (totDobs?Math.round(semPed.length/totDobs*100):0)+'%) ainda n\u00e3o tiveram nenhum pedido registrado.</div>';
+      h+= semPed.length
+        ? ('<div class="pg-chips">'+semPed.map(function(d){ var pt=((ENT[d.id]||{}).partido||'').trim();
+             var nu=((ENT[d.id]||{}).numero||'').trim(); var meta=[]; if(pt)meta.push(pt); if(nu)meta.push(nu);
+             return '<span class="pg-chip">'+esc(d.nome)+(meta.length?('<i>'+esc(meta.join(' \u00b7 '))+'</i>'):'<i>sem ficha</i>')+'</span>'; }).join('')+'</div>')
+        : '<div class="pg-empty">Todas as dobradas cadastradas j\u00e1 t\u00eam pelo menos um pedido.</div>';
+      h+='</div>'; }
+    // Matriz dobrada x material
+    var mats=Object.keys(A.mats).sort(function(a,b){ return A.mats[b]-A.mats[a]; });
+    var offMap={}, offNames=[];
+    var offMeta={};
+    semPed.forEach(function(d){ var mt=ENT[d.id]||{}; var b=[]; if(mt.partido)b.push(mt.partido); if(mt.numero)b.push(mt.numero);
+      offNames.push(d.nome); offMeta[d.nome]=pgDobMeta(d.id);
+      offMap[d.nome]='<b>'+esc(d.nome)+'</b><br>Nenhum pedido registrado'+(b.length?('<br>'+esc(b.join(' \u00b7 '))):'<br>sem ficha de entrega'); });
+    function dmeta(r){ return A.meta[r]||offMeta[r]||{regiao:'',resp:''}; }
+    h+=pgMatrix({title:'Dobrada \u00d7 tipo de material \u00d7 quantidade',
+        note:'Pe\u00e7as pedidas por dobrada em cada material. As '+nf(offNames.length)+' dobradas sem nenhuma solicita\u00e7\u00e3o aparecem no fim da lista, em cinza.',
+        rows:ds.concat(offNames), cols:mats, rowLabel:'Dobrada', totLabel:'Total de pe\u00e7as', muted:offMap,
+        exportId:'dobmat', exportFile:'dobrada-material-quantidade', exportSheet:'Dobrada x Material',
+        rowHtml:function(r){ return pgDobHtml(r,dmeta(r)); },
+
+        extras:[{label:'Regi\u00e3o', exportOnly:true, total:false, get:function(r){ return dmeta(r).regiao; }},
+                {label:'Respons\u00e1vel', exportOnly:true, total:false, get:function(r){ return dmeta(r).resp; }},
+                {label:'Pedidos', get:function(r){ return A.dob[r]?A.dob[r].n:0; }}],
+        get:function(r,c){ return (A.dobMat[r]&&A.dobMat[r][c])||0; },
+        tipOf:function(r,c,v){ return '<b>'+esc(r)+'</b><br>'+esc(c)+'<br>'+nf(v)+' pe\u00e7as'; }});
+    // Matriz grafica x material
+    h+='<div style="height:16px"></div>';
+    h+=pgMatrix({title:'Gr\u00e1fica \u00d7 total de pedidos \u00d7 tipo de material',
+        note:'Pedidos por gr\u00e1fica e, nas colunas de material, quantos itens de pedido cada uma recebeu. Passe o mouse para ver as pe\u00e7as.',
+        rows:gs, cols:mats, rowLabel:'Gr\u00e1fica', totLabel:'Total de itens',
+        extra:{label:'Pedidos', get:function(r){ return A.graf[r].n; }},
+        get:function(r,c){ var m=A.grafMat[r]&&A.grafMat[r].mats[c]; return m?m.n:0; },
+        tipOf:function(r,c,v){ var m=A.grafMat[r]&&A.grafMat[r].mats[c];
+          return '<b>'+esc(r)+'</b><br>'+esc(c)+'<br>'+nf(v)+' item(ns) de pedido<br>'+nf(m?m.q:0)+' pe\u00e7as'; }});
+    body.innerHTML=h; }
+  function pgKeepScroll(fn){
+    var body=gid('pg-body'); var top=body?body.scrollTop:0;
+    var wraps=[].slice.call(document.querySelectorAll('#pedgest-modal .pg-wrap')).map(function(w){ return [w.scrollTop,w.scrollLeft]; });
+    fn();
+    if(body) body.scrollTop=top;
+    [].slice.call(document.querySelectorAll('#pedgest-modal .pg-wrap')).forEach(function(w,i){
+      if(wraps[i]){ w.scrollTop=wraps[i][0]; w.scrollLeft=wraps[i][1]; } }); }
+  function pgOpen(){ var m=gid('pedgest-modal'); if(m){ if(m.parentNode!==document.body) document.body.appendChild(m); m.classList.add('matx-open'); }
+    if(!PED.length){ load(function(){ renderGest(); }); } else { renderGest(); } }
+  (function(){ var tip=null;
+    document.addEventListener('mouseover',function(e){ var t=e.target; if(!t||!t.closest) return;
+      var el=t.closest('[data-tip]'); if(!el||!el.closest('#pedgest-modal')) { if(tip) tip.style.display='none'; return; }
+      tip=tip||gid('pg-tip'); if(!tip) return; tip.innerHTML=el.getAttribute('data-tip'); tip.style.display='block'; });
+    document.addEventListener('mousemove',function(e){ if(!tip||tip.style.display==='none') return;
+      var x=e.clientX+14, y=e.clientY+16; var r=tip.getBoundingClientRect();
+      if(x+r.width>window.innerWidth-8) x=e.clientX-r.width-14;
+      if(y+r.height>window.innerHeight-8) y=e.clientY-r.height-16;
+      tip.style.left=x+'px'; tip.style.top=y+'px'; });
+    document.addEventListener('mouseout',function(e){ var t=e.target; if(t&&t.closest&&t.closest('[data-tip]')&&tip) tip.style.display='none'; }); })();
   function toggleTipo(){ var tp=gid('ped-tipo'); var v=tp?tp.value:'dobrada'; var ds=gid('pednew-dobsel'); var so=gid('ped-solic'); if(v==='dobrada'){ if(ds)ds.style.display=''; if(so)so.style.display='none'; } else { if(ds)ds.style.display='none'; if(so)so.style.display=''; } }
   function _openNew(){ EDIT_ID=null; var ti=gid('pednew-title'); if(ti)ti.textContent='Novo pedido'; var cb=gid('ped-create'); if(cb)cb.textContent='Criar pedido(s)'; var dl=gid('pednew-doblabel'); if(dl)dl.style.display='none'; var trow=gid('pednew-tiporow'); if(trow)trow.style.display=''; var tp=gid('ped-tipo'); if(tp)tp.value='dobrada'; var so=gid('ped-solic'); if(so)so.value=''; var gr=gid('pednew-graficarow'); if(gr)gr.style.display='none'; var gi=gid('ped-grafica'); if(gi)gi.value=''; toggleTipo(); fillMat(); CHIPS=[]; renderChips(); PEDNEW_SEL={}; var ss=gid('ped-dobsearch'); if(ss)ss.value=''; renderDobList(''); var qd=gid('ped-qty'); if(qd)qd.value=1; var mm=gid('ped-mat'); if(mm)mm.value=''; var m=gid('pednew-modal'); if(m){ if(m.parentNode!==document.body) document.body.appendChild(m); m.classList.add('matx-open'); } }
   function _openEdit(id){ var p=pById(id); if(!p){ alert('Pedido não encontrado.'); return; } EDIT_ID=id; var ti=gid('pednew-title'); if(ti)ti.textContent='Editar pedido'; var cb=gid('ped-create'); if(cb)cb.textContent='Salvar alterações'; var ds=gid('pednew-dobsel'); if(ds)ds.style.display='none'; var trow=gid('pednew-tiporow'); if(trow)trow.style.display='none'; var st=(p.status||'solicitacao'); var gr=gid('pednew-graficarow'); var gi=gid('ped-grafica'); if(gi)gi.value=(p.grafica||''); if(gr)gr.style.display=(st==='impressao'||st==='entregue')?'':'none'; var dl=gid('pednew-doblabel'); if(dl){ var dm={}; DOB.forEach(function(d){dm[d.id]=d.nome;}); if(p.dobrada_id){ var mt=ENT[p.dobrada_id]||{}; var b=[]; if(mt.partido)b.push(mt.partido); if(mt.numero)b.push(mt.numero); dl.innerHTML='Dobrada: '+esc(dm[p.dobrada_id]||'(dobrada)')+(b.length?' <span class="ped-meta">'+esc(b.join(' · '))+'</span>':''); } else { dl.innerHTML=esc(p.solicitante||'(sem nome)')+' <span class="ped-tag">'+esc(TIPO_LABEL[p.tipo]||p.tipo||'')+'</span>'; } dl.style.display=''; } fillMat(); CHIPS=(p.itens||[]).map(function(it){ return {material_id:it.material_id,nome:it.nome,tamanho:it.tamanho,qtd:parseInt(it.qtd,10)||0}; }); renderChips(); var qd=gid('ped-qty'); if(qd)qd.value=1; var mm=gid('ped-mat'); if(mm)mm.value=''; var m=gid('pednew-modal'); if(m){ if(m.parentNode!==document.body) document.body.appendChild(m); m.classList.add('matx-open'); } }
@@ -1530,6 +1878,12 @@
     if(t.closest('#ped-matbtn')){ var _mp2=gid('ped-matpanel'); if(_mp2) _mp2.classList.toggle('open'); return; }
     if(t.closest('#mf-clear')){ MSEL={}; buildMatFilter(); renderBoard(); return; }
     if(t.closest('#dob-pedidos-btn')){ e.preventDefault(); window.openPedidos(); return; }
+    var _sh=t.closest('#pedgest-modal th.pg-sort');
+    if(_sh){ var mx=_sh.getAttribute('data-mx'), k=_sh.getAttribute('data-k'); var cur=PG_SORT[mx];
+      if(cur && cur.k===k){ cur.d=-cur.d; } else { PG_SORT[mx]={k:k, d:(k==='r'?1:-1)}; }
+      pgKeepScroll(function(){ renderGest(); }); return; }
+    var _xb=t.closest('.pg-xls'); if(_xb){ pgXlsx(_xb.getAttribute('data-xls')); return; }
+    if(t.closest('#ped-gest')){ pgOpen(); return; }
     if(t.closest('#ped-new-btn')){ openNew(); return; }
     if(t.closest('#ped-wpp')){ sendWpp(); return; }
     var pf=t.closest('.pf-chip'); if(pf){ var pt=pf.getAttribute('data-part'); if(pt===''){ PSEL={}; } else { PSEL[pt]=!PSEL[pt]; } renderBoard(); return; }
