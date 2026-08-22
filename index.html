@@ -1492,17 +1492,21 @@ window.appLiberar=function(){ if(window.__appReadyDone) return; window.__appRead
 #pedidos-modal .ped-empty{font-size:12px;color:var(--grey-2);padding:6px 2px}
 #pedidos-modal .ped-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:2px 0 14px}
 #pedidos-modal #ped-search{background:var(--bg);border:1px solid var(--line);color:#e9eef6;border-radius:6px;padding:8px 10px;font-size:13px;min-width:220px}
-#pedidos-modal .ped-partfilter{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
-#pedidos-modal .pf-lbl{font-size:12px;color:var(--grey-2);font-weight:700;margin-right:2px}
-#pedidos-modal .pf-chip{background:var(--panel-2);border:1px solid var(--line);color:#cfe0f5;font-size:12px;font-weight:700;padding:5px 11px;border-radius:20px;cursor:pointer}
-#pedidos-modal .pf-chip.on{background:var(--lime);color:#000;border-color:var(--lime)}
+#pedidos-modal .ped-partfilter{position:relative}
+#pedidos-modal #ped-partbtn{background:var(--panel-2);border:1px solid var(--line);color:#cfe0f5;font-size:12px;font-weight:700;padding:6px 12px;border-radius:20px;cursor:pointer}
+#pedidos-modal #ped-partbtn.on{background:var(--lime);color:#000;border-color:var(--lime)}
 #pedidos-modal .ped-matfilter{position:relative}
 #pedidos-modal #ped-matbtn{background:var(--panel-2);border:1px solid var(--line);color:#cfe0f5;font-size:12px;font-weight:700;padding:6px 12px;border-radius:20px;cursor:pointer}
 #pedidos-modal #ped-matbtn.on{background:var(--lime);color:#000;border-color:var(--lime)}
+#pedidos-modal .ped-partpanel,
 #pedidos-modal .ped-matpanel{display:none;position:absolute;top:120%;left:0;z-index:6;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:8px;min-width:250px;max-height:320px;overflow:auto;box-shadow:0 12px 30px rgba(0,0,0,.45)}
+#pedidos-modal .ped-partpanel.open,
 #pedidos-modal .ped-matpanel.open{display:block}
+#pedidos-modal .ped-partpanel .mf-row,
 #pedidos-modal .ped-matpanel .mf-row{display:flex;align-items:center;gap:8px;padding:5px 4px;font-size:13px;color:#e9eef6;cursor:pointer;border-radius:6px}
+#pedidos-modal .ped-partpanel .mf-row:hover,
 #pedidos-modal .ped-matpanel .mf-row:hover{background:var(--panel-2)}
+#pedidos-modal .ped-partpanel .mf-clear,
 #pedidos-modal .ped-matpanel .mf-clear{display:inline-block;font-size:12px;color:var(--grey-2);cursor:pointer;padding:4px 4px 8px}
 #pedidos-modal #ped-movesel{margin-left:auto;background:var(--panel-2);border:1px solid var(--line);color:#cfe0f5;font-size:12px;font-weight:700;padding:6px 10px;border-radius:6px;cursor:pointer}
 #pedidos-modal .ped-wpp{background:#25D366;color:#062e14;border:none;font-weight:700;font-size:12px;padding:8px 12px;border-radius:6px;cursor:pointer}
@@ -1585,7 +1589,7 @@ window.appLiberar=function(){ if(window.__appReadyDone) return; window.__appRead
   <div class="matx-box dm-full">
     <button type="button" class="matx-x">&#10005;</button>
     <h3>Pedidos</h3>
-    <div class="ped-toolbar"><button type="button" id="ped-new-btn" class="ped-btn-main" style="margin-left:0">&#43; Novo pedido</button><input id="ped-search" placeholder="Buscar dobrada…" autocomplete="off"><div id="ped-partfilter" class="ped-partfilter"></div><div class="ped-matfilter"><button type="button" id="ped-matbtn">Material</button><div id="ped-matpanel" class="ped-matpanel"></div></div><select id="ped-movesel" title="Mover selecionados"><option value="">Mover selecionados p/…</option><option value="solicitacao">Solicita&ccedil;&atilde;o</option><option value="criacao">Cria&ccedil;&atilde;o</option><option value="impressao">Impress&atilde;o</option><option value="entregue">Entregue</option></select><button type="button" id="ped-gest" title="Dashboard de acompanhamento">&#128202; Gest&atilde;o de Impress&atilde;o</button><button type="button" id="ped-wpp" class="ped-wpp">&#128241; Enviar p/ gr&aacute;fica</button></div>
+    <div class="ped-toolbar"><button type="button" id="ped-new-btn" class="ped-btn-main" style="margin-left:0">&#43; Novo pedido</button><input id="ped-search" placeholder="Buscar dobrada…" autocomplete="off"><div class="ped-partfilter"><button type="button" id="ped-partbtn">Partido</button><div id="ped-partpanel" class="ped-partpanel"></div></div><div class="ped-matfilter"><button type="button" id="ped-matbtn">Material</button><div id="ped-matpanel" class="ped-matpanel"></div></div><select id="ped-movesel" title="Mover selecionados"><option value="">Mover selecionados p/…</option><option value="solicitacao">Solicita&ccedil;&atilde;o</option><option value="criacao">Cria&ccedil;&atilde;o</option><option value="impressao">Impress&atilde;o</option><option value="entregue">Entregue</option></select><button type="button" id="ped-gest" title="Dashboard de acompanhamento">&#128202; Gest&atilde;o de Impress&atilde;o</button><button type="button" id="ped-wpp" class="ped-wpp">&#128241; Enviar p/ gr&aacute;fica</button></div>
     <div id="ped-board" class="ped-board"></div>
   </div>
 </div>
@@ -1949,7 +1953,15 @@ window.appLiberar=function(){ if(window.__appReadyDone) return; window.__appRead
     b.innerHTML=ST.map(function(s){ var k=s[0]; var cs=PED.filter(function(p){ return (p.status||'solicitacao')===k && match(p); });
       var body=cs.length?cs.map(function(p){ return card(p,dm); }).join(''):'<div class="ped-empty">—</div>';
       var _all=cs.length>0 && cs.every(function(p){return SENDSEL[p.id];}); return '<div class="ped-col" data-status="'+k+'"><h4>'+s[1]+' <span class="ped-cnt">'+cs.length+'</span></h4><label class="ped-selall-row"><input type="checkbox" class="ped-selall" data-status="'+k+'"'+(_all?' checked':'')+'> Selecionar Todos</label><div class="ped-col-list">'+body+'</div></div>'; }).join(''); renderPartFilter(); }
-  function renderPartFilter(){ var box=gid('ped-partfilter'); if(!box) return; var seen={}, parts=[]; PED.forEach(function(p){ var pt=((ENT[p.dobrada_id]||{}).partido)||''; if(pt&&!seen[pt]){ seen[pt]=1; parts.push(pt); } }); parts.sort(function(a,b){return a.localeCompare(b,'pt-BR');}); var pk=Object.keys(PSEL).filter(function(x){return PSEL[x];}); var html='<span class="pf-lbl">Partido:</span><span class="pf-chip'+(pk.length?'':' on')+'" data-part="">Todos</span>'; parts.forEach(function(pt){ html+='<span class="pf-chip'+(PSEL[pt]?' on':'')+'" data-part="'+esc(pt)+'">'+esc(pt)+'</span>'; }); box.innerHTML=html; }
+  function updatePartBtn(){ var n=Object.keys(PSEL).filter(function(k){return PSEL[k];}).length; var b=gid('ped-partbtn'); if(b){ b.textContent='Partido'+(n?(' ('+n+')'):''); b.classList.toggle('on',n>0); } }
+  function renderPartFilter(){ var panel=gid('ped-partpanel'); if(!panel) return;
+    var seen={}, parts=[]; PED.forEach(function(p){ var pt=((ENT[p.dobrada_id]||{}).partido)||''; if(pt&&!seen[pt]){ seen[pt]=1; parts.push(pt); } });
+    parts.sort(function(a,b){ return a.localeCompare(b,'pt-BR'); });
+    panel.innerHTML=parts.length
+      ? ('<span class="mf-clear" id="pf-clear">Limpar seleção</span>'+parts.map(function(pt){
+          return '<label class="mf-row"><input type="checkbox" class="pf-cb" value="'+esc(pt)+'"'+(PSEL[pt]?' checked':'')+'> '+esc(pt)+'</label>'; }).join(''))
+      : '<div class="ped-empty">Nenhum partido cadastrado nas fichas.</div>';
+    updatePartBtn(); }
   function card(p,dm){ var its=(p.itens||[]); var li=its.map(function(it){ return '<div class="ped-it">'+esc(it.nome)+(it.tamanho?' <span class="ped-tam">('+esc(it.tamanho)+')</span>':'')+' <b>&times; '+(parseInt(it.qtd,10)||0)+'</b></div>'; }).join('');
     var isDob=!!p.dobrada_id; var nm=isDob?(dm[p.dobrada_id]||'(dobrada removida)'):(p.solicitante||'(sem nome)'); var sfx;
     if(isDob){ var mt=ENT[p.dobrada_id]||{}; var bits=[]; if(mt.partido)bits.push(mt.partido); if(mt.numero)bits.push(mt.numero); sfx=bits.length?' <span class="ped-meta">'+esc(bits.join(' · '))+'</span>':''; }
@@ -1987,6 +1999,9 @@ window.appLiberar=function(){ if(window.__appReadyDone) return; window.__appRead
       PED=PED.filter(function(x){ return x.id!==id; }); renderBoard(); }); }
   document.addEventListener('click',function(e){ var t=e.target; if(!t.closest) return;
     if(!t.closest('.ped-matfilter')){ var _mp=gid('ped-matpanel'); if(_mp) _mp.classList.remove('open'); }
+    if(!t.closest('.ped-partfilter')){ var _pp=gid('ped-partpanel'); if(_pp) _pp.classList.remove('open'); }
+    if(t.closest('#ped-partbtn')){ var _pp2=gid('ped-partpanel'); if(_pp2) _pp2.classList.toggle('open'); return; }
+    if(t.closest('#pf-clear')){ PSEL={}; renderPartFilter(); renderBoard(); return; }
     if(t.closest('#ped-matbtn')){ var _mp2=gid('ped-matpanel'); if(_mp2) _mp2.classList.toggle('open'); return; }
     if(t.closest('#mf-clear')){ MSEL={}; buildMatFilter(); renderBoard(); return; }
     if(t.closest('#dob-pedidos-btn')){ e.preventDefault(); window.openPedidos(); return; }
@@ -1998,7 +2013,6 @@ window.appLiberar=function(){ if(window.__appReadyDone) return; window.__appRead
     if(t.closest('#ped-gest')){ pgOpen(); return; }
     if(t.closest('#ped-new-btn')){ openNew(); return; }
     if(t.closest('#ped-wpp')){ sendWpp(); return; }
-    var pf=t.closest('.pf-chip'); if(pf){ var pt=pf.getAttribute('data-part'); if(pt===''){ PSEL={}; } else { PSEL[pt]=!PSEL[pt]; } renderBoard(); return; }
     if(t.closest('#ped-add-item')){ addItem(); return; }
     if(t.closest('#ped-create')){ createPed(); return; }
     var cx=t.closest('.ped-chips .x'); if(cx){ var i=+cx.getAttribute('data-i'); CHIPS.splice(i,1); renderChips(); return; }
@@ -2010,7 +2024,7 @@ window.appLiberar=function(){ if(window.__appReadyDone) return; window.__appRead
     var dl=t.closest('.ped-del'); if(dl){ delPed(dl.getAttribute('data-id')); return; }
   });
   document.addEventListener('input',function(e){ if(!e.target) return; if(e.target.id==='peddup-search'){ renderDupList(e.target.value); } else if(e.target.id==='ped-dobsearch'){ renderDobList(e.target.value); } else if(e.target.id==='ped-search'){ PSEARCH=(e.target.value||'').trim().toLowerCase(); renderBoard(); } });
-  document.addEventListener('change',function(e){ var c=e.target; if(!c) return; if(c.id==='ped-tipo'){ toggleTipo(); return; } if(c.id==='ped-movesel'){ if(c.value){ bulkMove(c.value); c.value=''; } return; } if(c.classList){ if(c.classList.contains('dup-cb')){ DUP_SEL[c.value]=c.checked; } else if(c.classList.contains('pn-cb')){ PEDNEW_SEL[c.value]=c.checked; } else if(c.classList.contains('ped-send-cb')){ SENDSEL[c.value]=c.checked; } else if(c.classList.contains('ped-selall')){ var _k=c.getAttribute('data-status'); shownIn(_k).forEach(function(p){ SENDSEL[p.id]=c.checked; }); renderBoard(); } else if(c.classList.contains('mf-cb')){ MSEL[c.value]=c.checked; updateMatBtn(); renderBoard(); } } });
+  document.addEventListener('change',function(e){ var c=e.target; if(!c) return; if(c.id==='ped-tipo'){ toggleTipo(); return; } if(c.id==='ped-movesel'){ if(c.value){ bulkMove(c.value); c.value=''; } return; } if(c.classList){ if(c.classList.contains('dup-cb')){ DUP_SEL[c.value]=c.checked; } else if(c.classList.contains('pn-cb')){ PEDNEW_SEL[c.value]=c.checked; } else if(c.classList.contains('ped-send-cb')){ SENDSEL[c.value]=c.checked; } else if(c.classList.contains('ped-selall')){ var _k=c.getAttribute('data-status'); shownIn(_k).forEach(function(p){ SENDSEL[p.id]=c.checked; }); renderBoard(); } else if(c.classList.contains('mf-cb')){ MSEL[c.value]=c.checked; updateMatBtn(); renderBoard(); } else if(c.classList.contains('pf-cb')){ PSEL[c.value]=c.checked; updatePartBtn(); renderBoard(); } } });
   var DRAG=null,_dc=null;
   document.addEventListener('dragstart',function(e){ var c=e.target.closest&&e.target.closest('#pedidos-modal .ped-card'); if(!c) return; DRAG=c.getAttribute('data-id'); try{ e.dataTransfer.effectAllowed='move'; e.dataTransfer.setData('text/plain',DRAG); }catch(_){}; c.style.opacity='.5'; });
   document.addEventListener('dragend',function(e){ var c=e.target.closest&&e.target.closest('#pedidos-modal .ped-card'); if(c) c.style.opacity=''; if(_dc){ _dc.classList.remove('ped-drop'); _dc=null; } DRAG=null; });
