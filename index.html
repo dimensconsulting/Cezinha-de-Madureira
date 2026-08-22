@@ -1731,12 +1731,17 @@ window.appLiberar=function(){ if(window.__appReadyDone) return; window.__appRead
     if(st.criacao) return 'criacao';
     if(st.impressao) return 'impressao';
     return 'entregue'; }
-  function pgEtapaStyle(st){ var k=pgEtapaCelula(st); if(!k) return '';
+  function pgEtapaStyle(st,v,max){ var k=pgEtapaCelula(st); if(!k) return '';
+    if(k==='impressao') return pgCellStyle(v,max);   // em impressao vale a escala de volume
     var e=PG_ETAPA[k]; return 'background:'+e.cor+';color:'+e.txt; }
-  function pgEtapaLegenda(){ return '<div class="pg-scale">Etapa do material:'+
-    ST.map(function(x){ var e=PG_ETAPA[x[0]];
-      return '<span style="display:inline-flex;align-items:center;gap:5px;margin-left:8px"><i style="background:'+e.cor+'"></i>'+esc(e.nome)+'</span>'; }).join('')+
-    '<span style="margin-left:10px">(vale a etapa menos avançada; verde só quando tudo foi entregue)</span></div>'; }
+  function pgEtapaLegenda(){
+    function chip(k){ var e=PG_ETAPA[k];
+      return '<span style="display:inline-flex;align-items:center;gap:5px;margin-left:8px"><i style="background:'+e.cor+'"></i>'+esc(e.nome)+'</span>'; }
+    return '<div class="pg-scale">Etapa do material:'+chip('solicitacao')+chip('criacao')+
+      '<span style="display:inline-flex;align-items:center;gap:3px;margin-left:8px">Impressão '+
+      PG_RAMP.map(function(c){ return '<i style="background:'+c+';width:14px"></i>'; }).join('')+
+      ' <span style="opacity:.75">menos → mais peças</span></span>'+chip('entregue')+
+      '<span style="margin-left:10px">(vale a etapa menos avançada; verde só quando tudo foi entregue)</span></div>'; }
   function pgBar(label,segs,maxv,valHtml,tip){
     var tot=0; segs.forEach(function(x){ tot+=x.v; });
     var w=maxv>0?(tot/maxv*100):0;
@@ -1935,7 +1940,7 @@ window.appLiberar=function(){ if(window.__appReadyDone) return; window.__appRead
                 {label:'Respons\u00e1vel', exportOnly:true, total:false, get:function(r){ return dmeta(r).resp; }},
                 {label:'Pedidos', get:function(r){ return A.dob[r]?A.dob[r].n:0; }}],
         get:function(r,c){ return (A.dobMat[r]&&A.dobMat[r][c])||0; },
-        cellStyle:function(r,c){ return pgEtapaStyle(A.dobMatSt[r]&&A.dobMatSt[r][c]); },
+        cellStyle:function(r,c,v,max){ return pgEtapaStyle(A.dobMatSt[r]&&A.dobMatSt[r][c],v,max); },
         legenda:pgEtapaLegenda,
         tipOf:function(r,c,v){ var st=(A.dobMatSt[r]&&A.dobMatSt[r][c])||{};
           var det=ST.filter(function(x){ return st[x[0]]; }).map(function(x){ return esc(x[1])+': '+st[x[0]]+' pedido(s)'; }).join('<br>');
