@@ -336,20 +336,38 @@ body.ro #dob-add-nome,body.ro #dob-add-regiao,body.ro #dob-add-ig,body.ro #dob-a
 body.ro #ped-new-btn,body.ro #ped-movesel,
 body.ro .ped-del,body.ro .ped-mv,body.ro .ped-edit,body.ro .ped-dup,
 body.ro .dob-rm,body.ro .dob-ed{display:none !important}
-#admin-modal .adm-row{display:flex;align-items:center;gap:10px;padding:9px 10px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;background:var(--panel-2);flex-wrap:wrap}
-#admin-modal .adm-nome{font-weight:700;color:#e9eef6;font-size:13.5px}
-#admin-modal .adm-mail{color:var(--grey-2);font-size:12px}
+#admin-modal .adm-row,#lixeira-modal .adm-row{display:flex;align-items:center;gap:10px;padding:9px 10px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;background:var(--panel-2);flex-wrap:wrap}
+#admin-modal .adm-nome,#lixeira-modal .adm-nome{font-weight:700;color:#e9eef6;font-size:13.5px}
+#admin-modal .adm-mail,#lixeira-modal .adm-mail{color:var(--grey-2);font-size:12px}
 #admin-modal select.adm-papel{padding:5px 6px;border:1px solid var(--line);background:var(--bg);color:#e9eef6;border-radius:6px;font-size:12.5px}
 #admin-modal .adm-tag{font-size:10.5px;padding:1px 8px;border-radius:20px;font-weight:700;margin-left:6px}
 .adm-tag.t-pend{background:#fff4d6;color:#8a6d1f}
 .adm-tag.t-aprov{background:#d8f3e0;color:#1c7a3f}
 .adm-tag.t-bloq{background:#ffdde1;color:#bd0026}
-#admin-modal .adm-act{cursor:pointer;text-decoration:underline}
+#admin-modal .adm-act,#lixeira-modal .adm-act{cursor:pointer;text-decoration:underline}
 </style>
 </head>
 <body>
 
+<script>
+// Fila de inicializacao: nada consulta o banco antes da sessao estar pronta e aprovada.
+window.__appReadyQueue=[]; window.__appReadyDone=false;
+window.appReady=function(fn){ if(typeof fn!=='function') return;
+  if(window.__appReadyDone){ try{ fn(); }catch(e){ console.error(e); } return; }
+  window.__appReadyQueue.push(fn); };
+window.appLiberar=function(){ if(window.__appReadyDone) return; window.__appReadyDone=true;
+  var q=window.__appReadyQueue.slice(); window.__appReadyQueue=[];
+  q.forEach(function(fn){ try{ fn(); }catch(e){ console.error(e); } }); };
+</script>
 <div id="auth-gate" class="show"><div class="ag-card"></div></div>
+<div id="lixeira-modal" class="matx-ov">
+  <div class="matx-box" style="max-width:680px">
+    <button type="button" class="matx-x">&#10005;</button>
+    <h3>Lixeira de dobradas</h3>
+    <p style="color:var(--grey-2);font-size:12.5px;margin:-6px 0 12px">Dobradas retiradas da lista. Nada foi apagado &mdash; pedidos, materiais e ficha continuam salvos. Restaurar traz tudo de volta.</p>
+    <div id="lixeira-list"></div>
+  </div>
+</div>
 <div id="admin-modal" class="matx-ov">
   <div class="matx-box" style="max-width:680px">
     <button type="button" class="matx-x">&#10005;</button>
@@ -391,6 +409,7 @@ body.ro .dob-rm,body.ro .dob-ed{display:none !important}
           </div>
         </div>
         <button type="button" id="up-admin">Controle de acesso <span class="up-n" id="up-pend"></span></button>
+        <button type="button" id="up-lixeira">Lixeira de dobradas</button>
         <button type="button" class="up-sair" id="up-logout">Sair</button>
       </div>
     </div>
@@ -1632,6 +1651,8 @@ body.ro .dob-rm,body.ro .dob-ed{display:none !important}
   var DOB=[], TP=[], PED=[], CHIPS=[], DOBMAP={}, ENT={}, PGFLAG={}, DUP_SRC=null, DUP_SEL={}, PEDNEW_SEL={}, PSEARCH='', PSEL={}, EDIT_ID=null, SENDSEL={}, MSEL={}; var TIPO_LABEL={dobrada:'Dobrada',lideranca:'Liderança',igreja:'Igreja'};
   function gid(id){ return document.getElementById(id); }
   function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function autorId(){ var u=window.APP_USER; return u?u.user_id:null; }
+  function autorNome(){ var u=window.APP_USER; return u?(u.nome||u.email||null):null; }
   function tById(id){ for(var i=0;i<TP.length;i++){ if(TP[i].id===id) return TP[i]; } return null; }
   function pById(id){ for(var i=0;i<PED.length;i++){ if(PED[i].id===id) return PED[i]; } return null; }
   function stIdx(k){ for(var i=0;i<ST.length;i++){ if(ST[i][0]===k) return i; } return 0; }
@@ -1933,7 +1954,7 @@ body.ro .dob-rm,body.ro .dob-ed{display:none !important}
     var isDob=!!p.dobrada_id; var nm=isDob?(dm[p.dobrada_id]||'(dobrada removida)'):(p.solicitante||'(sem nome)'); var sfx;
     if(isDob){ var mt=ENT[p.dobrada_id]||{}; var bits=[]; if(mt.partido)bits.push(mt.partido); if(mt.numero)bits.push(mt.numero); sfx=bits.length?' <span class="ped-meta">'+esc(bits.join(' · '))+'</span>':''; }
     else { sfx=' <span class="ped-tag">'+esc(TIPO_LABEL[p.tipo]||p.tipo||'')+'</span>'; }
-    return '<div class="ped-card'+(SENDSEL[p.id]?' sel':'')+'" draggable="true" data-id="'+p.id+'"><label class="ped-sendwrap"><input type="checkbox" class="ped-send-cb" data-id="'+p.id+'" value="'+p.id+'"'+(SENDSEL[p.id]?' checked':'')+'> Selecionar</label><div class="ped-card-h">'+esc(nm)+sfx+'</div>'+li+'<div class="ped-date">&#128197; Solicitado em '+fmtDate(p.created_at)+'</div>'+(p.grafica?'<div class="ped-graf">&#128424;&#65039; Gr\u00e1fica: '+esc(p.grafica)+'</div>':'')+'<div class="ped-card-f"><button type="button" class="ped-mv" data-id="'+p.id+'" data-dir="-1" title="Voltar status">&#8249;</button><button type="button" class="ped-mv" data-id="'+p.id+'" data-dir="1" title="Avançar status">&#8250;</button><button type="button" class="ped-edit" data-id="'+p.id+'" title="Editar pedido">&#9998;</button><button type="button" class="ped-dup" data-id="'+p.id+'" title="Duplicar para outras dobradas">&#10697;</button><span class="ped-del" data-id="'+p.id+'" title="Excluir pedido">&#10005;</span></div></div>'; }
+    return '<div class="ped-card'+(SENDSEL[p.id]?' sel':'')+'" draggable="true" data-id="'+p.id+'"><label class="ped-sendwrap"><input type="checkbox" class="ped-send-cb" data-id="'+p.id+'" value="'+p.id+'"'+(SENDSEL[p.id]?' checked':'')+'> Selecionar</label><div class="ped-card-h">'+esc(nm)+sfx+'</div>'+li+'<div class="ped-date">&#128197; Solicitado em '+fmtDate(p.created_at)+(p.criado_por_nome?(' &middot; '+esc(p.criado_por_nome)):'')+'</div>'+(p.grafica?'<div class="ped-graf">&#128424;&#65039; Gr\u00e1fica: '+esc(p.grafica)+'</div>':'')+'<div class="ped-card-f"><button type="button" class="ped-mv" data-id="'+p.id+'" data-dir="-1" title="Voltar status">&#8249;</button><button type="button" class="ped-mv" data-id="'+p.id+'" data-dir="1" title="Avançar status">&#8250;</button><button type="button" class="ped-edit" data-id="'+p.id+'" title="Editar pedido">&#9998;</button><button type="button" class="ped-dup" data-id="'+p.id+'" title="Duplicar para outras dobradas">&#10697;</button><span class="ped-del" data-id="'+p.id+'" title="Excluir pedido">&#10005;</span></div></div>'; }
   function setStatus(id,k){ var p=pById(id); if(!p||p.status===k) return; p.status=k; renderBoard(); if(k==='impressao' && !p.grafica){ setTimeout(function(){ openEdit(id); },80); } if(!ensure()) return; sb.from('pedidos').update({status:k,updated_at:new Date().toISOString()}).eq('id',id).then(function(r){ if(r&&r.error){ alert('Erro: '+r.error.message); load(renderBoard); } }); }
   function moveStatus(id,dir){ var p=pById(id); if(!p) return; var ni=Math.max(0,Math.min(ST.length-1,stIdx(p.status||'solicitacao')+dir)); setStatus(id,ST[ni][0]); }
   function createPed(){ var itens=CHIPS.slice(); var ms=gid('ped-mat'), qs=gid('ped-qty');
@@ -1942,13 +1963,13 @@ body.ro .dob-rm,body.ro .dob-ed{display:none !important}
     if(!ensure()){ alert('Supabase indisponível.'); return; }
     if(EDIT_ID){ var _patch={itens:itens,updated_at:new Date().toISOString()}; var _gr=gid('pednew-graficarow'); if(_gr && _gr.style.display!=='none'){ var _gi=gid('ped-grafica'); _patch.grafica=_gi?(_gi.value||'').trim():''; } sb.from('pedidos').update(_patch).eq('id',EDIT_ID).then(function(r){ if(r&&r.error){ alert('Erro ao salvar: '+r.error.message); return; } EDIT_ID=null; CHIPS=[]; renderChips(); if(ms)ms.value=''; if(qs)qs.value=1; var nm=gid('pednew-modal'); if(nm)nm.classList.remove('matx-open'); load(renderBoard); }); return; }
     var tp=gid('ped-tipo'); var tipo=tp?tp.value:'dobrada'; var rows;
-    if(tipo==='dobrada'){ var dobs=Object.keys(PEDNEW_SEL).filter(function(k){return PEDNEW_SEL[k];}); if(!dobs.length){ alert('Selecione ao menos uma dobrada.'); return; } rows=dobs.map(function(did){ return {dobrada_id:did,tipo:'dobrada',status:'solicitacao',itens:itens}; }); }
-    else { var so=gid('ped-solic'); var nome=so?(so.value||'').trim():''; if(!nome){ alert('Informe o nome do solicitante.'); return; } rows=[{dobrada_id:null,tipo:tipo,solicitante:nome,status:'solicitacao',itens:itens}]; }
+    if(tipo==='dobrada'){ var dobs=Object.keys(PEDNEW_SEL).filter(function(k){return PEDNEW_SEL[k];}); if(!dobs.length){ alert('Selecione ao menos uma dobrada.'); return; } rows=dobs.map(function(did){ return {dobrada_id:did,tipo:'dobrada',status:'solicitacao',itens:itens,criado_por:autorId(),criado_por_nome:autorNome()}; }); }
+    else { var so=gid('ped-solic'); var nome=so?(so.value||'').trim():''; if(!nome){ alert('Informe o nome do solicitante.'); return; } rows=[{dobrada_id:null,tipo:tipo,solicitante:nome,status:'solicitacao',itens:itens,criado_por:autorId(),criado_por_nome:autorNome()}]; }
     sb.from('pedidos').insert(rows).then(function(r){ if(r&&r.error){ alert('Erro ao criar: '+r.error.message); return; } CHIPS=[]; renderChips(); PEDNEW_SEL={}; if(ms)ms.value=''; if(qs)qs.value=1; var so2=gid('ped-solic'); if(so2)so2.value=''; var nm=gid('pednew-modal'); if(nm)nm.classList.remove('matx-open'); load(renderBoard); }); }
   function openDup(id){ DUP_SRC=id; DUP_SEL={}; var s=gid('peddup-search'); if(s)s.value=''; renderDupList(''); var m=gid('peddup-modal'); if(m){ if(m.parentNode!==document.body) document.body.appendChild(m); m.classList.add('matx-open'); } }
   function closeDup(){ var m=gid('peddup-modal'); if(m) m.classList.remove('matx-open'); }
   function renderDupList(f){ var box=gid('peddup-list'); if(!box) return; f=(f||'').trim().toLowerCase(); var list=DOB.filter(function(d){ return !f || (d.nome||'').toLowerCase().indexOf(f)>=0; }); box.innerHTML=list.length?list.map(function(d){ var mt=ENT[d.id]||{}; var b=[]; if(mt.partido)b.push(mt.partido); if(mt.numero)b.push(mt.numero); var sf=b.length?(' <span class="ped-meta">'+esc(b.join(' · '))+'</span>'):''; return '<label class="dup-row"><input type="checkbox" class="dup-cb" value="'+d.id+'"'+(DUP_SEL[d.id]?' checked':'')+'> '+esc(d.nome)+sf+'</label>'; }).join(''):'<div class="ped-empty">Nenhuma dobrada.</div>'; }
-  function doDup(){ if(!DUP_SRC) return; var src=pById(DUP_SRC); if(!src){ alert('Pedido não encontrado.'); return; } var ids=Object.keys(DUP_SEL).filter(function(k){return DUP_SEL[k];}); if(!ids.length){ alert('Selecione ao menos uma dobrada.'); return; } if(!ensure()) return; var rows=ids.map(function(did){ return {dobrada_id:did,status:'solicitacao',itens:src.itens||[]}; }); sb.from('pedidos').insert(rows).then(function(r){ if(r&&r.error){ alert('Erro ao duplicar: '+r.error.message); return; } closeDup(); load(renderBoard); }); }
+  function doDup(){ if(!DUP_SRC) return; var src=pById(DUP_SRC); if(!src){ alert('Pedido não encontrado.'); return; } var ids=Object.keys(DUP_SEL).filter(function(k){return DUP_SEL[k];}); if(!ids.length){ alert('Selecione ao menos uma dobrada.'); return; } if(!ensure()) return; var rows=ids.map(function(did){ return {dobrada_id:did,status:'solicitacao',itens:src.itens||[],criado_por:autorId(),criado_por_nome:autorNome()}; }); sb.from('pedidos').insert(rows).then(function(r){ if(r&&r.error){ alert('Erro ao duplicar: '+r.error.message); return; } closeDup(); load(renderBoard); }); }
   function moveMany(ids,k){ if(!ids||!ids.length) return; var patch={status:k,updated_at:new Date().toISOString()}; if(k==='impressao'){ var g=prompt('Gráfica para os '+ids.length+' pedido(s) em Impressão (deixe em branco p/ não alterar):',''); g=(g===null?'':g).trim(); if(g) patch.grafica=g; } ids.forEach(function(id){ var p=pById(id); if(p){ p.status=k; if(patch.grafica!=null) p.grafica=patch.grafica; } }); renderBoard(); if(!ensure()) return; sb.from('pedidos').update(patch).in('id',ids).then(function(r){ if(r&&r.error){ alert('Erro ao mover: '+r.error.message); load(renderBoard); } }); }
   function bulkMove(k){ var ids=Object.keys(SENDSEL).filter(function(x){return SENDSEL[x];}); if(!ids.length){ alert('Selecione ao menos um card (caixa "Selecionar").'); return; } moveMany(ids,k); }
   function sendWpp(){ var ids=Object.keys(SENDSEL).filter(function(k){return SENDSEL[k];}); if(!ids.length){ alert('Selecione ao menos um pedido (marque a caixa "gráfica" no card).'); return; } var dm={}; DOB.forEach(function(d){dm[d.id]=d.nome;}); var blocks=ids.map(function(id){ var p=pById(id); if(!p) return ''; var isDob=!!p.dobrada_id; var nm=isDob?(dm[p.dobrada_id]||'(dobrada)'):(p.solicitante||'(sem nome)'); var tag=isDob?'':(' ('+(TIPO_LABEL[p.tipo]||p.tipo||'')+')'); var mt=isDob?(ENT[p.dobrada_id]||{}):{}; var meta=[]; if(mt.partido)meta.push(mt.partido); if(mt.numero)meta.push(mt.numero); var head='*'+nm+tag+(meta.length?(' — '+meta.join(' · ')):'')+'*'; var lines=(p.itens||[]).map(function(it){ var tam=it.tamanho?(' - '+it.tamanho):''; return '\u2022 '+it.nome+tam+' - Qtd: '+(parseInt(it.qtd,10)||0); }).join('\n'); if(p.grafica) lines+='\nGr\u00e1fica: '+p.grafica; return head+'\n'+lines; }).filter(function(x){return x;}); var txt='*Pedidos para a gr\u00e1fica*\n\n'+blocks.join('\n\n'); window.open('https://wa.me/?text='+encodeURIComponent(txt),'_blank','noopener'); }
@@ -1996,7 +2017,7 @@ body.ro .dob-rm,body.ro .dob-ed{display:none !important}
   document.addEventListener('dragenter',function(e){ if(!DRAG) return; if(e.target.closest&&e.target.closest('#pedidos-modal .ped-col')) e.preventDefault(); });
   document.addEventListener('dragover',function(e){ if(!DRAG) return; var col=e.target.closest&&e.target.closest('#pedidos-modal .ped-col'); if(!col) return; e.preventDefault(); try{ e.dataTransfer.dropEffect='move'; }catch(_){}; if(_dc!==col){ if(_dc) _dc.classList.remove('ped-drop'); col.classList.add('ped-drop'); _dc=col; } });
   document.addEventListener('drop',function(e){ if(!DRAG) return; var col=_dc||(e.target.closest&&e.target.closest('#pedidos-modal .ped-col')); if(!col) return; e.preventDefault(); var k=col.getAttribute('data-status'); var id=DRAG; DRAG=null; if(_dc){ _dc.classList.remove('ped-drop'); _dc=null; } var sel=Object.keys(SENDSEL).filter(function(x){return SENDSEL[x];}); if(sel.length>1 && SENDSEL[id]){ moveMany(sel,k); } else { setStatus(id,k); } });
-  (function(){ function sub(){ if(!ensure()) return; try{ sb.channel('pedidos_rt').on('postgres_changes',{event:'*',schema:'public',table:'pedidos'},function(){ if(isOpen()) load(renderBoard); }).subscribe(); }catch(e){} } if(document.readyState!=='loading') sub(); else document.addEventListener('DOMContentLoaded',sub); })();
+  (function(){ function sub(){ if(!ensure()) return; try{ sb.channel('pedidos_rt').on('postgres_changes',{event:'*',schema:'public',table:'pedidos'},function(){ if(isOpen()) load(renderBoard); }).subscribe(); }catch(e){} } window.appReady(function(){ if(document.readyState!=='loading') sub(); else document.addEventListener('DOMContentLoaded',sub); }); })();
 })();
 </script>
 <!-- ===== /Pedidos ===== -->
@@ -2785,8 +2806,12 @@ body.ro .dob-rm,body.ro .dob-ed{display:none !important}
         H[0]=H[0]+A|0;H[1]=H[1]+B|0;H[2]=H[2]+C|0;H[3]=H[3]+D|0;H[4]=H[4]+E|0;H[5]=H[5]+F|0;H[6]=H[6]+G|0;H[7]=H[7]+I|0;}
       var o='';for(i=0;i<8;i++)o+=('00000000'+(H[i]>>>0).toString(16)).slice(-8);return o;}
     function doRemove(it){ items=items.filter(function(x){return x.id!==it.id;}); render();
-      if(sb) sb.from('dobradas').delete().eq('id',it.id).then(function(r){
-        if(r&&r.error){ alert('Erro ao excluir: '+r.error.message); if(typeof load==='function') load(); }
+      var u=window.APP_USER||null;
+      var patch={ excluida_em:new Date().toISOString(),
+                  excluida_por:(u?u.user_id:null),
+                  excluida_por_nome:(u?(u.nome||u.email||null):null) };
+      if(sb) sb.from('dobradas').update(patch).eq('id',it.id).then(function(r){
+        if(r&&r.error){ alert('Erro ao mover para a lixeira: '+r.error.message); if(typeof load==='function') load(); }
       },function(){}); }
     function removeItem(it){
       if(!sb){ alert('Sem conexão com o banco. Tente novamente.'); return; }
@@ -2795,14 +2820,15 @@ body.ro .dob-rm,body.ro .dob-ed{display:none !important}
         sb.from('dobrada_materiais').select('id',{count:'exact',head:true}).eq('dobrada_id',it.id)
       ]).then(function(r){
         var np=(r[0]&&r[0].count)||0, nm=(r[1]&&r[1].count)||0;
-        var msg='Excluir a dobrada "'+it.nome+'"?\n\nO que acontece:\n';
-        if(np) msg+='• '+np+' pedido(s) ficam SEM dobrada (os pedidos não são apagados, mas perdem o vínculo e somem dos relatórios por dobrada)\n';
-        if(nm) msg+='• '+nm+' material(is) cadastrado(s) e suas artes são APAGADOS\n';
-        msg+='• A ficha de entrega (CNPJ, partido, foto, logo, currículo) é APAGADA\n\nNão dá para desfazer.';
+        var msg='Mover a dobrada "'+it.nome+'" para a lixeira?\n\nO que acontece:\n';
+        msg+='• Ela sai da lista, mas NADA é apagado\n';
+        if(np) msg+='• Os '+np+' pedido(s) dela continuam no sistema e seguem vinculados\n';
+        if(nm) msg+='• Os '+nm+' material(is) e as artes continuam salvos\n';
+        msg+='• A ficha de entrega continua salva\n\nUm admin pode restaurar depois pela Lixeira.';
         if(!confirm(msg)) return;
-        var pw=prompt('Digite a senha de exclusão para confirmar a remoção de "'+it.nome+'":','');
+        var pw=prompt('Digite a senha para confirmar o envio de "'+it.nome+'" para a lixeira:','');
         if(pw===null) return;
-        if(sha256hex(pw)!==DEL_HASH){ alert('Senha incorreta. A dobrada NÃO foi excluída.'); return; }
+        if(sha256hex(pw)!==DEL_HASH){ alert('Senha incorreta. A dobrada NÃO foi movida.'); return; }
         doRemove(it);
       },function(){ alert('Não consegui verificar o que será afetado. Exclusão cancelada por segurança.'); });
     }
@@ -2817,11 +2843,12 @@ body.ro .dob-rm,body.ro .dob-ed{display:none !important}
       var nm=document.createElement('span'); nm.style.cssText='flex:1;min-width:0;cursor:pointer'; nm.title=(PEDOK[it.id]?'Já tem pedido em impressão ou entregue — clique para ver os materiais':'Materiais desta dobrada'); nm.innerHTML='<span style="color:'+(PEDOK[it.id]?'#37c871':'#e9eef6')+'">'+esc(it.nome)+'</span>'+(it.regiao?' <span style="color:var(--grey-2)">— '+esc(it.regiao)+'</span>':'')+(RESP[it.id]?' <span style="color:#F4D700;font-weight:700">('+esc(RESP[it.id])+')</span>':''); nm.onclick=function(){ if(window.openDobradaMateriais) window.openDobradaMateriais(it); };
       var ed=document.createElement('span'); ed.textContent='✎'; ed.className='dob-ed'; ed.title='Editar dobrada (nome, regi\u00e3o, Instagram)'; ed.style.cssText='cursor:pointer;flex:none;color:var(--grey-2);font-size:13px;margin-top:1px'; ed.onclick=function(){ editLink(it); };
       li.appendChild(sic); li.appendChild(ig); if(cons) li.appendChild(cons); li.appendChild(nm); li.appendChild(ed);
-      var rm=document.createElement('span'); rm.textContent='✕'; rm.className='dob-rm'; rm.title='Remover'; rm.style.cssText='cursor:pointer;flex:none;color:var(--grey-2);font-size:12px;margin-top:1px'; rm.onclick=function(){ removeItem(it); }; li.appendChild(rm);
+      var rm=document.createElement('span'); rm.textContent='✕'; rm.className='dob-rm'; rm.title='Mover para a lixeira'; rm.style.cssText='cursor:pointer;flex:none;color:var(--grey-2);font-size:12px;margin-top:1px'; rm.onclick=function(){ removeItem(it); }; li.appendChild(rm);
       ul.appendChild(li);
     }); }
     function addItem(){ var n=(document.getElementById('dob-add-nome').value||'').trim(); if(!n){ alert('Informe o nome.'); return; } var r=(document.getElementById('dob-add-regiao').value||'').trim(); var ig=igUrl(document.getElementById('dob-add-ig').value); if(sb){ sb.from('dobradas').insert({nome:n,regiao:r||null,instagram:ig||null,status:'blue'}).select().then(function(res){ if(res&&res.data&&res.data[0]){ items.push(res.data[0]); render(); } },function(){}); } document.getElementById('dob-add-nome').value=''; document.getElementById('dob-add-regiao').value=''; document.getElementById('dob-add-ig').value=''; }
-    function load(){ if(!sb) return; sb.from('dobradas').select('*').then(function(res){ items=(res&&res.data)?res.data:[]; loadAssets(function(){ loadMats(function(){ loadPedOK(render); }); }); },function(){}); }
+    function load(){ if(!sb) return; sb.from('dobradas').select('*').is('excluida_em',null).then(function(res){ items=(res&&res.data)?res.data:[]; loadAssets(function(){ loadMats(function(){ loadPedOK(render); }); }); },function(){}); }
+    window.recarregarDobradas=function(){ load(); };
     window.refreshDobradasMeta=function(){ loadAssets(function(){ loadMats(function(){ loadPedOK(render); }); }); };
     function init(){ var b=document.getElementById('dob-add-btn'); if(b) b.onclick=addItem;
       var _ec=document.getElementById('dob-ed-cancel'); if(_ec) _ec.onclick=closeEdit; var _es=document.getElementById('dob-ed-save'); if(_es) _es.onclick=saveEdit; var _eov=document.getElementById('dob-edit-ov'); if(_eov) _eov.addEventListener('click',function(e){ if(e.target===_eov) closeEdit(); });
@@ -2829,7 +2856,7 @@ body.ro .dob-rm,body.ro .dob-ed{display:none !important}
       load();
       if(sb){ sb.channel('dobradas_rt').on('postgres_changes',{event:'*',schema:'public',table:'dobradas'},function(){ load(); }).on('postgres_changes',{event:'*',schema:'public',table:'dobrada_entrega'},function(){ loadAssets(render); }).on('postgres_changes',{event:'*',schema:'public',table:'dobrada_materiais'},function(){ loadMats(render); }).on('postgres_changes',{event:'*',schema:'public',table:'pedidos'},function(){ loadPedOK(render); }).subscribe(); }
     }
-    if(document.readyState!=='loading') init(); else document.addEventListener('DOMContentLoaded',init);
+    window.appReady(function(){ if(document.readyState!=='loading') init(); else document.addEventListener('DOMContentLoaded',init); });
   })();
   </script>
   <script>
@@ -3010,7 +3037,7 @@ body.ro .dob-rm,body.ro .dob-ed{display:none !important}
       render(); loadAll();
       sb.channel('cal_rt').on('postgres_changes',{event:'*',schema:'public',table:'calendario_editorial'},function(){ loadAll(); }).subscribe();
     }
-    if(document.readyState!=='loading') init(); else document.addEventListener('DOMContentLoaded',init);
+    window.appReady(function(){ if(document.readyState!=='loading') init(); else document.addEventListener('DOMContentLoaded',init); });
   })();
   </script>
 
@@ -3146,7 +3173,7 @@ body.ro .dob-rm,body.ro .dob-ed{display:none !important}
       load();
       sb.channel('cd_rt').on('postgres_changes',{event:'*',schema:'public',table:'criativos_dobradas'},function(){ load(); }).subscribe();
     }
-    if(document.readyState!=='loading') init(); else document.addEventListener('DOMContentLoaded',init);
+    window.appReady(function(){ if(document.readyState!=='loading') init(); else document.addEventListener('DOMContentLoaded',init); });
   })();
   </script>
 
@@ -3187,10 +3214,11 @@ body.ro .dob-rm,body.ro .dob-ed{display:none !important}
     var m1=gid('up-mail'); if(m1) m1.textContent=u.email||'';
     var p1=gid('up-papel'); if(p1){ p1.textContent=pt; p1.className='up-papel p-'+(u.papel||'leitura'); }
     var ad=gid('up-admin'); if(ad) ad.style.display=window.appIsAdmin()?'flex':'none';
+    var lx=gid('up-lixeira'); if(lx) lx.style.display=window.appIsAdmin()?'flex':'none';
     if(window.appIsAdmin()) refreshAdminBadge();
   }
   function popFechar(){ var p=gid('user-pop'); if(p) p.classList.remove('open'); }
-  function startApp(){ if(_booted) return; _booted=true; agHide(); applyRoleUI(); }
+  function startApp(){ if(_booted) return; _booted=true; agHide(); applyRoleUI(); window.appLiberar(); }
   function evalProfile(prof,email){
     if(!prof){ agPending(email); return; }
     if(prof.status==='bloqueado'){ window.APP_USER=null; agBlocked(email); return; }
@@ -3246,6 +3274,22 @@ body.ro .dob-rm,body.ro .dob-ed{display:none !important}
       rows.sort(function(a,b){ return (ord[a.status]-ord[b.status])||((a.nome||'').localeCompare(b.nome||'','pt-BR')); });
       if(box) box.innerHTML=rows.length?rows.map(admRow).join(''):'<p style="color:var(--grey-2)">Nenhum usuário ainda.</p>';
       refreshAdminBadge(); }); }
+  function lxRow(d){
+    var quem=d.excluida_por_nome?esc(d.excluida_por_nome):'—';
+    var qd=d.excluida_em?new Date(d.excluida_em):null;
+    var quando=qd?(('0'+qd.getDate()).slice(-2)+'/'+('0'+(qd.getMonth()+1)).slice(-2)+'/'+qd.getFullYear()+' '+('0'+qd.getHours()).slice(-2)+':'+('0'+qd.getMinutes()).slice(-2)):'—';
+    return '<div class="adm-row"><div style="flex:1;min-width:160px">'+
+      '<div class="adm-nome">'+esc(d.nome||'—')+(d.regiao?(' <span style="color:var(--grey-2);font-weight:400">— '+esc(d.regiao)+'</span>'):'')+'</div>'+
+      '<div class="adm-mail">Movida por '+quem+' em '+quando+'</div></div>'+
+      '<a class="adm-act lx-restore" data-id="'+d.id+'" style="color:#37c871">restaurar</a></div>'; }
+  function loadLixeira(){ var box=gid('lixeira-list'); if(!box) return;
+    box.innerHTML='<p style="color:var(--grey-2);font-size:13px">Carregando…</p>';
+    SB.from('dobradas').select('*').not('excluida_em','is',null).order('excluida_em',{ascending:false}).then(function(r){
+      var rows=(r&&r.data)||[];
+      box.innerHTML=rows.length?rows.map(lxRow).join(''):'<p style="color:var(--grey-2);font-size:13px">A lixeira está vazia.</p>'; },
+      function(){ box.innerHTML='<p style="color:var(--grey-2)">Não consegui carregar.</p>'; }); }
+  function openLixeira(){ if(!window.appIsAdmin()) return; var m=gid('lixeira-modal');
+    if(m){ if(m.parentNode!==document.body) document.body.appendChild(m); m.classList.add('matx-open'); } loadLixeira(); }
   function openAdmin(){ if(!window.appIsAdmin()) return; var m=gid('admin-modal'); if(m){ if(m.parentNode!==document.body) document.body.appendChild(m); m.classList.add('matx-open'); } loadAdmin(); }
 
   document.addEventListener('click',function(e){
@@ -3254,6 +3298,12 @@ body.ro .dob-rm,body.ro .dob-ed{display:none !important}
     if(t.closest('#ag-logout')||t.closest('#up-logout')){ doLogout(); return; }
     if(t.closest('#user-btn')){ var pp=gid('user-pop'); if(pp) pp.classList.toggle('open'); return; }
     if(t.closest('#up-admin')){ popFechar(); openAdmin(); return; }
+    if(t.closest('#up-lixeira')){ popFechar(); openLixeira(); return; }
+    var lr=t.closest('.lx-restore');
+    if(lr){ var did=lr.getAttribute('data-id');
+      SB.from('dobradas').update({excluida_em:null,excluida_por:null,excluida_por_nome:null}).eq('id',did).then(function(){
+        loadLixeira(); if(window.refreshDobradasMeta) window.refreshDobradasMeta(); if(window.recarregarDobradas) window.recarregarDobradas(); });
+      return; }
     if(!t.closest('#user-pop')) popFechar();
     var a=t.closest('.adm-act'); if(a){ var v=(a.getAttribute('data-adm')||'').split(':'); var acao=v[0], uid=v[1]; if(!uid) return;
       if(acao==='aprovar'){ var sl=document.querySelector('.adm-papel[data-uid="'+uid+'"]'); var papel=sl?sl.value:'leitura';
