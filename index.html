@@ -42,11 +42,12 @@
     position:sticky;top:0;z-index:50;
     background:rgba(10,10,10,.86);backdrop-filter:blur(8px);
   }
-  .topbar .wrap{display:flex;align-items:center;justify-content:space-between;height:58px}
+  .topbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;height:58px}
   .logo{display:flex;align-items:center;height:44px}
   .logo svg,.logo img{height:44px;width:auto;display:block}
-  .navlinks{display:flex;gap:22px}
-  .navlinks a{color:var(--grey);text-decoration:none;font-size:13px;font-weight:600;transition:color .2s}
+  .navlinks{display:flex;gap:18px;flex-wrap:nowrap;min-width:0}
+  .navlinks a{color:var(--grey);text-decoration:none;font-size:13px;font-weight:600;white-space:nowrap;transition:color .2s}
+  @media(max-width:1180px){.navlinks{gap:13px}.navlinks a{font-size:12.5px}}
   .navlinks a:hover{color:var(--lime)}
   @media(max-width:760px){.navlinks{display:none}}
 
@@ -310,11 +311,26 @@
 .ag-badge{width:58px;height:58px;border-radius:50%;background:#eef3fa;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 8px}
 .ag-spin{width:34px;height:34px;border:3px solid #d7deea;border-top-color:#123a68;border-radius:50%;animation:agspin 1s linear infinite;margin:12px auto}
 @keyframes agspin{to{transform:rotate(360deg)}}
-#user-badge{display:none;align-items:center;gap:7px;color:#cfe0f5;font-size:12.5px;margin-left:auto;white-space:nowrap}
-#user-badge .ub-dot{width:8px;height:8px;border-radius:50%;background:#37c871;flex:none}
-#user-badge .ub-logout{background:none;border:none;color:#9fb6d6;cursor:pointer;font-size:12px;text-decoration:underline;padding:0}
-#admin-btn{display:none;position:relative;margin-left:8px;width:34px;height:34px;border-radius:9px;background:var(--panel);border:1px solid var(--line);color:#eaf1fb;cursor:pointer;align-items:center;justify-content:center;flex:none}
-#admin-btn .adm-badge{position:absolute;top:-6px;right:-6px;background:#bd0026;color:#fff;border-radius:10px;font-size:10px;min-width:16px;height:16px;line-height:16px;padding:0 3px;font-weight:700;display:none}
+#user-menu{display:none;position:relative;flex:none}
+#user-menu.on{display:block}
+#user-btn{position:relative;display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:4px 10px 4px 4px;cursor:pointer;color:#e9eef6}
+#user-btn:hover{background:var(--panel-2);border-color:#2d6099}
+#user-btn .uav{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#2d6099,#123a68);color:#fff;font-weight:700;font-size:12.5px;display:flex;align-items:center;justify-content:center;flex:none;text-transform:uppercase}
+#user-btn .uch{font-size:10px;color:var(--grey-2)}
+#user-btn .adm-badge{position:absolute;top:-5px;right:-5px;background:#bd0026;color:#fff;border-radius:10px;font-size:10px;min-width:16px;height:16px;line-height:16px;padding:0 3px;font-weight:700;display:none;text-align:center}
+#user-pop{position:absolute;right:0;top:calc(100% + 8px);min-width:272px;background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:0 18px 44px rgba(0,0,0,.5);padding:6px;display:none;z-index:60}
+#user-pop.open{display:block}
+#user-pop .up-head{display:flex;gap:10px;align-items:center;padding:10px;border-bottom:1px solid var(--line);margin-bottom:6px}
+#user-pop .uav{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#2d6099,#123a68);color:#fff;font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center;flex:none;text-transform:uppercase}
+#user-pop .up-nome{color:#e9eef6;font-weight:700;font-size:13px;line-height:1.3}
+#user-pop .up-mail{color:var(--grey-2);font-size:11.5px;word-break:break-all;line-height:1.3}
+#user-pop .up-papel{display:inline-block;margin-top:4px;font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:2px 8px;border-radius:20px;background:#123a68;color:#8fd0ff}
+#user-pop .up-papel.p-admin{background:#3a2a5e;color:#c9b6ff}
+#user-pop .up-papel.p-leitura{background:#2a3a4e;color:#a9bcd4}
+#user-pop button{display:flex;width:100%;align-items:center;justify-content:space-between;gap:8px;background:none;border:none;color:#e9eef6;font-size:13px;font-weight:600;text-align:left;padding:9px 10px;border-radius:8px;cursor:pointer}
+#user-pop button:hover{background:var(--panel-2)}
+#user-pop button.up-sair{color:#ff9b9b}
+#user-pop .up-n{background:#bd0026;color:#fff;border-radius:10px;font-size:10px;min-width:17px;height:17px;line-height:17px;padding:0 4px;font-weight:700;text-align:center;display:none}
 /* somente leitura: esconde tudo que cria, edita ou apaga */
 body.ro #dob-add-nome,body.ro #dob-add-regiao,body.ro #dob-add-ig,body.ro #dob-add-btn,
 body.ro #ped-new-btn,body.ro #ped-movesel,
@@ -359,8 +375,25 @@ body.ro .dob-rm,body.ro .dob-ed{display:none !important}
       <a href="#apps">Apps e Plataformas</a>
       <a href="#proximos">Próximos passos</a>
     </nav>
-    <span id="user-badge"><span class="ub-dot"></span><span class="ub-name"></span> <button type="button" class="ub-logout" id="ub-logout">sair</button></span>
-    <button type="button" id="admin-btn" title="Controle de acesso"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="adm-badge" id="admin-pend-badge"></span></button>
+    <div id="user-menu">
+      <button type="button" id="user-btn" title="Sua conta">
+        <span class="uav" id="ub-inicial">·</span>
+        <span class="uch">&#9662;</span>
+        <span class="adm-badge" id="admin-pend-badge"></span>
+      </button>
+      <div id="user-pop">
+        <div class="up-head">
+          <span class="uav" id="up-inicial">·</span>
+          <div style="min-width:0">
+            <div class="up-nome" id="up-nome">&mdash;</div>
+            <div class="up-mail" id="up-mail"></div>
+            <span class="up-papel" id="up-papel">&mdash;</span>
+          </div>
+        </div>
+        <button type="button" id="up-admin">Controle de acesso <span class="up-n" id="up-pend"></span></button>
+        <button type="button" class="up-sair" id="up-logout">Sair</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -3145,13 +3178,18 @@ body.ro .dob-rm,body.ro .dob-ed{display:none !important}
   function applyRoleUI(){
     var u=window.APP_USER; if(!u) return;
     document.body.classList.toggle('ro', !window.appPodeEditar());
-    var ab=gid('admin-btn'); if(ab) ab.style.display=window.appIsAdmin()?'inline-flex':'none';
-    var ub=gid('user-badge');
-    if(ub){ ub.style.display='inline-flex';
-      var pt=u.papel==='admin'?'Admin':(u.papel==='edicao'?'Edição':'Leitura');
-      var nm=ub.querySelector('.ub-name'); if(nm) nm.textContent=(u.nome||u.email||'')+' · '+pt; }
+    var nome=(u.nome||u.email||'').trim(), ini=(nome.charAt(0)||'?');
+    var pt=u.papel==='admin'?'Admin':(u.papel==='edicao'?'Edição':'Leitura');
+    var mn=gid('user-menu'); if(mn) mn.classList.add('on');
+    var a1=gid('ub-inicial'); if(a1) a1.textContent=ini;
+    var a2=gid('up-inicial'); if(a2) a2.textContent=ini;
+    var n1=gid('up-nome'); if(n1) n1.textContent=nome;
+    var m1=gid('up-mail'); if(m1) m1.textContent=u.email||'';
+    var p1=gid('up-papel'); if(p1){ p1.textContent=pt; p1.className='up-papel p-'+(u.papel||'leitura'); }
+    var ad=gid('up-admin'); if(ad) ad.style.display=window.appIsAdmin()?'flex':'none';
     if(window.appIsAdmin()) refreshAdminBadge();
   }
+  function popFechar(){ var p=gid('user-pop'); if(p) p.classList.remove('open'); }
   function startApp(){ if(_booted) return; _booted=true; agHide(); applyRoleUI(); }
   function evalProfile(prof,email){
     if(!prof){ agPending(email); return; }
@@ -3183,7 +3221,9 @@ body.ro .dob-rm,body.ro .dob-ed{display:none !important}
   // ---- Painel de controle de acesso ----
   function refreshAdminBadge(){ if(!window.appIsAdmin()||!SB) return;
     SB.from('app_perfis').select('user_id',{count:'exact',head:true}).eq('status','pendente').then(function(r){
-      var n=(r&&r.count)||0; var b=gid('admin-pend-badge'); if(b){ b.style.display=n?'inline-block':'none'; b.textContent=n; } }); }
+      var n=(r&&r.count)||0;
+      var b=gid('admin-pend-badge'); if(b){ b.style.display=n?'block':'none'; b.textContent=n; }
+      var c=gid('up-pend'); if(c){ c.style.display=n?'inline-block':'none'; c.textContent=n; } }); }
   function admRow(u){
     var tag=u.status==='pendente'?'<span class="adm-tag t-pend">pendente</span>':(u.status==='bloqueado'?'<span class="adm-tag t-bloq">bloqueado</span>':'<span class="adm-tag t-aprov">aprovado</span>');
     var eu=window.APP_USER&&u.user_id===window.APP_USER.user_id;
@@ -3211,8 +3251,10 @@ body.ro .dob-rm,body.ro .dob-ed{display:none !important}
   document.addEventListener('click',function(e){
     var t=e.target; if(!t||!t.closest) return;
     if(t.closest('#ag-login')){ doLogin(); return; }
-    if(t.closest('#ag-logout')||t.closest('#ub-logout')){ doLogout(); return; }
-    if(t.closest('#admin-btn')){ openAdmin(); return; }
+    if(t.closest('#ag-logout')||t.closest('#up-logout')){ doLogout(); return; }
+    if(t.closest('#user-btn')){ var pp=gid('user-pop'); if(pp) pp.classList.toggle('open'); return; }
+    if(t.closest('#up-admin')){ popFechar(); openAdmin(); return; }
+    if(!t.closest('#user-pop')) popFechar();
     var a=t.closest('.adm-act'); if(a){ var v=(a.getAttribute('data-adm')||'').split(':'); var acao=v[0], uid=v[1]; if(!uid) return;
       if(acao==='aprovar'){ var sl=document.querySelector('.adm-papel[data-uid="'+uid+'"]'); var papel=sl?sl.value:'leitura';
         SB.from('app_perfis').update({status:'aprovado',papel:papel,aprovado_em:new Date().toISOString(),aprovado_por:(window.APP_USER?window.APP_USER.user_id:null)}).eq('user_id',uid).then(loadAdmin); }
@@ -3226,6 +3268,7 @@ body.ro .dob-rm,body.ro .dob-ed{display:none !important}
     SB.from('app_perfis').update({papel:sl.value}).eq('user_id',uid).then(loadAdmin);
   });
 
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') popFechar(); });
   if(document.readyState!=='loading') boot(); else document.addEventListener('DOMContentLoaded',boot);
 })();
 </script>
