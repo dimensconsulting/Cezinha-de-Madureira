@@ -509,9 +509,12 @@ function fmt(n){return Math.round(n).toLocaleString('pt-BR');}
 function fmt1(n){return n.toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1});}
 
 const map=L.map('map',{zoomControl:true}).setView([-22.4,-48.7],7);
-L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png',{attribution:'&copy; OpenStreetMap &copy; CARTO · População: IBGE · Eleitorado: TSE',subdomains:'abcd',maxZoom:19}).addTo(map);
+// Basemap CARTO. Desde 2026 a CARTO exige chave; sem ela os tiles vem com a marca "API KEY REQUIRED".
+// Chave de basemap e publica por natureza (roda no navegador). Revogar/trocar em carto.com/basemaps/apikey
+const CARTO_KEY='cb1_30og_1_acdc22f238bc69687b6f7620';
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png?key='+CARTO_KEY,{attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a> · Popula&ccedil;&atilde;o: IBGE · Eleitorado: TSE',subdomains:'abcd',maxZoom:19}).addTo(map);
 map.createPane('labels'); map.getPane('labels').style.zIndex=640; map.getPane('labels').style.pointerEvents='none';
-const labelsLayer=L.tileLayer('https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png',{subdomains:'abcd',maxZoom:19,pane:'labels'});
+const labelsLayer=L.tileLayer('https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png?key='+CARTO_KEY,{subdomains:'abcd',maxZoom:19,pane:'labels'});
 map.on('zoomend',function(){ if(map.getZoom()>=11){ if(!map.hasLayer(labelsLayer)) labelsLayer.addTo(map); } else if(map.hasLayer(labelsLayer)){ map.removeLayer(labelsLayer); } });
 
 const statusEl=document.getElementById('status')||{};
