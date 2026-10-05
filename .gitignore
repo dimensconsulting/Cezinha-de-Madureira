@@ -1,0 +1,5 @@
+# saidas de analise - nao versionar (repositorio publico)
+out/
+*.xlsx
+*.csv
+*.zip
