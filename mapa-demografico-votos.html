@@ -394,7 +394,7 @@ table.dash-tb tr:hover td{background:#f4f7fb;}
     <div class="note" id="meta-note">Densidade = votos ÷ eleitorado estimado do município (×1.000). Eleitorado estimado a partir da população 2022 (IBGE) aplicando a taxa estadual de eleitores aptos (16+). É uma estimativa; o eleitorado oficial por município pode variar.</div>
   </div>
 </div>
-<div id="rank" class="ovl"><h4 onclick="this.parentElement.classList.toggle('collapsed')">Top 20 — votos absolutos</h4><ol><li>São Paulo <b>31.865</b></li><li>Guarulhos <b>5.034</b></li><li>Piracicaba <b>4.308</b></li><li>São José dos Campos <b>3.278</b></li><li>Itapevi <b>3.255</b></li><li>Carapicuíba <b>3.170</b></li><li>Osasco <b>3.059</b></li><li>Diadema <b>2.420</b></li><li>Mogi das Cruzes <b>2.419</b></li><li>Mauá <b>2.332</b></li><li>Barueri <b>2.020</b></li><li>Jacareí <b>2.016</b></li><li>Cotia <b>1.929</b></li><li>Sumaré <b>1.915</b></li><li>Mogi Guaçu <b>1.882</b></li><li>Sorocaba <b>1.857</b></li><li>Leme <b>1.762</b></li><li>Santa Bárbara d'Oeste <b>1.685</b></li><li>Itaquaquecetuba <b>1.576</b></li><li>Campinas <b>1.536</b></li></ol></div>
+<div id="rank" class="ovl"><h4 onclick="this.parentElement.classList.toggle('collapsed')">Top 20 &mdash; votos absolutos</h4><ol></ol></div>
 <div id="detail" class="ovl"></div>
 <div id="infomodal" class="im-ov"><button type="button" class="im-close" id="im-close">\u2715</button><div class="im-box" id="infobox"></div></div>
 
@@ -507,6 +507,16 @@ let selected=null; const layerByNorm={};
 const TOTAL_26 = Object.values(VOTOS).reduce((s,x)=>s+(x.v26||0),0);
 function recalcRank(){ const arr=Object.values(VOTOS).filter(v=>v.votos>0).sort((a,b)=>b.votos-a.votos);
   for(const k in VOTOS) VOTOS[k]._rank=null; arr.forEach((v,i)=>v._rank=i+1); }
+function buildTop20(){
+  var box=document.getElementById('rank'); if(!box) return;
+  var h4=box.querySelector('h4'); if(h4) h4.innerHTML='Top 20 \u2014 votos absolutos ('+ANO+')';
+  var arr=Object.values(VOTOS).filter(function(v){return v.votos>0;}).sort(function(a,b){return b.votos-a.votos;}).slice(0,20);
+  var ol=box.querySelector('ol'); if(!ol) return;
+  ol.innerHTML=arr.map(function(v){
+    var dl=v.v26-v.v22, col=dl>0?'#00902b':(dl<0?'#bd0026':'#6b7280'), sg=dl>0?'+':'';
+    return '<li>'+v.cidade+' <b>'+fmt(v.votos)+'</b> <span style="color:'+col+';font-size:11px">'+sg+fmt(dl)+'</span></li>';
+  }).join('');
+}
 function aplicarAno(){
   for(const k in VOTOS){ const r=VOTOS[k]; r.votos = (ANO==='2026') ? r.v26 : r.v22;
     if(r._electors>0) r._dens = r.votos/r._electors*1000; else r._dens = (r.votos===0?0:null); }
@@ -518,8 +528,11 @@ function aplicarAno(){
   if(sb) sb.textContent=(ANO==='2026'?'Eleição 2026':'Eleição 2022')+' · 645 municípios de SP. Passe o mouse para ver os detalhes.';
   if(typeof densBreaks!=='undefined'){ const dv=[]; for(const k in VOTOS){const d=VOTOS[k]._dens; if(d>0) dv.push(d);} 
     if(dv.length) densBreaks=quantileBreaks(dv,DENS_COLORS.length); }
+  var bd=document.querySelector('#topbar .brand small'); if(bd) bd.textContent='SP \u00b7 '+ANO;
+  try{ buildTop20(); }catch(e){}
   if(typeof repaint==='function') repaint();
   if(typeof fillDensStats==='function') try{ fillDensStats(); }catch(e){}
+  if(selected && typeof showDetail==='function'){ try{ showDetail(selected); }catch(e){} }
 }
 recalcRank();
 
@@ -669,10 +682,17 @@ function showDetail(layer){
   let h=`<h4><span>${cidade}</span><span class="x" onclick="clearSelect()">\u2715</span></h4>`;
   if(!rec){ h+=`<div class="m"><span>Sem dado de votos</span><b>\u2014</b></div>`; }
   else{
-    h+=`<div class="m"><span>Votos${_proj>0?' (2022 / proj.)':''}</span><b>${fmt(rec.votos)}${_proj>0?' / '+fmt(_proj):''}</b></div>`;
-    if(_proj>0){ if(rec.votos>0){ var _diff=(_proj-rec.votos)/rec.votos*100; var _dir=_diff>=0?'acima':'abaixo'; var _col=_diff>=0?'#00902b':'#bd0026'; h+=`<div class="m"><span>Proje\u00e7\u00e3o vs 2022</span><b style="color:${_col}">${fmt1(Math.abs(_diff))}% ${_dir}</b></div>`; } else { h+=`<div class="m"><span>Proje\u00e7\u00e3o vs 2022</span><b style="color:#00902b">novo (sem base 2022)</b></div>`; } }
-    if(rec._rank) h+=`<div class="m"><span>Posição em SP</span><b>${rec._rank}\u00ba</b></div>`;
-    h+=`<div class="m"><span>% do total estadual</span><b>${fmt1(rec.votos/TOTAL*100)}%</b></div>`;
+    h+=`<div class="m"><span>Votos 2022</span><b>${fmt(rec.v22)}</b></div>`;
+    h+=`<div class="m"><span>Proje\u00e7\u00e3o</span><b>${fmt(rec.proj)}</b></div>`;
+    if(_proj>0) h+=`<div class="m"><span>Meta da rede</span><b>${fmt(_proj)}</b></div>`;
+    h+=`<div class="m"><span>Votos 2026</span><b>${fmt(rec.v26)}</b></div>`;
+    (function(){ var dl=rec.v26-rec.v22, col=dl>0?'#00902b':(dl<0?'#bd0026':'#6b7280'), sg=dl>0?'+':'';
+      var ptxt = rec.v22>0 ? ' ('+sg+fmt1(dl/rec.v22*100)+'%)' : (rec.v26>0?' (novo)':'');
+      h+=`<div class="m"><span>2026 vs 2022</span><b style="color:${col}">${sg}${fmt(dl)}${ptxt}</b></div>`; })();
+    if(_proj>0){ var _ent=rec.v26/_proj*100; var _c2=_ent>=100?'#00902b':(_ent>=50?'#b45309':'#bd0026');
+      h+=`<div class="m"><span>Entrega vs meta</span><b style="color:${_c2}">${fmt1(_ent)}%</b></div>`; }
+    if(rec._rank) h+=`<div class="m"><span>Posi\u00e7\u00e3o em SP (${ANO})</span><b>${rec._rank}\u00ba</b></div>`;
+    h+=`<div class="m"><span>% do total estadual (${ANO})</span><b>${fmt1(rec.votos/TOTAL*100)}%</b></div>`;
     if(rec._pop){ h+=`<div class="m"><span>População 2022</span><b>${fmt(rec._pop)}</b></div>`; h+=`<div class="m"><span>Eleitores (est.)</span><b>${fmt(rec._electors)}</b></div>`; h+=`<div class="m"><span>Votos / 1.000 elei.</span><b>${fmt1(rec._dens)}</b></div>`; }
   }
   h+='<button type="button" class="cs-add" data-open-coord="1" style="margin-top:8px">Dobrada, Coordenadores e Lideranças</button>'; var _zs=ZONA_BY_MUN[_code]; if(_zs&&_zs.length){ h+='<div class="m" style="border-top:1px dashed #e6e8ec;border-bottom:none;padding-top:8px;margin-top:2px"><span style="font-weight:700;color:#444">Zonas eleitorais ('+_zs.length+')</span><b></b></div>'; var _zlid={}; _lids.forEach(function(l){ if(l.zona!=null&&l.zona!=='') _zlid[l.zona]=1; }); _zs.forEach(function(z){ var _hl=_zlid[z[0]]; h+='<div class="m"><span>Zona '+z[0]+(_hl?' <span style="color:#00902b;font-weight:800" title="Tem liderança cadastrada nesta zona">✓</span>':'')+'</span><b>'+fmt(z[1])+'</b></div>'; }); }
@@ -1229,7 +1249,7 @@ Promise.all([tryFetch(GEO_URLS,true),tryFetch(POP_URLS,false)]).then(([gj,popTxt
   const densVals=[];
   for(const k in VOTOS){ const r=VOTOS[k]; if(r._pop){ r._electors=r._pop*ratio; r._dens = r._electors>0 ? r.votos/r._electors*1000 : null; if(r._dens>0) densVals.push(r._dens); } else { r._dens=(r.votos===0?0:null);} records.push(r);} 
   densBreaks=quantileBreaks(densVals,DENS_COLORS.length);
-  repaint(); fillDensStats(); GEO_READY=true; driveInitialLoad();
+  repaint(); fillDensStats(); try{ buildTop20(); }catch(e){} GEO_READY=true; driveInitialLoad();
   const popMatched=Object.keys(VOTOS).filter(k=>VOTOS[k]._pop).length;
   statusEl.textContent=`${matched} municípios coloridos · população cruzada em ${popMatched}`+(unmatched.length?` · ${unmatched.length} sem geometria`:'');
   if(unmatched.length) console.warn('Sem match de votos:',unmatched);
